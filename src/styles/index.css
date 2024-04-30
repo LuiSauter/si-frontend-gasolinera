@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 * {
-  box-sizing: border-box;
+  border-color: #27272a;
 }
