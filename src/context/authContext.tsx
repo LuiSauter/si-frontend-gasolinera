@@ -26,11 +26,12 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
     const checkAuthStatus = () => {
       const accessToken = getStorage(STORAGE_TOKEN)
       if (!accessToken) {
-        setStatus(authStatus.authenticated)
+        setStatus(authStatus.unauthenticated)
         dispatch(resetUser())
         return
       }
-      setStatus(authStatus.authenticated)
+      // development: simule que NO estamos autenticados
+      setStatus(authStatus.unauthenticated)
     }
     checkAuthStatus()
     return () => { }
