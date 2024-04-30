@@ -22,21 +22,14 @@ export const generateQueryParams = (filterOptions: FilterOptions): string => {
 export const handleResponseErrors = async (response: Response) => {
   if (!response.ok) {
     const errorResponse: ApiResponse = await response.json()
-    const error = new ResponseError(
-      'Ocurrio un error al realizar la solicitud',
-      errorResponse
-    )
+    const error = new ResponseError('Ocurrio un error al realizar la solicitud', errorResponse)
     throw error
   }
 }
 
-export const fetchData = async (url: string, options?: RequestInit) => {
+export const fetchData = async (url: string, options?: RequestInit, typeBlob?: boolean) => {
   const token = localStorage.getItem(STORAGE_TOKEN)
-  const authorizationHeader = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  }
-
+  const authorizationHeader = { Authorization: `Bearer ${token}` }
   const requestOptions: RequestInit = {
     ...options,
     headers: {
@@ -45,7 +38,28 @@ export const fetchData = async (url: string, options?: RequestInit) => {
     }
   }
 
+  if (!options || (options && !(options.body instanceof FormData))) {
+    requestOptions.headers = {
+      ...requestOptions.headers,
+      'Content-Type': 'application/json'
+    }
+  }
+
   const response = await fetch(url, requestOptions)
   await handleResponseErrors(response)
-  return await response.json()
+  return !typeBlob ? await response.json() : response
+}
+
+type QueryOptions = Record<string, string | number | undefined>
+
+export const generateQueryParamsGeneric = (queryOption: QueryOptions): string => {
+  const queryParams = new URLSearchParams()
+
+  for (const key in queryOption) {
+    if (queryOption[key] !== undefined) {
+      queryParams.append(key, queryOption[key]!.toString())
+    }
+  }
+
+  return queryParams.toString()
 }

@@ -9,3 +9,5 @@ export enum GENDER {
   MASCULINO = 'masculino',
   FEMENINO = 'femenino'
 }
+
+export const STORAGE_MENU_SELECTED = 'menu-selected'
