@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+/* * {
   border-color: #27272a;
+} */
+@media (prefers-color-scheme: dark) {
+  * {
+    border-color: #27272a;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  * {
+    border-color: #e4e4e7;
+  }
 }
