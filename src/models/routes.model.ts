@@ -5,9 +5,12 @@ export enum PublicRoutes {
 
 export enum PrivateRoutes {
   DASHBOARD = '/',
+  SETTINGS = '/configuracion',
+  // users
   USER = '/usuarios',
   ROLES = PrivateRoutes.USER + '/roles',
   PERMISSIONS = PrivateRoutes.USER + '/permisos',
+  // company
   COMPANY = '/empresa',
   BRANCH = PrivateRoutes.COMPANY + '/sucursales',
 }
