@@ -1,8 +1,12 @@
+import { useHeader } from '@/hooks'
 import React from 'react'
 
 const DashboardPage = (): React.ReactNode => {
+  useHeader([
+    { label: 'Dashboard' }
+  ])
   return (
-    <div>DashboardPage</div>
+    <h2>DashboardPage</h2>
   )
 }
 

@@ -11,3 +11,4 @@ export enum GENDER {
 }
 
 export const STORAGE_MENU_SELECTED = 'menu-selected'
+export const STORAGE_MENU_ACTIVE = 'menu-active'
