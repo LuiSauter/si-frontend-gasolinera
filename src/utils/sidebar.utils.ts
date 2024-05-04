@@ -1,4 +1,4 @@
-import { Building2Icon, FuelIcon, HomeIcon, KeyIcon, UserIcon, UsersIcon } from 'lucide-react'
+import { Building2Icon, BuildingIcon, FuelIcon, HomeIcon, KeyIcon, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -12,13 +12,14 @@ export interface MenuHeaderRoute {
 // TODO: add permissions to routes
 export const MenuSideBar: MenuHeaderRoute[] = [
   {
-    path: '/dashboard',
     label: 'Dashboard',
+    path: '/',
     icon: createElement(HomeIcon, { width: 20, height: 20 })
   },
   {
     label: 'Gestión de Usuarios',
-    icon: createElement(UsersIcon, { width: 20, height: 20 }),
+    icon: createElement(UserCogIcon, { width: 20, height: 20 }),
+    path: '/usuarios',
     children: [
       {
         path: '/usuarios',
@@ -38,13 +39,14 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     ]
   },
   {
-    label: 'Configuración de Empresa',
+    label: 'Administrar Empresa',
     icon: createElement(Building2Icon, { width: 20, height: 20 }),
+    path: '/empresa',
     children: [
       {
         path: '/empresa',
         label: 'Empresa',
-        icon: createElement(Building2Icon, { width: 20, height: 20 })
+        icon: createElement(BuildingIcon, { width: 20, height: 20 })
       },
       {
         path: '/empresa/sucursales',
