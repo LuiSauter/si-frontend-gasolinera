@@ -13,6 +13,13 @@ export enum PrivateRoutes {
   // company
   COMPANY = '/empresa',
   BRANCH = PrivateRoutes.COMPANY + '/sucursales',
+  BINACLE = PrivateRoutes.COMPANY + '/bitacora',
+  // inventory
+  PRODUCT = '/productos',
+  FUEL = PrivateRoutes.PRODUCT + '/combustibles',
+  FUEL_ADD = PrivateRoutes.PRODUCT + '/combustibles/crear',
+  CATEGORY_GROUP = PrivateRoutes.PRODUCT + '/categorias-grupos',
+  CATEGORY_GROUP_ADD = PrivateRoutes.CATEGORY_GROUP + '/crear',
 }
 
 export interface Route {
