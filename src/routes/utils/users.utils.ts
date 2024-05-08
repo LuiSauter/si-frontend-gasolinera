@@ -3,6 +3,7 @@ import { PrivateRoutes, type Route } from '@/models/routes.model'
 
 const UserPage = lazy(() => import('@modules/users/pages/users'))
 const RolesPage = lazy(() => import('@modules/auth/pages/roles'))
+const RolesFormPage = lazy(() => import('@modules/auth/pages/roles/components/role-form'))
 const PermissionsPage = lazy(() => import('@modules/auth/pages/permissions'))
 
 // TODO: add permissions to routes
@@ -14,6 +15,14 @@ export const userRoutes: Route[] = [
   {
     path: PrivateRoutes.ROLES,
     element: createElement(RolesPage)
+  },
+  {
+    path: PrivateRoutes.ROLE_FORM,
+    element: createElement(RolesFormPage)
+  },
+  {
+    path: PrivateRoutes.ROLE_EDIT,
+    element: createElement(RolesFormPage)
   },
   {
     path: PrivateRoutes.PERMISSIONS,

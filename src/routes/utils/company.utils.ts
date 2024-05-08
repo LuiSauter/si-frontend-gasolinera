@@ -3,6 +3,7 @@ import { createElement, lazy } from 'react'
 
 const CompanyPage = lazy(() => import('@modules/company/pages/company'))
 const BranchesPage = lazy(() => import('@modules/company/pages/branches'))
+const BinaclePage = lazy(() => import('@modules/company/pages/binnacle'))
 
 // TODO: add permissions to routes
 export const companyRoutes: Route[] = [
@@ -13,5 +14,9 @@ export const companyRoutes: Route[] = [
   {
     path: PrivateRoutes.BRANCH,
     element: createElement(BranchesPage)
+  },
+  {
+    path: PrivateRoutes.BINACLE,
+    element: createElement(BinaclePage)
   }
 ]

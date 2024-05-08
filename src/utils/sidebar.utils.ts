@@ -1,4 +1,5 @@
-import { Building2Icon, BuildingIcon, FuelIcon, HomeIcon, KeyIcon, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
+import { PrivateRoutes } from '@/models/routes.model'
+import { Building2Icon, BuildingIcon, FlameIcon, FuelIcon, HomeIcon, KeyIcon, LayoutDashboardIcon, PackageIcon, ScrollTextIcon, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -44,14 +45,41 @@ export const MenuSideBar: MenuHeaderRoute[] = [
     path: '/empresa',
     children: [
       {
-        path: '/empresa',
+        path: PrivateRoutes.COMPANY,
         label: 'Empresa',
         icon: createElement(BuildingIcon, { width: 20, height: 20 })
       },
       {
-        path: '/empresa/sucursales',
+        path: PrivateRoutes.BRANCH,
         label: 'Sucursales',
         icon: createElement(FuelIcon, { width: 20, height: 20 })
+      },
+      {
+        path: PrivateRoutes.BINACLE,
+        label: 'Bitácora',
+        icon: createElement(ScrollTextIcon, { width: 20, height: 20 })
+      }
+    ]
+  },
+  {
+    label: 'Inventario',
+    icon: createElement(PackageIcon, { width: 20, height: 20 }),
+    path: '/productos',
+    children: [
+      {
+        path: PrivateRoutes.PRODUCT,
+        label: 'Productos',
+        icon: createElement(FuelIcon, { width: 20, height: 20 })
+      },
+      {
+        path: PrivateRoutes.FUEL,
+        label: 'Combustibles',
+        icon: createElement(FlameIcon, { width: 20, height: 20 })
+      },
+      {
+        path: PrivateRoutes.CATEGORY_GROUP_ADD,
+        label: 'Categorías y Grupos',
+        icon: createElement(LayoutDashboardIcon, { width: 20, height: 20 })
       }
     ]
   }
