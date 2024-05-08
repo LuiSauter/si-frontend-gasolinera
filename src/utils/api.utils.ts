@@ -8,7 +8,8 @@ export const ENDPOINTS = {
   RESET_PASSWORD: '/api/reset-password',
   STORE: '/api/store',
   STORE_COMMENT: '/api/store-comment',
-  CATEGORY: '/api/category'
+  CATEGORY: '/api/category',
+  ROLE: '/api/role'
 }
 
 export const API_BASEURL = AppConfig.API_URL
