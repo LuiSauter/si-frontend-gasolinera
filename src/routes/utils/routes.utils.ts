@@ -1,6 +1,7 @@
 import { createElement, lazy } from 'react'
 import { companyRoutes, userRoutes } from '.'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
+import { inventoryRoutes } from './inventory.utils'
 
 const DashboardPage = lazy(() => import('@modules/dashboard'))
 const SettingPage = lazy(() => import('@modules/settings/pages/setting'))
@@ -20,5 +21,6 @@ export const PrivateAllRoutes: Route[] = [
     element: createElement(SettingPage)
   },
   ...userRoutes,
-  ...companyRoutes
+  ...companyRoutes,
+  ...inventoryRoutes
 ]
