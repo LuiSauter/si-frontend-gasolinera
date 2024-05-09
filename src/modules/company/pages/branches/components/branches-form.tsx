@@ -9,7 +9,8 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50)
+  name: z.string().min(2).max(50),
+  description: z.string().min(2).max(50)
 })
 
 const BranchesPage = (): JSX.Element => {
@@ -18,7 +19,8 @@ const BranchesPage = (): JSX.Element => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: ''
+      name: '',
+      description: ''
     }
   })
 
@@ -50,25 +52,9 @@ const BranchesPage = (): JSX.Element => {
                       <FormMessage />
                     </FormItem>
                     <FormItem>
-                      <FormLabel>Dirección</FormLabel>
+                      <FormLabel>Descripcion</FormLabel>
                       <FormControl>
                         <Input placeholder="La Pampa #12, cercado 1" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                  <div className='grid gap-4 lg:grid-cols-2'>
-                    <FormItem>
-                      <FormLabel>Correo electronico</FormLabel>
-                      <FormControl>
-                        <Input placeholder="lapampa@gmail.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                    <FormItem>
-                      <FormLabel>Teléfono</FormLabel>
-                      <FormControl>
-                        <Input placeholder="78010833" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

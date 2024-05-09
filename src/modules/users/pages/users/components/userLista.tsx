@@ -1,5 +1,3 @@
-'use client'
-
 import * as React from 'react'
 import {
   type ColumnDef,
@@ -95,13 +93,13 @@ export const columns: Array<ColumnDef<Payment>> = [
     accessorKey: 'Nombre',
     header: ({ column }) => {
       return (
-          <Button
-            variant="ghost"
-            onClick={() => { column.toggleSorting(column.getIsSorted() === 'asc') }}
-          >
-            Nombre
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
+        <Button
+          variant="ghost"
+          onClick={() => { column.toggleSorting(column.getIsSorted() === 'asc') }}
+        >
+          Nombre
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
       )
     },
     cell: ({ row }) => (
@@ -184,29 +182,29 @@ export function DataTableDemo() {
   return (
     <div className="w-full">
       <CardHeader className="p-0">
-            <CardTitle>Usuarios</CardTitle>
-            <CardDescription>
-                  Listado de todos los usuarios
-            </CardDescription>
+        <CardTitle>Usuarios</CardTitle>
+        <CardDescription>
+          Listado de todos los usuarios
+        </CardDescription>
       </CardHeader>
       <div className="flex items-center py-4 justify-between">
         <div className="relative max-w-sm">
-            <Input
-                placeholder="Buscar usuarios..."
-                value={(table.getColumn('Nombre')?.getFilterValue() as string) ?? ''}
-                onChange={(event) => (
-                  table.getColumn('Nombre')?.setFilterValue(event.target.value)
-                )}
-                className="pl-10 pr-4" // Añade un padding a la izquierda para dar espacio al icono
-            />
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <Input
+            placeholder="Buscar usuarios..."
+            value={(table.getColumn('Nombre')?.getFilterValue() as string) ?? ''}
+            onChange={(event) => (
+              table.getColumn('Nombre')?.setFilterValue(event.target.value)
+            )}
+            className="pl-10 pr-4" // Añade un padding a la izquierda para dar espacio al icono
+          />
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
         </div>
         <Button size="sm" className="h-8 gap-1">
-                <PlusCircleIcon className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap"
-                onClick={() => { navigate(PrivateRoutes.USER_CREAR) }}>
-                  Agregar Usuario
-                </span>
+          <PlusCircleIcon className="h-3.5 w-3.5" />
+          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap"
+            onClick={() => { navigate(PrivateRoutes.USER_CREAR) }}>
+            Agregar Usuario
+          </span>
         </Button>
       </div>
       <div className="rounded-md border">
@@ -232,32 +230,32 @@ export function DataTableDemo() {
           <TableBody>
             {table.getRowModel().rows?.length
               ? (
-                  table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-                  ))
-                )
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              )
               : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-                )}
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
           </TableBody>
         </Table>
       </div>
