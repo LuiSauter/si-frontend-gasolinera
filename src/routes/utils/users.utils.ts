@@ -2,6 +2,7 @@ import { createElement, lazy } from 'react'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
 
 const UserPage = lazy(() => import('@modules/users/pages/users'))
+const UserFormPage = lazy(() => import('@modules/users/pages/users/components/user-form'))
 const RolesPage = lazy(() => import('@modules/auth/pages/roles'))
 const RolesFormPage = lazy(() => import('@modules/auth/pages/roles/components/role-form'))
 const PermissionsPage = lazy(() => import('@/modules/auth/pages/permissions'))
@@ -12,6 +13,14 @@ export const userRoutes: Route[] = [
   {
     path: PrivateRoutes.USER,
     element: createElement(UserPage)
+  },
+  {
+    path: PrivateRoutes.USER_CREAR,
+    element: createElement(UserFormPage)
+  },
+  {
+    path: PrivateRoutes.USER_EDIT,
+    element: createElement(UserFormPage)
   },
   {
     path: PrivateRoutes.ROLES,

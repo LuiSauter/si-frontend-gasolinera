@@ -8,6 +8,8 @@ export enum PrivateRoutes {
   SETTINGS = '/configuracion',
   // users
   USER = '/usuarios',
+  USER_CREAR = PrivateRoutes.USER + '/crear',
+  USER_EDIT = PrivateRoutes.USER + '/:id',
   ROLES = PrivateRoutes.USER + '/roles',
   ROLE_FORM = PrivateRoutes.ROLES + '/crear',
   ROLE_EDIT = PrivateRoutes.ROLES + '/:id',
