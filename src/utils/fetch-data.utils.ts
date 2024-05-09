@@ -1,4 +1,4 @@
-import { STORAGE_TOKEN } from '.'
+import { STORAGE_TOKEN, getStorage } from '.'
 import { type ApiResponse, type FilterOptions } from '../models'
 import { ResponseError } from './response-error.utils'
 
@@ -28,7 +28,7 @@ export const handleResponseErrors = async (response: Response) => {
 }
 
 export const fetchData = async (url: string, options?: RequestInit, typeBlob?: boolean) => {
-  const token = localStorage.getItem(STORAGE_TOKEN)
+  const token = getStorage(STORAGE_TOKEN)
   const authorizationHeader = { Authorization: `Bearer ${token}` }
   const requestOptions: RequestInit = {
     ...options,

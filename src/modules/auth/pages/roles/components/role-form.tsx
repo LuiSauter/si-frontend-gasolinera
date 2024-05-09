@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Switch } from '@/components/ui/switch'
 import { useHeader } from '@/hooks'
 import { PrivateRoutes } from '@/models/routes.model'
 import { useCreateRole } from '@/modules/auth/hooks/useRole'
@@ -14,6 +15,11 @@ const formSchema = z.object({
   name: z.string().min(2).max(50),
   permissions: z.string().min(1)
 })
+
+// const FormSchemaPermissions = z.object({
+//   marketing_emails: z.boolean().default(false).optional(),
+//   security_emails: z.boolean(),
+// })
 
 const RoleFormPage = (): JSX.Element => {
   useHeader([
@@ -46,6 +52,25 @@ const RoleFormPage = (): JSX.Element => {
     })
   }
 
+  // permissions
+  // const formPermissions = useForm<z.infer<typeof FormSchema>>({
+  //   resolver: zodResolver(FormSchemaPermissions),
+  //   defaultValues: {
+  //     security_emails: true,
+  //   },
+  // })
+
+  // function onSubmitPermissions(data: z.infer<typeof FormSchema>) {
+  //   toast({
+  //     title: "You submitted the following values:",
+  //     description: (
+  //       <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+  //         <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+  //       </pre>
+  //     ),
+  //   })
+  // }
+
   return (
     <>
       <h1
@@ -55,42 +80,82 @@ const RoleFormPage = (): JSX.Element => {
       </h1>
       <div className='max-w-screen-lg mx-auto min-h-[calc(100dvh-500px)] grid place-content-center'>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full min-w-[700px]">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <>
-                  <div className='grid gap-4 lg:grid-cols-2'>
-                    <FormItem>
-                      <FormLabel>Nombre del rol</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Administrador General" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                </>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="permissions"
-              render={({ field }) => (
-                <>
-                  <div className='grid gap-4 lg:grid-cols-2'>
-                    <FormItem>
-                      <FormLabel>Permisos</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Seleciona los Permisos" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                </>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full gap-4">
             <Button type="submit">{id ? 'Actualizar' : 'Crear Rol'}</Button>
+            <div className="space-y-8 w-full grid lg:grid-cols-[300px_1fr] gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <>
+                    <div className='grid gap-4'>
+                      <FormItem>
+                        <FormLabel>Nombre del rol</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Administrador General" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    </div>
+                  </>
+                )}
+              />
+              {/* <Form {...form}>
+                <form onSubmit={formPermissions.handleSubmit(onSubmitPermissions)} className="w-full space-y-6">
+                  <div>
+                    <h3 className="mb-4 text-lg font-medium">Email Notifications</h3>
+                    <div className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="marketing_emails"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-base">
+                                Marketing emails
+                              </FormLabel>
+                              <FormDescription>
+                                Receive emails about new products, features, and more.
+                              </FormDescription>
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="security_emails"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-base">Security emails</FormLabel>
+                              <FormDescription>
+                                Receive emails about your account security.
+                              </FormDescription>
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                disabled
+                                aria-readonly
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <Button type="submit">Submit</Button>
+                </form>
+              </Form> */}
+
+            </div>
           </form>
         </Form>
       </div>
