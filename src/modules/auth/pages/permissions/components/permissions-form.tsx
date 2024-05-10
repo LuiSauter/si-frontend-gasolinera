@@ -11,7 +11,8 @@ import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 
 const formSchema = z.object({
-  name: z.string().min(2).max(50)
+  name: z.string().min(2).max(50),
+  description: z.string().min(2).max(50)
 })
 
 const PermissionsPage = (): JSX.Element => {
@@ -20,7 +21,8 @@ const PermissionsPage = (): JSX.Element => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: ''
+      name: '',
+      description: ''
     }
   })
 
@@ -28,7 +30,8 @@ const PermissionsPage = (): JSX.Element => {
 
   const onSubmit = (data: any) => {
     createPermission({
-      name: data.name
+      name: data.name,
+      description: data.description
     }).then(() => {
       navigate(PrivateRoutes.PERMISSIONS)
     }).catch((error) => { console.error(error) })
@@ -46,7 +49,7 @@ const PermissionsPage = (): JSX.Element => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full md:min-w-[700px]">
             <FormField
               control={form.control}
-              name="username"
+              name="name"
               render={({ field }) => (
                 <>
                   <div className='grid gap-4'>
@@ -54,6 +57,23 @@ const PermissionsPage = (): JSX.Element => {
                       <FormLabel>Nombre del permiso</FormLabel>
                       <FormControl>
                         <Input placeholder="Ventas, reportes y dashboard" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  </div>
+                </>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <>
+                  <div className='grid gap-4'>
+                    <FormItem>
+                      <FormLabel>Descripción</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Gestionar..." {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
