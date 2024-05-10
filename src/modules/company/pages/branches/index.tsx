@@ -1,86 +1,180 @@
-import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { useHeader } from '@/hooks'
 import { PrivateRoutes } from '@/models/routes.model'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { File, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
 
-import { z } from 'zod'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '@/components/ui/table'
+import {
+  Tabs,
+  TabsContent
+} from '@/components/ui/tabs'
+import { useNavigate } from 'react-router-dom'
 
-const formSchema = z.object({
-  username: z.string().min(2).max(50)
-})
-
-const BranchesPage = (): JSX.Element => {
-  useHeader([{ label: 'Dashboard', path: PrivateRoutes.DASHBOARD }, { label: 'Empresa', path: PrivateRoutes.COMPANY }, { label: 'Sucursales' }])
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      username: ''
-    }
-  })
-
-  const onSubmit = (data: any) => {
-    console.log(data)
-  }
-
+const BranchesPage = () => {
+  const navigate = useNavigate()
   return (
-    <>
-      <h1
-        className='text-2xl font-boldtext-gray-900 dark:text-gray-100'
-      >
-        Gestionar Sucursales
-      </h1>
-      <div className='max-w-screen-lg mx-auto min-h-[calc(100dvh-500px)] grid place-content-center'>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full min-w-[700px]">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <>
-                  <div className='grid gap-4 lg:grid-cols-2'>
-                    <FormItem>
-                      <FormLabel>Nombre</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Gasoil 2 - La pampa" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                    <FormItem>
-                      <FormLabel>Dirección</FormLabel>
-                      <FormControl>
-                        <Input placeholder="La Pampa #12, cercado 1" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                  <div className='grid gap-4 lg:grid-cols-2'>
-                    <FormItem>
-                      <FormLabel>Correo electronico</FormLabel>
-                      <FormControl>
-                        <Input placeholder="lapampa@gmail.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                    <FormItem>
-                      <FormLabel>Teléfono</FormLabel>
-                      <FormControl>
-                        <Input placeholder="78010833" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  </div>
-                </>
-              )}
-            />
-            <Button type="submit">Crear sucursal</Button>
-          </form>
-        </Form>
+    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+      <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+        <Tabs defaultValue="week">
+          <div className="flex items-center">
+            <div className="ml-auto flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 gap-1 text-sm"
+                  >
+                    <ListFilterIcon className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only">Filtrar</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuCheckboxItem checked>
+                    Todos
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 gap-1 text-sm"
+              >
+                <File className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only">Exportar</span>
+              </Button>
+              <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.BRANCH_CREATE) }}>
+                <PlusCircleIcon className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Agregar Sucursal
+                </span>
+              </Button>
+            </div>
+          </div>
+          <TabsContent value="week">
+            <Card x-chunk="dashboard-05-chunk-3">
+              <CardHeader className="px-7">
+                <CardTitle>Sucursales</CardTitle>
+                <CardDescription>
+                  Listado de todas las sucursales de la empresa
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nombre</TableHead>
+                      <TableHead>Descripción</TableHead>
+                      <TableHead>Fecha de creación</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {/* {permissions?.length < 1 && <div>No hay permisos</div>}
+                    {permissions?.map((permission: Permission) => (
+                      <TableRow key={permission.id}>
+                        <TableCell>{permission.name}</TableCell>
+                        <TableCell>{permission?.description}</TableCell>
+                        <TableCell>{permission.createdAt}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.ROLES}/${permission.id}`) }}>Editar</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))} */}
+                    <TableRow>
+                      <TableCell>Sucursal 1</TableCell>
+                      <TableCell>123 Calle Principal</TableCell>
+                      <TableCell>sucursal1@example.com</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup="true"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Sucursal 2</TableCell>
+                      <TableCell>123 Calle Principal</TableCell>
+                      <TableCell>sucursal2@gmail.com</TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup="true"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
-    </>
+    </main>
   )
 }
 
