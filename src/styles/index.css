@@ -2,13 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* * {
+*,
+:after,
+:before {
+  box-sizing: border-box;
+  border: 0 solid #e5e7eb;
+}
+
+.dark * {
   border-color: #27272a;
-} */
-@media (prefers-color-scheme: dark) {
-  * {
-    border-color: #e4e4e7;
-  }
 }
 
 @media (prefers-color-scheme: light) {
