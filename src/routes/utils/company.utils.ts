@@ -18,7 +18,7 @@ export const companyRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.BRANCH_CREATE,
-    element: createElement(BranchesFormPage)
+    element: createElement(BranchesFormPage, { buttonText: 'Guardar', title: 'Crear Sucursal' })
   },
   {
     path: PrivateRoutes.BINACLE,
