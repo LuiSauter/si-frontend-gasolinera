@@ -1,23 +1,8 @@
-import {
-  PlusCircle,
-  UploadIcon
-} from 'lucide-react'
+import { PlusCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
@@ -68,10 +53,6 @@ const CategoryGroupPage = (): JSX.Element => {
                       className="min-h-20"
                     />
                   </div>
-                  {/* <div className="grid gap-3">
-                    <Label htmlFor="picture">Imagen</Label>
-                    <Input id="picture" type="file" />
-                  </div> */}
                 </div>
               </CardContent>
             </Card>
@@ -93,12 +74,6 @@ const CategoryGroupPage = (): JSX.Element => {
                       src="https://st3.depositphotos.com/13035518/16575/v/450/depositphotos_165751364-stock-illustration-fuel-pump-vector-isolated-gas.jpg"
                       width="200"
                     />
-                    {/* <div className="grid grid-cols-4 gap-2">
-                      <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                        <UploadIcon className="h-4 w-4 text-muted-foreground" />
-                        <span className="sr-only">Upload</span>
-                      </button>
-                    </div> */}
                   </div>
                 </CardContent>
               </Card>

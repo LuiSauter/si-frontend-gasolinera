@@ -1,6 +1,5 @@
-import React from 'react'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -8,17 +7,16 @@ import { useForm } from 'react-hook-form'
 import { Card, CardDescription, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { z } from 'zod'
 import { useParams } from 'react-router-dom'
-interface Props { }
 
 const formSchema = z.object({
   name: z.string().min(2).max(50)
 })
 
-const UserFormPage = (props: Props) => {
+const UserFormPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: ''
+      name: ''
     }
   })
   const { id } = useParams()
