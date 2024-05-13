@@ -7,13 +7,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '@/hooks'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import Loading from '@/components/shared/loading'
 
 const formSchema = z.object({
-  email: z.string().min(2).max(50),
-  password: z.string().min(1)
+  email: z.string({ message: 'El correo electrónico es requerido' })
+    .min(2, 'El correo electrónico debe tener al menos 2 caracteres')
+    .max(50, 'El correo electrónico debe tener menos de 50 caracteres'),
+  password: z.string().min(1, 'La contraseña es requerida')
 })
 const LoginPage = (): JSX.Element => {
-  const { status, signWithEmailPassword, isMutating, error } = useAuth()
+  const { signWithEmailPassword, isMutating, error } = useAuth()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -24,7 +27,6 @@ const LoginPage = (): JSX.Element => {
   })
 
   const onSubmit = (data: any) => {
-    console.log(data)
     void signWithEmailPassword({
       email: data.email,
       password: data.password
@@ -42,7 +44,6 @@ const LoginPage = (): JSX.Element => {
             </p>
           </div>
           <div className="grid gap-4">
-            {/* write error */}
             {error && <div className="text-red-500 text-center">{error}</div>}
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -84,37 +85,11 @@ const LoginPage = (): JSX.Element => {
                   )}
                 />
                 <Button type="submit" className="w-full mt-4">
-                  Iniciar sesión
+                  {isMutating ? <Loading /> : 'Iniciar sesión'}
                 </Button>
               </form>
             </Form>
           </div>
-          {/* <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Correo electronico</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="ejemplo@gmail.com"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Contraseña</Label>
-                <Link
-                  to="/forgot-password"
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  ¿Olvidaste tu contraseña?
-                </Link>
-              </div>
-              <Input id="password" type="password" required placeholder='********' />
-            </div>
-            <Button type="submit" className="w-full">
-              Iniciar sesión
-            </Button>
-          </div> */}
         </div>
       </div>
       <div className="hidden bg-muted md:flex w-full h-full items-end justify-end absolute right-0 top-0 bottom-0 z-0">

@@ -1,19 +1,11 @@
-export interface ApiSucursal {
-  id: string
-  nombre: string
-  direccion: string
-  telefono?: string
-  correo?: string
-  isSuspended: boolean
-}
+import { type ApiBase } from '@/models'
 
-export interface Branch {
-  id: string
+export interface Branch extends ApiBase {
   name: string
   address: string
   phone?: string
   email?: string
-  isSuspended: boolean
+  is_suspended: boolean
 }
 
 export interface BranchData {
@@ -21,5 +13,4 @@ export interface BranchData {
   data: Branch[]
 }
 
-export interface CreateApiSucursal extends Omit<ApiSucursal, 'id' | 'isSuspended'> { }
-export interface CreateBranch extends Omit<Branch, 'id' | 'isSuspended'> { }
+export interface CreateBranch extends Omit<Branch, 'id' | 'is_suspended' | 'createdAt' | 'updatedAt'> { }

@@ -31,11 +31,20 @@ import {
   TabsContent
 } from '@/components/ui/tabs'
 import { useNavigate } from 'react-router-dom'
+import { useHeader } from '@/hooks'
+import { useGetAllBranches } from '../../hooks/useBranch'
+import Loading from '@/components/shared/loading'
 
 const BranchesPage = () => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Empresa', path: PrivateRoutes.COMPANY },
+    { label: 'Sucursales' }
+  ])
   const navigate = useNavigate()
+  const { branches, isLoading } = useGetAllBranches()
   return (
-    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+    <main className="grid flex-1 items-start gap-4 lg:gap-6">
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
         <Tabs defaultValue="week">
           <div className="flex items-center">
@@ -88,17 +97,22 @@ const BranchesPage = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Nombre</TableHead>
-                      <TableHead>Descripción</TableHead>
-                      <TableHead>Fecha de creación</TableHead>
+                      <TableHead className='hidden sm:table-cell'>Dirección</TableHead>
+                      <TableHead className='hidden md:table-cell'>Email</TableHead>
+                      <TableHead className='hidden lg:table-cell'>Teléfono</TableHead>
+                      <TableHead>Estado</TableHead>
+                      <TableHead><div className='sr-only'></div></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {/* {permissions?.length < 1 && <div>No hay permisos</div>}
-                    {permissions?.map((permission: Permission) => (
-                      <TableRow key={permission.id}>
-                        <TableCell>{permission.name}</TableCell>
-                        <TableCell>{permission?.description}</TableCell>
-                        <TableCell>{permission.createdAt}</TableCell>
+                    {branches?.length === 0 && <div>No hay sucursales</div>}
+                    {branches?.map((branch) => (
+                      <TableRow key={branch.id}>
+                        <TableCell>{branch.name}</TableCell>
+                        <TableCell className='hidden sm:table-cell'>{branch.address}</TableCell>
+                        <TableCell className='hidden md:table-cell'>{branch.email}</TableCell>
+                        <TableCell className='hidden lg:table-cell'>{branch.phone}</TableCell>
+                        <TableCell>{branch.is_suspended ? 'Suspendido' : 'Activo'}</TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -113,62 +127,16 @@ const BranchesPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.ROLES}/${permission.id}`) }}>Editar</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
                       </TableRow>
-                    ))} */}
-                    <TableRow>
-                      <TableCell>Sucursal 1</TableCell>
-                      <TableCell>123 Calle Principal</TableCell>
-                      <TableCell>sucursal1@example.com</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Sucursal 2</TableCell>
-                      <TableCell>123 Calle Principal</TableCell>
-                      <TableCell>sucursal2@gmail.com</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
+                {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
               </CardContent>
             </Card>
           </TabsContent>

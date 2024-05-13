@@ -28,11 +28,11 @@ export const userRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.ROLE_FORM,
-    element: createElement(RolesFormPage)
+    element: createElement(RolesFormPage, { title: 'Crear Rol', buttonText: 'Guardar Rol' })
   },
   {
     path: PrivateRoutes.ROLE_EDIT,
-    element: createElement(RolesFormPage)
+    element: createElement(RolesFormPage, { title: 'Actualizar Rol', buttonText: 'Guardar Rol' })
   },
   {
     path: PrivateRoutes.PERMISSIONS,
@@ -40,10 +40,10 @@ export const userRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.PERMISSIONS_CREATE,
-    element: createElement(PermissionsFormPage)
+    element: createElement(PermissionsFormPage, { title: 'Crear Permiso', buttonText: 'Guardar Permiso' })
   },
   {
     path: PrivateRoutes.PERMISSIONS_EDIT,
-    element: createElement(PermissionsFormPage)
+    element: createElement(PermissionsFormPage, { title: 'Actualizar Permiso', buttonText: 'Guardar Permiso' })
   }
 ]
