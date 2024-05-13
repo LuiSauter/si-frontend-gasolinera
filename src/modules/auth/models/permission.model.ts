@@ -23,7 +23,8 @@ export interface PermissionUpdate extends Partial<Permission> {
   description: string
 }
 
-export interface CreatePermission extends Omit<Permission, 'id'> { }
+export interface CreatePermission extends Omit<Permission, 'id' | 'createdAt' | 'updatedAt'> { }
+
 interface IPermissionElements extends HTMLFormControlsCollection {
   name: HTMLInputElement
   description: HTMLInputElement
