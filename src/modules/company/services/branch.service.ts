@@ -1,12 +1,12 @@
 import { fetchData } from '@/utils'
-import { type Branch, type CreateBranch, type BranchData } from '../models/branch.model'
+import { type Branch, type CreateBranch } from '../models/branch.model'
 
-const getAllBranches = async (url: string): Promise<BranchData> => {
+const getAllBranches = async (url: string): Promise<Branch[]> => {
   const response = await fetchData(url)
-  return response
+  return response.data
 }
 
-const createBranch = async (url: string, { arg }: { arg: CreateBranch }): Promise<Branch> => {
+const createBranch = async (url: string, { arg }: { arg: CreateBranch }): Promise<void> => {
   const options: RequestInit = {
     method: 'POST',
     body: JSON.stringify(arg)
@@ -16,4 +16,24 @@ const createBranch = async (url: string, { arg }: { arg: CreateBranch }): Promis
   return response
 }
 
-export { getAllBranches, createBranch }
+const getBranch = async (url: string): Promise<Branch> => {
+  const response = await fetchData(url)
+  return response.data
+}
+
+const updateBranch = async (url: string, { arg }: { arg: Partial<Branch> }): Promise<void> => {
+  const { id, ...rest } = arg
+  const options: RequestInit = {
+    method: 'PATCH',
+    body: JSON.stringify(rest)
+  }
+
+  await fetchData(`${url}/${id}`, options)
+}
+
+const suspendBranch = async (url: string, { arg }: { arg: string }): Promise<void> => {
+  const options: RequestInit = { method: 'DELETE' }
+  await fetchData(`${url}/${arg}`, options)
+}
+
+export { getAllBranches, createBranch, getBranch, updateBranch, suspendBranch }
