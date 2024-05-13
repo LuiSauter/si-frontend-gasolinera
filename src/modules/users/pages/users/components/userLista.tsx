@@ -31,7 +31,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { CardHeader, CardDescription, CardTitle, Card } from '@/components/ui/card'
+import { CardHeader, CardDescription, CardTitle } from '@/components/ui/card'
 import { useNavigate } from 'react-router-dom'
 import { PrivateRoutes } from '@/models/routes.model'
 
@@ -122,9 +122,8 @@ export const columns: Array<ColumnDef<Payment>> = [
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: () => {
       const navigation = useNavigate()
-      const payment = row.original
 
       return (
         <DropdownMenu>
@@ -229,23 +228,20 @@ export function DataTableDemo() {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length
-              ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              )
+              ? (table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>)))
               : (
                 <TableRow>
                   <TableCell
@@ -254,8 +250,7 @@ export function DataTableDemo() {
                   >
                     No results.
                   </TableCell>
-                </TableRow>
-              )}
+                </TableRow>)}
           </TableBody>
         </Table>
       </div>
