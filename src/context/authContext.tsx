@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
     const checkAuthStatus = async () => {
       const token = getStorage(STORAGE_TOKEN)
       if (!token) {
-        setStatus(authStatus.unauthenticated)
+        setStatus(authStatus.authenticated)
         dispatch(resetUser())
         removeStorage(STORAGE_USER)
         return

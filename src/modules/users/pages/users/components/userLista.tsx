@@ -11,7 +11,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal, Search, PlusCircleIcon } from 'lucide-react'
+import { ArrowUpDown, MoreHorizontal, Search, PlusCircleIcon, Trash, Pencil } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -20,7 +20,8 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
+  DropdownMenuShortcut
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
@@ -31,10 +32,21 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import { CardHeader, CardDescription, CardTitle, Card } from '@/components/ui/card'
+import { CardHeader, CardDescription, CardTitle } from '@/components/ui/card'
 import { useNavigate } from 'react-router-dom'
 import { PrivateRoutes } from '@/models/routes.model'
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
+import { useGetAllUser } from '@/modules/users/hooks/useUser'
 const data: Payment[] = [
   {
     id: 'm5gr84i9',
@@ -73,14 +85,14 @@ const data: Payment[] = [
   }
 ]
 
-export interface Payment {
+export interface User {
   id: string
   nro: number
   telefono: number
   Nombre: string
   email: string
 }
-export const columns: Array<ColumnDef<Payment>> = [
+export const columns: Array<ColumnDef<User>> = [
   {
     accessorKey: 'nro',
     header: () => <div>Nro</div>,
@@ -139,10 +151,45 @@ export const columns: Array<ColumnDef<Payment>> = [
             <DropdownMenuItem onClick={() => {
               navigation(`${PrivateRoutes.USER}/afcad51415`)
             }}>
+              <Pencil className="mr-2 h-4 w-4" />
               Editar
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete</DropdownMenuItem>
+
+            <DropdownMenuItem className="text-red-600">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    justifyContent: 'space-between'
+                  }}
+                  onClick={(event) => { event.stopPropagation() }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Trash className="mr-2 h-4 w-4"/>
+                    Delete
+                  </div>
+                </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Estas seguro de eliminar este usuario?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                    Esta acción no se puede deshacer. Esto eliminará permanentemente tu
+                    cuenta y eliminar sus datos de nuestros servidores.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction>Continue</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -152,6 +199,7 @@ export const columns: Array<ColumnDef<Payment>> = [
 
 export function DataTableDemo() {
   const navigate = useNavigate()
+  const { allUsers } = useGetAllUser()
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -178,6 +226,7 @@ export function DataTableDemo() {
       rowSelection
     }
   })
+  console.log(table.data)
 
   return (
     <div className="w-full">
@@ -230,7 +279,7 @@ export function DataTableDemo() {
           <TableBody>
             {table.getRowModel().rows?.length
               ? (
-                table.getRowModel().rows.map((row) => (
+                  table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
@@ -244,8 +293,8 @@ export function DataTableDemo() {
                       </TableCell>
                     ))}
                   </TableRow>
-                ))
-              )
+                  ))
+                )
               : (
                 <TableRow>
                   <TableCell
@@ -255,7 +304,7 @@ export function DataTableDemo() {
                     No results.
                   </TableCell>
                 </TableRow>
-              )}
+                )}
           </TableBody>
         </Table>
       </div>
