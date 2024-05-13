@@ -1,16 +1,6 @@
-import { type User } from '@/pages/user/models/user.model'
-import { GENDER, ROLE } from '@/utils'
 import { createSlice } from '@reduxjs/toolkit'
 
-const UserEmptyState: User = {
-  id: '',
-  name: '',
-  lastName: '',
-  email: '',
-  isSuspended: false,
-  rol: ROLE.BASIC,
-  gender: GENDER.MASCULINO
-}
+const UserEmptyState: any = {} as any
 
 export const userSlice = createSlice({
   name: 'user',

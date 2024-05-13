@@ -26,8 +26,8 @@ const ProtectedRoute = ({ isPrivate = false, redirectTo = '/login', children }: 
 
   if (render) {
     return (
-      <div className='flex gap-4 min-h-screen justify-center items-center text-action text-light-action dark:text-dark-action'>
-        <Loading /><span className='text-light-text-secondary dark:text-dark-text-secondary'>Gasolinera S.A.</span>
+      <div className='flex gap-4 min-h-screen justify-center items-center'>
+        <Loading /><span>Gasolinera S.A.</span>
       </div>
     )
   }
