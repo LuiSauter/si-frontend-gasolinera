@@ -33,14 +33,21 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useGetAllPermissions } from '../../hooks/usePermission'
 import { type Permission } from '../../models/permission.model'
+import { useHeader } from '@/hooks'
+import Loading from '@/components/shared/loading'
 
 const PermissionsPage = () => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Usuarios', path: PrivateRoutes.USER },
+    { label: 'Permisos' }
+  ])
   const navigate = useNavigate()
-  const { permissions } = useGetAllPermissions()
+  const { permissions, isLoading } = useGetAllPermissions()
   return (
-    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-      <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-        <Tabs defaultValue="week">
+    <section className="grid flex-1 items-start gap-4 sm:py-0 md:gap-8">
+      <div className="grid auto-rows-max items-start gap-4 md:gap-6 lg:col-span-2">
+        <Tabs defaultValue="week" className='grid gap-4'>
           <div className="flex items-center">
             <div className="ml-auto flex items-center gap-2">
               <DropdownMenu>
@@ -80,28 +87,29 @@ const PermissionsPage = () => {
           </div>
           <TabsContent value="week">
             <Card x-chunk="dashboard-05-chunk-3">
-              <CardHeader className="px-7">
+              <CardHeader className="px-6">
                 <CardTitle>Permisos</CardTitle>
                 <CardDescription>
                   Listado de los permisos disponibles
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Table>
+              <CardContent className=''>
+                <Table >
                   <TableHeader>
                     <TableRow>
                       <TableHead>Nombre</TableHead>
-                      <TableHead>Descripción</TableHead>
-                      <TableHead>Fecha de creación</TableHead>
+                      <TableHead className='hidden sm:table-cell'>Descripción</TableHead>
+                      <TableHead className='hidden lg:table-cell'>Fecha de creación</TableHead>
+                      <TableHead><div className='sr-only'></div></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {permissions?.length < 1 && <div>No hay permisos</div>}
+                    {permissions?.length === 0 && <div>No hay permisos</div>}
                     {permissions?.map((permission: Permission) => (
                       <TableRow key={permission.id}>
                         <TableCell>{permission.name}</TableCell>
-                        <TableCell>{permission?.description}</TableCell>
-                        <TableCell>{permission.createdAt}</TableCell>
+                        <TableCell className='hidden sm:table-cell'>{permission?.description}</TableCell>
+                        <TableCell className='hidden lg:table-cell'>{permission.createdAt}</TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -124,12 +132,13 @@ const PermissionsPage = () => {
                     ))}
                   </TableBody>
                 </Table>
+                {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
       </div>
-    </main>
+    </section>
   )
 }
 

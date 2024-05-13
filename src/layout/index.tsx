@@ -4,6 +4,7 @@ import Header from './components/header'
 import MainPage from './components/main-page'
 import Aside from './components/aside'
 import { useSidebar } from '@/context/sidebarContext'
+import { Toaster } from '@/components/ui/sonner'
 
 const Dashboard = () => {
   const { isContract } = useSidebar()
@@ -13,11 +14,12 @@ const Dashboard = () => {
       <div className='max-h-[100dvh overflow-hidden]'>
         {/* <Toaster richColors /> */}
         <Header />
-        <div className='flex flex-row w-full h-[calc(100dvh-56px)] lg:h-[calc(100dvh-60px)] relative overflow-hidden bg-light-bg-primary dark:bg-dark-bg-primary'>
+        <div className='flex flex-row w-full h-[calc(100dvh-56px)] lg:h-[calc(100dvh-60px)] relative overflow-hidden bg-light-bg-secondary dark:bg-dark-bg-primary'>
           {/* <Aside /> */}
           <MainPage>
             <Outlet />
           </MainPage>
+          <Toaster />
         </div>
       </div>
     </div>

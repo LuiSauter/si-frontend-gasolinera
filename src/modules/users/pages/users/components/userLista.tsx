@@ -20,8 +20,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenuShortcut
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
@@ -47,7 +46,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { useGetAllUser } from '@/modules/users/hooks/useUser'
-const data: Payment[] = [
+const data: User[] = [
   {
     id: 'm5gr84i9',
     nro: 1,
@@ -134,9 +133,8 @@ export const columns: Array<ColumnDef<User>> = [
   {
     id: 'actions',
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: () => {
       const navigation = useNavigate()
-      const payment = row.original
 
       return (
         <DropdownMenu>
@@ -226,7 +224,6 @@ export function DataTableDemo() {
       rowSelection
     }
   })
-  console.log(table.data)
 
   return (
     <div className="w-full">

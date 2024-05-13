@@ -1,5 +1,5 @@
 import { fetchData } from '@/utils'
-import { type Role, type CreateRole } from '../models/role.model'
+import { type Role, type CreateRole, type UpdateRole } from '../models/role.model'
 
 const createRole = async (url: string, { arg }: { arg: CreateRole }): Promise<Role> => {
   const options: RequestInit = {
@@ -12,13 +12,24 @@ const createRole = async (url: string, { arg }: { arg: CreateRole }): Promise<Ro
 }
 
 const getAllRoles = async (url: string): Promise<Role[]> => {
-  const options: RequestInit = {
-    method: 'GET'
-  }
-
+  const options: RequestInit = { method: 'GET' }
   const response = await fetchData(url, options)
-  console.log(response)
   return response.data
+}
+
+const getRole = async (url: string): Promise<Role> => {
+  const response = await fetchData(url)
+  return response.data
+}
+
+const updateRole = async (url: string, { arg }: { arg: UpdateRole }): Promise<void> => {
+  const options: RequestInit = {
+    method: 'PATCH',
+    body: JSON.stringify({
+      name: arg?.name, permissions: arg?.permissions
+    })
+  }
+  await fetchData(`${url}/${arg.id}`, options)
 }
 
 const deleteRole = async (url: string, { arg }: { arg: string }): Promise<void> => {
@@ -27,4 +38,4 @@ const deleteRole = async (url: string, { arg }: { arg: string }): Promise<void> 
   await fetchData(`${url}/${id}`, options)
 }
 
-export { createRole, getAllRoles, deleteRole }
+export { createRole, getAllRoles, getRole, updateRole, deleteRole }

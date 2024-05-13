@@ -1,4 +1,3 @@
-import { AlertDialogDemo } from './components/alert'
 import { DataTableDemo } from './components/userLista'
 
 const UserPage = (): JSX.Element => {
