@@ -1,7 +1,7 @@
 import { API_BASEURL, ENDPOINTS } from '@/utils'
-import { createRole, deleteRole, getAllRoles } from '@modules/auth/services/role.service'
+import { createRole, deleteRole, getAllRoles, getRole, updateRole } from '@modules/auth/services/role.service'
 import useSWRMutation from 'swr/mutation'
-import { type CreateRole, type Role } from '../models/role.model'
+import { type UpdateRole, type CreateRole, type Role } from '../models/role.model'
 import { type ResponseError } from '@/utils/response-error.utils'
 import useSWR from 'swr'
 
@@ -15,9 +15,19 @@ const useGetAllRole = () => {
   return { allRoles: data, error, isLoading }
 }
 
+const useGetRole = (id?: string) => {
+  const { data, isLoading, error, isValidating } = useSWR<Role, ResponseError>(id ? API_BASEURL + ENDPOINTS.ROLE + `/${id}` : null, getRole)
+  return { role: data, isLoading, error, isValidating }
+}
+
+const useUpdateRole = () => {
+  const { trigger, isMutating, error } = useSWRMutation<Promise<void>, ResponseError, string, UpdateRole>(API_BASEURL + ENDPOINTS.ROLE, updateRole)
+  return { updateRole: trigger, isMutating, error }
+}
+
 const useDeleteRole = () => {
   const { trigger, error, isMutating } = useSWRMutation<Promise<void>, ResponseError, string, string>(API_BASEURL + ENDPOINTS.ROLE, deleteRole)
   return { deleteRole: trigger, error, isMutating }
 }
 
-export { useCreateRole, useGetAllRole, useDeleteRole }
+export { useCreateRole, useGetAllRole, useDeleteRole, useGetRole, useUpdateRole }
