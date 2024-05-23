@@ -40,57 +40,11 @@ export enum PERMISSION {
   SALE_NOTE_SHOW = 'Mostrar notas de venta',
 
   // buy
-  PURCHASE_ORDER = 'Orden de compra',
-  PURCHASE_ORDER_SHOW = 'Mostrar ordenes de compra',
-  BUY_NOTE = 'Nota de compra',
-  BUY_NOTE_SHOW = 'Mostrar notas de compra',
+  PURCHASE_ORDER = 'orden de compra',
+  PURCHASE_ORDER_SHOW = 'mostrar ordenes de compra',
+  BUY_NOTE = 'nota de compra',
+  BUY_NOTE_SHOW = 'mostrar notas de compra',
 }
-
-// export enum PERMISSION {
-//   // user
-//   USER = 'usuario',
-//   USER_SHOW = 'mostrar usuarios',
-//   ROLE = 'rol',
-//   ROLE_SHOW = 'mostrar roles',
-//   PERMISSION = 'permiso',
-//   PERMISSION_SHOW = 'mostrar permisos',
-
-//   // inventory
-//   PRODUCT = 'producto',
-//   PRODUCT_SHOW = 'mostrar productos',
-//   CATEGORY = 'categoria',
-//   CATEGORY_SHOW = 'mostrar categorias',
-//   GROUP = 'grupo',
-//   GROUP_SHOW = 'mostrar grupos',
-//   BATCH = 'lote de producto',
-//   BATCH_SHOW = 'mostrar lotes de producto',
-//   TANK = 'tanque',
-//   TANK_SHOW = 'mostrar tanques',
-//   FUEL = 'combustible',
-//   FUEL_SHOW = 'mostrar combustibles',
-//   PROVIDER = 'proveedor',
-//   PROVIDER_SHOW = 'mostrar proveedores',
-//   PRODUCT_OUTPUT = 'salida de producto',
-//   PRODUCT_OUTPUT_SHOW = 'mostrar salidas de producto',
-
-//   // company
-//   COMPANY = 'empresa',
-//   BRANCH = 'sucursal',
-//   BRANCH_SHOW = 'mostrar sucursales',
-//   BINNACLE = 'bitacora',
-
-//   // sale
-//   DISCOUNT = 'descuento',
-//   DISCOUNT_SHOW = 'mostrar descuentos',
-//   SALE_NOTE = 'nota de venta',
-//   SALE_NOTE_SHOW = 'mostrar notas de venta',
-
-//   // buy
-//   PURCHASE_ORDER = 'orden de compra',
-//   PURCHASE_ORDER_SHOW = 'mostrar ordenes de compra',
-//   BUY_NOTE = 'nota de compra',
-//   BUY_NOTE_SHOW = 'mostrar notas de compra',
-// }
 
 export const modulePermissions = {
   empresa: [
