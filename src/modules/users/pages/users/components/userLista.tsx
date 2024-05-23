@@ -1,6 +1,5 @@
 import * as React from 'react'
 import {
-  type ColumnDef,
   type ColumnFiltersState,
   type SortingState,
   type VisibilityState,
@@ -10,6 +9,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable
+  , type ColumnDef
 } from '@tanstack/react-table'
 import { ArrowUpDown, MoreHorizontal, Search, PlusCircleIcon, Trash, Pencil } from 'lucide-react'
 
@@ -45,67 +45,41 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { useGetAllUser } from '@/modules/users/hooks/useUser'
-const data: User[] = [
-  {
-    id: 'm5gr84i9',
-    nro: 1,
-    telefono: 71890091,
-    Nombre: 'Kenia Suarez',
-    email: 'ken99@yahoo.com'
-  },
-  {
-    id: '3u1reuv4',
-    nro: 2,
-    telefono: 71890091,
-    Nombre: 'Abel Rodas',
-    email: 'Abe45@gmail.com'
-  },
-  {
-    id: 'derv1ws0',
-    nro: 3,
-    telefono: 71890605,
-    Nombre: 'Monserrat',
-    email: 'Monserrat44@gmail.com'
-  },
-  {
-    id: '5kma53ae',
-    nro: 4,
-    telefono: 7189251,
-    Nombre: 'Silas',
-    email: 'Silas22@gmail.com'
-  },
-  {
-    id: 'bhqecj4p',
-    nro: 5,
-    telefono: 71890091,
-    Nombre: 'Carmenlla',
-    email: 'carmella@hotmail.com'
-  }
-]
+import { useDeleteUser, useGetAllUser } from '@/modules/users/hooks/useUser'
+import { type User } from '@/modules/users/models/user.model'
+import { toast } from 'sonner'
+import { type ApiBase } from '@/models'
 
-export interface User {
-  id: string
-  nro: number
-  telefono: number
-  Nombre: string
+export interface NewUser extends ApiBase {
+  name: string
+  ci: number
   email: string
+  address: string
+  phone: string
+  gender: string
+  isActive: boolean
+  role: string
+  branch: string
+  password: string
 }
-export const columns: Array<ColumnDef<User>> = [
+
+export const columns: Array<ColumnDef<NewUser>> = [
   {
-    accessorKey: 'nro',
-    header: () => <div>Nro</div>,
+    accessorKey: 'id',
+    header: () => {
+      return <div className='pl-0'></div>
+    },
     cell: ({ row }) => {
-      const nro = parseFloat(row.getValue('nro'))
-      return <div className="font-medium">{nro}</div>
+
     }
   },
   {
-    accessorKey: 'Nombre',
+    accessorKey: 'name',
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
+          className='pl-0'
           onClick={() => { column.toggleSorting(column.getIsSorted() === 'asc') }}
         >
           Nombre
@@ -114,8 +88,15 @@ export const columns: Array<ColumnDef<User>> = [
       )
     },
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue('Nombre')}</div>
+      <div className="capitalize">{row.getValue('name')}</div>
     )
+  },
+  {
+    accessorKey: 'role',
+    header: 'Rol',
+    cell: ({ row }) => {
+      return <div>{row.getValue('role')}</div>
+    }
   },
   {
     accessorKey: 'email',
@@ -123,19 +104,36 @@ export const columns: Array<ColumnDef<User>> = [
     cell: ({ row }) => <div className="lowercase">{row.getValue('email')}</div>
   },
   {
-    accessorKey: 'telefono',
+    accessorKey: 'phone',
     header: () => <div>Telefono</div>,
     cell: ({ row }) => {
-      const telefono = parseFloat(row.getValue('telefono'))
-      return <div className="font-medium">{telefono}</div>
+      const phone = parseFloat(row.getValue('phone'))
+      return <div className="font-medium">{phone}</div>
     }
   },
   {
+    accessorKey: 'id',
+    header: '',
     id: 'actions',
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
+      const [isDialogOpen, setIsDialogOpen] = React.useState(false)
       const navigation = useNavigate()
-
+      const { deleteUser, isMutating: isMutatingDelete } = useDeleteUser()
+      const deletePermanentlyRole = () => {
+        console.log(row.getValue('id'))
+        toast.promise(deleteUser(row.getValue('id')), {
+          loading: 'Cargando...',
+          success: () => {
+            setTimeout(() => {
+              navigation(PrivateRoutes.USER, { replace: true })
+            }, 1000)
+            return 'Usuario eliminado exitosamente'
+          },
+          error: 'Puede que el usuario tenga permisos asignados, por lo que no se puede eliminar'
+        })
+        setIsDialogOpen(false)
+      }
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -147,7 +145,7 @@ export const columns: Array<ColumnDef<User>> = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel className='font-bold'>Actions</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => {
-              navigation(`${PrivateRoutes.USER}/afcad51415`)
+              navigation(`${PrivateRoutes.USER}/${row.getValue('id')}`)
             }}>
               <Pencil className="mr-2 h-4 w-4" />
               Editar
@@ -155,7 +153,7 @@ export const columns: Array<ColumnDef<User>> = [
             <DropdownMenuSeparator />
 
             <DropdownMenuItem className="text-red-600">
-              <AlertDialog>
+              <AlertDialog isOpen={isDialogOpen} onDismiss={() => { setIsDialogOpen(false) }}>
                 <AlertDialogTrigger asChild>
                 <div
                   style={{
@@ -182,7 +180,7 @@ export const columns: Array<ColumnDef<User>> = [
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction>Continue</AlertDialogAction>
+                    <AlertDialogAction onClick={deletePermanentlyRole}>Continue</AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
@@ -197,7 +195,7 @@ export const columns: Array<ColumnDef<User>> = [
 
 export function DataTableDemo() {
   const navigate = useNavigate()
-  const { allUsers } = useGetAllUser()
+  const { allUsers } = useGetAllUser() ?? { allUsers: [] }
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -206,8 +204,15 @@ export function DataTableDemo() {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
+  const newAllUsers = React.useMemo(() => allUsers?.map((user) => ({
+    ...user,
+    branch: user.branch.name,
+    role: user.role.name
+  })) ?? [], [allUsers])
+
+  // console.log(newAllUsers)
   const table = useReactTable({
-    data,
+    data: newAllUsers ?? [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -224,7 +229,6 @@ export function DataTableDemo() {
       rowSelection
     }
   })
-
   return (
     <div className="w-full">
       <CardHeader className="p-0">
@@ -237,9 +241,9 @@ export function DataTableDemo() {
         <div className="relative max-w-sm">
           <Input
             placeholder="Buscar usuarios..."
-            value={(table.getColumn('Nombre')?.getFilterValue() as string) ?? ''}
+            value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
             onChange={(event) => (
-              table.getColumn('Nombre')?.setFilterValue(event.target.value)
+              table.getColumn('name')?.setFilterValue(event.target.value)
             )}
             className="pl-10 pr-4" // Añade un padding a la izquierda para dar espacio al icono
           />

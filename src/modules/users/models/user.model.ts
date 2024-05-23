@@ -1,19 +1,32 @@
-import { type GENDER, type ROLE } from '@/utils'
+import { type ApiBase } from '@/models'
 import { type Role } from '@/modules/auth/models/role.model'
+import { type Branch } from '@/modules/company/models/branch.model'
+import { type GENDER } from '@/utils'
 
-export interface User {
-  id: string
+export interface User extends ApiBase {
   name: string
-  lastName: string
+  ci: number
   email: string
-  rol: ROLE
+  address: string
+  phone: string
   gender: GENDER
-  isSuspended: boolean
+  isActive: boolean
+  role: Role
+  branch: Branch
+  password: string
 }
 export interface CreateUser {
+  ci: number
   name: string
   email: string
+  password: string
+  gender: string
+  address: string
   phone: string
   role: string
   branch: string
+}
+
+export interface UpdateUser extends CreateUser {
+  id: string
 }
