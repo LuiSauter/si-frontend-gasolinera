@@ -77,9 +77,14 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         icon: createElement(FlameIcon, { width: 20, height: 20 })
       },
       {
-        path: PrivateRoutes.CATEGORY_GROUP_ADD,
-        label: 'Categorías y Grupos',
+        path: PrivateRoutes.CATEGORY,
+        label: 'Categorías',
         icon: createElement(LayoutDashboardIcon, { width: 20, height: 20 })
+      },
+      {
+        path: PrivateRoutes.GROUP,
+        label: 'Grupos',
+        icon: createElement(UsersIcon, { width: 20, height: 20 })
       }
     ]
   }
