@@ -2,7 +2,6 @@ import { useHeader } from '@/hooks'
 import { PrivateRoutes } from '@/models/routes.model'
 import { File, ListFilter, Users2Icon } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -34,6 +33,8 @@ import {
   TabsTrigger
 } from '@/components/ui/tabs'
 import { useGetLogsByMothAndYear } from '../../hooks/useBinnacle'
+import { useEffect } from 'react'
+import { MONTH } from '../../models/binnacle.model'
 
 function BinnaclePage(): JSX.Element {
   useHeader([
@@ -42,9 +43,21 @@ function BinnaclePage(): JSX.Element {
     { label: 'Bitácora' }
   ])
 
-  const { dataLogs } = useGetLogsByMothAndYear()
+  const { dataLogs, getLogByMothAndYear, error } = useGetLogsByMothAndYear()
 
-  console.log(dataLogs)
+  useEffect(() => {
+    void getLogByMothAndYear({
+      month: MONTH.MAY,
+      year: '2024',
+      password: '12345678'
+    })
+  }, [])
+
+  if (error) {
+    return <div>
+      No tiene permisos para acceder a la bitácora
+    </div>
+  }
 
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -104,16 +117,34 @@ function BinnaclePage(): JSX.Element {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Usuario</TableHead>
-                      {/* Genera un header con los elementos principales que se debe listar en una bitácora como el usuario, tipo de accion, fecha, IP, endpoint, etc. */}
-                      <TableHead>Accion</TableHead>
-                      <TableHead>Fecha</TableHead>
-                      <TableHead>IP</TableHead>
-                      <TableHead>Endpoint</TableHead>
+                      <TableHead className='table-cell'>Usuario</TableHead>
+                      <TableHead className='table-cell'>Method</TableHead>
+                      <TableHead className='hidden sm:table-cell'>Endpoint</TableHead>
+                      <TableHead className='hidden md:table-cell'>Fecha</TableHead>
+                      <TableHead className='hidden md:table-cell'>Hora</TableHead>
+                      <TableHead className='hidden lg:table-cell'>IP</TableHead>
+                      <TableHead className='hidden xl:table-cell'>Branch</TableHead>
+                      <TableHead className='hidden xl:table-cell'>Body</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
+                    {
+                      dataLogs?.map((log, index) => (
+                        <TableRow key={index}>
+                          <TableCell className=''><div className="flex items-center gap-2"><Users2Icon className="h-5 w-5" /><span>admin</span></div>
+                          </TableCell>
+                          <TableCell className='table-cell'>{log.method}</TableCell>
+                          <TableCell className='hidden sm:table-cell'>{log.path}</TableCell>
+                          <TableCell className='hidden md:table-cell'>{log.date}</TableCell>
+                          <TableCell className='hidden md:table-cell'>{log.time}</TableCell>
+                          <TableCell className='hidden lg:table-cell'>{log.ip}</TableCell>
+                          <TableCell className='hidden xl:table-cell'>{log.branch}</TableCell>
+                          <TableCell className='hidden xl:table-cell'><span title={JSON.stringify(log.body)}>body</span></TableCell>
+                        </TableRow>
+
+                      ))
+                    }
+                    {/* <TableRow>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Users2Icon className="h-5 w-5" />
@@ -262,7 +293,7 @@ function BinnaclePage(): JSX.Element {
                       <TableCell>
                         /api/auth/login
                       </TableCell>
-                    </TableRow>
+                    </TableRow> */}
                   </TableBody>
                 </Table>
               </CardContent>

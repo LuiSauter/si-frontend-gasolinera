@@ -26,6 +26,6 @@ export interface Binnacle {
 
 export interface GetLogByMothAndYear {
   month: MONTH
-  year: number
+  year: string
   password: string
 }
