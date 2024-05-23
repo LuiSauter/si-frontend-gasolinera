@@ -34,6 +34,7 @@ import {
 } from '@/components/ui/tabs'
 import { useGetLogsByMothAndYear } from '../../hooks/useBinnacle'
 import { useEffect } from 'react'
+import { MONTH } from '../../models/binnacle.model'
 
 function BinnaclePage(): JSX.Element {
   useHeader([
@@ -42,15 +43,21 @@ function BinnaclePage(): JSX.Element {
     { label: 'Bitácora' }
   ])
 
-  const { dataLogs, getLogByMothAndYear } = useGetLogsByMothAndYear()
+  const { dataLogs, getLogByMothAndYear, error } = useGetLogsByMothAndYear()
 
   useEffect(() => {
     void getLogByMothAndYear({
-      month: 'mayo',
+      month: MONTH.MAY,
       year: '2024',
       password: '12345678'
     })
   }, [])
+
+  if (error) {
+    return <div>
+      No tiene permisos para acceder a la bitácora
+    </div>
+  }
 
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
