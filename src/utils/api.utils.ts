@@ -10,7 +10,12 @@ export const ENDPOINTS = {
   PERMISSION: '/api/permission',
   // company
   COMPANY: '/api/company',
-  BRANCH: '/api/branch'
+  BRANCH: '/api/branch',
+  USER: '/api/user',
+  // inventory
+  CATEGORY: '/api/category',
+  GROUP: '/api/group',
+  PRODUCT: '/api/product'
 }
 
 export const API_BASEURL = AppConfig.API_URL
