@@ -185,8 +185,8 @@ const RoleFormPage = ({ title, buttonText }: IFormProps): JSX.Element => {
                 </Card>}
               </div>
               <div className="flex flex-col items-start gap-4 lg:gap-6 w-full">
-                <Card x-chunk="dashboard-07-chunk-3" className='w-full border-none bg-light-bg-secondary dark:bg-dark-bg-primary'>
-                  <CardHeader className='border rounded-lg mb-4 bg-light-bg-primary dark:bg-dark-bg-secondary'>
+                <Card x-chunk="dashboard-07-chunk-3" className='w-full bg-light-bg-primary dark:bg-dark-bg-secondary'>
+                  <CardHeader className='rounded-lg px-4 lg:px-6'>
                     <CardTitle className='flex gap-2 items-end'>Permisos {form.formState.errors.permissions && (
                       <div className='text-danger dark:text-danger text-base leading-none font-medium'>
                         {form.formState.errors.permissions.message}
@@ -196,14 +196,14 @@ const RoleFormPage = ({ title, buttonText }: IFormProps): JSX.Element => {
                       Seleccione los permisos para el rol
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className='px-0'>
+                  <CardContent className='px-4 lg:px-6'>
                     <div className='grid grid-cols-[repeat(auto-fit,_minmax(250px,_1fr))] lg:grid-cols-[repeat(auto-fit,_minmax(300px,_1fr))] gap-4 h-full lg:gap-6'>
                       {isLoading
                         ? <div className="grid place-content-center w-full"><Loading /></div>
                         : Object.entries(modulePermissions).map(([key, value]) => (
                           <div key={key} className='flex flex-col gap-4 min-w-[250px]'>
-                            <fieldset className="flex flex-col gap-6 rounded-lg border p-4 h-auto bg-light-bg-primary dark:bg-dark-bg-secondary">
-                              <legend className="-ml-1 px-1 text-base font-bold">{key.charAt(0).toUpperCase() + key.slice(1)}</legend>
+                            <fieldset className="flex flex-col gap-6 rounded-lg border p-4 h-auto">
+                              <legend className="-ml-1 px-1 text-sm">{key.charAt(0).toUpperCase() + key.slice(1)}</legend>
                               <div className='grid gap-4'>
                                 {value.map((per) => {
                                   const permission = permissions?.find(p => p.name === per)

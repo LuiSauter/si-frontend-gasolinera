@@ -14,7 +14,8 @@ export const ENDPOINTS = {
   USER: '/api/user',
   // inventory
   CATEGORY: '/api/category',
-  GROUP: '/api/group'
+  GROUP: '/api/group',
+  PRODUCT: '/api/product'
 }
 
 export const API_BASEURL = AppConfig.API_URL
