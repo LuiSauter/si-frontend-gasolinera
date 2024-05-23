@@ -38,6 +38,8 @@ export enum PERMISSION {
   DISCOUNT_SHOW = 'Mostrar descuentos',
   SALE_NOTE = 'Nota de venta',
   SALE_NOTE_SHOW = 'Mostrar notas de venta',
+  DISPENSER = 'Dispensador',
+  DISPENSER_SHOW = 'Mostrar dispensadores',
 
   // buy
   PURCHASE_ORDER = 'Orden de compra',
@@ -57,7 +59,9 @@ export const modulePermissions = {
     PERMISSION.DISCOUNT,
     PERMISSION.DISCOUNT_SHOW,
     PERMISSION.SALE_NOTE,
-    PERMISSION.SALE_NOTE_SHOW
+    PERMISSION.SALE_NOTE_SHOW,
+    PERMISSION.DISPENSER,
+    PERMISSION.DISPENSER_SHOW
   ],
   compras: [
     PERMISSION.PURCHASE_ORDER,
