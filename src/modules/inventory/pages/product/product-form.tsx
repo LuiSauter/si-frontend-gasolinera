@@ -93,7 +93,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
       code: product?.code ?? '',
       name: product?.name ?? '',
       description: product?.description ?? '',
-      minimum_stock: product?.minimum_stock ?? 0,
+      minimum_stock: product?.minimum_tock ?? 0,
       price_sale: product?.price_sale ?? 0,
       price_purchase: product?.price_purchase ?? 0,
       iva: product?.iva ?? 0,
@@ -145,7 +145,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
         name: data.name,
         price_sale: data.price_sale,
         image_url: data.image_url,
-        minimum_tock: data.minimum_tock
+        minimum_tock: data.minimum_stock
       }), {
         loading: 'Creando producto...',
         success: () => {
@@ -345,7 +345,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                         <FormItem>
                           <FormLabel>Grupos</FormLabel>
                           <FormControl>
-                            <MultiSelect groups={groups} value={field.value} onChange={field.onChange} />
+                            {groups && <MultiSelect groups={groups ?? []} value={field.value ?? []} onChange={field.onChange} />}
                           </FormControl>
                           <FormMessage />
                         </FormItem>

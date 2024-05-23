@@ -11,6 +11,7 @@ export const ENDPOINTS = {
   // company
   COMPANY: '/api/company',
   BRANCH: '/api/branch',
+  BINNACLE: '/api/binnacle',
   USER: '/api/user',
   // inventory
   CATEGORY: '/api/category',

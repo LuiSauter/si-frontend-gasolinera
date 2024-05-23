@@ -43,10 +43,10 @@ const UserFormPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { createUser, isMutating } = useCreateUser()
-  const { updateUser, isMutating: isMutatingUpdate } = useUpdateUser()
-  const { allRoles, isLoading } = useGetAllRole()
-  const { branches, isLoading: isLoadingBranch } = useGetAllBranches()
-  const { user, error: errorGetUser } = useGetUser(id)
+  const { updateUser } = useUpdateUser()
+  const { allRoles } = useGetAllRole()
+  const { branches } = useGetAllBranches()
+  const { user } = useGetUser(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -179,7 +179,7 @@ const UserFormPage = () => {
                     <FormField
                       control={form.control}
                       name="ci"
-                      defaultValue= ""
+                      defaultValue=""
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>CI</FormLabel>
@@ -299,7 +299,7 @@ const UserFormPage = () => {
                       control={form.control}
                       name="gender"
                       defaultValue=""
-                      render={({ field }) => (
+                      render={() => (
                         <FormItem>
                           <FormLabel>Genero</FormLabel>
                           <FormControl>
@@ -326,7 +326,7 @@ const UserFormPage = () => {
                       control={form.control}
                       name="branch"
                       defaultValue=""
-                      render={({ field }) => (
+                      render={() => (
                         <FormItem>
                           <FormLabel>Sucursal</FormLabel>
                           <FormControl>

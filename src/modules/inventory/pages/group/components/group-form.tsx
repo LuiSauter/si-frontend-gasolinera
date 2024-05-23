@@ -23,8 +23,8 @@ const GroupForm = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { createGroup, isMutating } = useCreateGroup()
-  const { updateGroup, isMutating: isMutatingUpdate } = useUpdateGroup()
-  const { group, error: errorGetUser } = useGetGroup(id)
+  const { updateGroup } = useUpdateGroup()
+  const { group } = useGetGroup(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -128,7 +128,7 @@ const GroupForm = () => {
                           <FormItem>
                             <FormLabel>Descripcion</FormLabel>
                             <FormControl>
-                                <Textarea placeholder="Taller mec..." {...field} />
+                              <Textarea placeholder="Taller mec..." {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

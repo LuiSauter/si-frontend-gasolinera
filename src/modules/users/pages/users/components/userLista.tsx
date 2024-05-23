@@ -46,7 +46,6 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { useDeleteUser, useGetAllUser } from '@/modules/users/hooks/useUser'
-import { type User } from '@/modules/users/models/user.model'
 import { toast } from 'sonner'
 import { type ApiBase } from '@/models'
 
@@ -68,9 +67,6 @@ export const columns: Array<ColumnDef<NewUser>> = [
     accessorKey: 'id',
     header: () => {
       return <div className='pl-0'></div>
-    },
-    cell: ({ row }) => {
-
     }
   },
   {
@@ -119,7 +115,7 @@ export const columns: Array<ColumnDef<NewUser>> = [
     cell: ({ row }) => {
       const [isDialogOpen, setIsDialogOpen] = React.useState(false)
       const navigation = useNavigate()
-      const { deleteUser, isMutating: isMutatingDelete } = useDeleteUser()
+      const { deleteUser } = useDeleteUser()
       const deletePermanentlyRole = () => {
         console.log(row.getValue('id'))
         toast.promise(deleteUser(row.getValue('id')), {
@@ -145,7 +141,7 @@ export const columns: Array<ColumnDef<NewUser>> = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel className='font-bold'>Actions</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => {
-              navigation(`${PrivateRoutes.USER}/${row.getValue('id')}`)
+              navigation(`${PrivateRoutes.USER}/${String(row.getValue('id'))}`)
             }}>
               <Pencil className="mr-2 h-4 w-4" />
               Editar
@@ -153,29 +149,29 @@ export const columns: Array<ColumnDef<NewUser>> = [
             <DropdownMenuSeparator />
 
             <DropdownMenuItem className="text-red-600">
-              <AlertDialog isOpen={isDialogOpen} onDismiss={() => { setIsDialogOpen(false) }}>
+              <AlertDialog open={isDialogOpen} onOpenChange={() => { setIsDialogOpen(false) }}>
                 <AlertDialogTrigger asChild>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    width: '100%',
-                    justifyContent: 'space-between'
-                  }}
-                  onClick={(event) => { event.stopPropagation() }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Trash className="mr-2 h-4 w-4"/>
-                    Delete
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      width: '100%',
+                      justifyContent: 'space-between'
+                    }}
+                    onClick={(event) => { event.stopPropagation() }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Trash className="mr-2 h-4 w-4" />
+                      Delete
+                    </div>
                   </div>
-                </div>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Estas seguro de eliminar este usuario?</AlertDialogTitle>
                     <AlertDialogDescription>
-                    Esta acción no se puede deshacer. Esto eliminará permanentemente tu
-                    cuenta y eliminar sus datos de nuestros servidores.
+                      Esta acción no se puede deshacer. Esto eliminará permanentemente tu
+                      cuenta y eliminar sus datos de nuestros servidores.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -279,33 +275,28 @@ export function DataTableDemo() {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length
-              ? (
-                  table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                  ))
-                )
-              : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-                )}
+              ? (table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>)))
+              : (<TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>)}
           </TableBody>
         </Table>
       </div>

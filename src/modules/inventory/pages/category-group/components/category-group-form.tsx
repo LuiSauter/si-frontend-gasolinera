@@ -10,7 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { z } from 'zod'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useCreateCategory, useGetCategory, useUpdateCategory } from '@/modules/inventory/hooks/useCategory'
 import { Textarea } from '@/components/ui/textarea'
 
@@ -24,8 +24,8 @@ const CategoryForm = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { createCategory, isMutating } = useCreateCategory()
-  const { updateCategory, isMutating: isMutatingUpdate } = useUpdateCategory()
-  const { category, error: errorGetUser } = useGetCategory(id)
+  const { updateCategory } = useUpdateCategory()
+  const { category } = useGetCategory(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -109,36 +109,36 @@ const CategoryForm = () => {
                   </CardHeader>
                   <CardContent className='grid gap-4'>
                     <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        defaultValue=""
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Nombre</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Tienda..." {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="image_url"
-                        defaultValue=""
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Url Imagen</FormLabel>
-                            <FormControl>
-                              <Input placeholder="categoria1.jpg..." {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                      <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
+                        <FormField
+                          control={form.control}
+                          name="name"
+                          defaultValue=""
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Nombre</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Tienda..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="image_url"
+                          defaultValue=""
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Url Imagen</FormLabel>
+                              <FormControl>
+                                <Input placeholder="categoria1.jpg..." {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
 
                       <FormField
                         control={form.control}

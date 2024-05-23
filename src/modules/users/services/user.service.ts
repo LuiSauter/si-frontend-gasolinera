@@ -1,6 +1,5 @@
 import { fetchData } from '@/utils'
 import { type User, type CreateUser, type UpdateUser } from '../models/user.model'
-import { Console } from 'console'
 
 const createUser = async (url: string, { arg }: { arg: CreateUser }): Promise<void> => {
   const options: RequestInit = {
@@ -17,7 +16,7 @@ const getUser = async (url: string): Promise<User> => {
   return response.data
 }
 
-const updateUser = async(url: string, { arg }: { arg: UpdateUser }): Promise<void> => {
+const updateUser = async (url: string, { arg }: { arg: UpdateUser }): Promise<void> => {
   const options: RequestInit = {
     method: 'PATCH',
     body: JSON.stringify({

@@ -52,7 +52,7 @@ export function MultiSelect({ value, onChange, groups }: { value: string[], onCh
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleUnselect(group)
-                      onChange(value.filter(s => s !== group.id))
+                      onChange(value?.filter(s => s !== group.id))
                     }
                   }}
                   onMouseDown={(e) => {
@@ -61,7 +61,7 @@ export function MultiSelect({ value, onChange, groups }: { value: string[], onCh
                   }}
                   onClick={() => {
                     handleUnselect(group)
-                    onChange(value.filter(s => s !== group.id))
+                    onChange(value?.filter(s => s !== group.id))
                   }}
                   type="button"
                 >

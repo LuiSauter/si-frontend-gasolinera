@@ -60,7 +60,7 @@ const GroupPage = () => {
   const navigate = useNavigate()
   const { groups, isLoading } = useGetAllGroup()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const { deleteGroup, isMutating: isMutatingDelete } = useDeleteGroup()
+  const { deleteGroup } = useDeleteGroup()
   const deletePermanentlyGroup = (id: string) => {
     console.log(id)
     toast.promise(deleteGroup(id), {
@@ -158,38 +158,38 @@ const GroupPage = () => {
                               </DropdownMenuItem>
 
                               <DropdownMenuItem className="text-red-600">
-                                <AlertDialog isOpen={isDialogOpen} onDismiss={() => { setIsDialogOpen(false) }}>
-                                    <AlertDialogTrigger asChild>
+                                <AlertDialog open={isDialogOpen} onOpenChange={() => { setIsDialogOpen(false) }}>
+                                  <AlertDialogTrigger asChild>
                                     <div
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      width: '100%',
-                                      justifyContent: 'space-between'
-                                    }}
-                                    onClick={(event) => { event.stopPropagation() }}
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        justifyContent: 'space-between'
+                                      }}
+                                      onClick={(event) => { event.stopPropagation() }}
                                     >
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <Trash className="mr-2 h-4 w-4"/>
+                                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <Trash className="mr-2 h-4 w-4" />
                                         Delete
+                                      </div>
                                     </div>
-                                    </div>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle>Estas seguro de eliminar este grupo?</AlertDialogTitle>
-                                        <AlertDialogDescription>
+                                      <AlertDialogTitle>Estas seguro de eliminar este grupo?</AlertDialogTitle>
+                                      <AlertDialogDescription>
                                         Esta acción no se puede deshacer. Esto eliminará permanentemente tu
                                         cuenta y eliminar sus datos de nuestros servidores.
-                                        </AlertDialogDescription>
+                                      </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => { deletePermanentlyGroup(group.id) }}>Continue</AlertDialogAction>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => { deletePermanentlyGroup(group.id) }}>Continue</AlertDialogAction>
                                     </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                 </AlertDialog>
-                                </DropdownMenuItem>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
