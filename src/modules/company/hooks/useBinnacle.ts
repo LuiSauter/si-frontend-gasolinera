@@ -5,7 +5,7 @@ import { type ResponseError } from '@/utils/response-error.utils'
 import { type GetLogByMothAndYear } from '../models/binnacle.model'
 
 const useGetLogsByMothAndYear = () => {
-  const { trigger, isMutating, error, data } = useSWRMutation<string, ResponseError, string, GetLogByMothAndYear>(API_BASEURL + ENDPOINTS.BINNACLE, getLogByMothAndYear)
+  const { trigger, isMutating, error, data } = useSWRMutation<any[], ResponseError, string, GetLogByMothAndYear>(API_BASEURL + ENDPOINTS.BINNACLE, getLogByMothAndYear)
 
   return { getLogByMothAndYear: trigger, isMutating, error, dataLogs: data }
 }
