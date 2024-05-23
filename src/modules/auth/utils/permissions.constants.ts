@@ -2,48 +2,50 @@ export const PERMISSION_KEY = 'permissions'
 
 export enum PERMISSION {
   // user
-  USER = 'usuario',
-  USER_SHOW = 'mostrar usuarios',
-  ROLE = 'rol',
-  ROLE_SHOW = 'mostrar roles',
-  PERMISSION = 'permiso',
-  PERMISSION_SHOW = 'mostrar permisos',
+  USER = 'Usuario',
+  USER_SHOW = 'Mostrar usuarios',
+  ROLE = 'Rol',
+  ROLE_SHOW = 'Mostrar roles',
+  PERMISSION = 'Permiso',
+  PERMISSION_SHOW = 'Mostrar permisos',
 
   // inventory
-  PRODUCT = 'producto',
-  PRODUCT_SHOW = 'mostrar productos',
-  CATEGORY = 'categoria',
-  CATEGORY_SHOW = 'mostrar categorias',
-  GROUP = 'grupo',
-  GROUP_SHOW = 'mostrar grupos',
-  BATCH = 'lote de producto',
-  BATCH_SHOW = 'mostrar lotes de producto',
-  TANK = 'tanque',
-  TANK_SHOW = 'mostrar tanques',
-  FUEL = 'combustible',
-  FUEL_SHOW = 'mostrar combustibles',
-  PROVIDER = 'proveedor',
-  PROVIDER_SHOW = 'mostrar proveedores',
-  PRODUCT_OUTPUT = 'salida de producto',
-  PRODUCT_OUTPUT_SHOW = 'mostrar salidas de producto',
+  PRODUCT = 'Producto',
+  PRODUCT_SHOW = 'Mostrar productos',
+  CATEGORY = 'Categoria',
+  CATEGORY_SHOW = 'Mostrar categorias',
+  GROUP = 'Grupo',
+  GROUP_SHOW = 'Mostrar grupos',
+  BATCH = 'Lote de producto',
+  BATCH_SHOW = 'Mostrar lotes de producto',
+  TANK = 'Tanque',
+  TANK_SHOW = 'Mostrar tanques',
+  FUEL = 'Combustible',
+  FUEL_SHOW = 'Mostrar combustibles',
+  PROVIDER = 'Proveedor',
+  PROVIDER_SHOW = 'Mostrar proveedores',
+  PRODUCT_OUTPUT = 'Salida de producto',
+  PRODUCT_OUTPUT_SHOW = 'Mostrar salidas de producto',
 
   // company
-  COMPANY = 'empresa',
-  BRANCH = 'sucursal',
-  BRANCH_SHOW = 'mostrar sucursales',
-  BINNACLE = 'bitacora',
+  COMPANY = 'Empresa',
+  BRANCH = 'Sucursal',
+  BRANCH_SHOW = 'Mostrar sucursales',
+  BINNACLE = 'Bitacora',
 
   // sale
-  DISCOUNT = 'descuento',
-  DISCOUNT_SHOW = 'mostrar descuentos',
-  SALE_NOTE = 'nota de venta',
-  SALE_NOTE_SHOW = 'mostrar notas de venta',
+  DISCOUNT = 'Descuento',
+  DISCOUNT_SHOW = 'Mostrar descuentos',
+  SALE_NOTE = 'Nota de venta',
+  SALE_NOTE_SHOW = 'Mostrar notas de venta',
+  DISPENSER = 'Dispensador',
+  DISPENSER_SHOW = 'Mostrar dispensadores',
 
   // buy
-  PURCHASE_ORDER = 'orden de compra',
-  PURCHASE_ORDER_SHOW = 'mostrar ordenes de compra',
-  BUY_NOTE = 'nota de compra',
-  BUY_NOTE_SHOW = 'mostrar notas de compra',
+  PURCHASE_ORDER = 'Orden de compra',
+  PURCHASE_ORDER_SHOW = 'Mostrar ordenes de compra',
+  BUY_NOTE = 'Nota de compra',
+  BUY_NOTE_SHOW = 'Mostrar notas de compra',
 }
 
 export const modulePermissions = {
@@ -57,7 +59,9 @@ export const modulePermissions = {
     PERMISSION.DISCOUNT,
     PERMISSION.DISCOUNT_SHOW,
     PERMISSION.SALE_NOTE,
-    PERMISSION.SALE_NOTE_SHOW
+    PERMISSION.SALE_NOTE_SHOW,
+    PERMISSION.DISPENSER,
+    PERMISSION.DISPENSER_SHOW
   ],
   compras: [
     PERMISSION.PURCHASE_ORDER,

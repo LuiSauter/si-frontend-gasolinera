@@ -11,67 +11,62 @@ import { toast } from 'sonner'
 
 import { z } from 'zod'
 import { useEffect } from 'react'
-import { useCreateCategory, useGetCategory, useUpdateCategory } from '@/modules/inventory/hooks/useCategory'
+import { useCreateGroup, useGetGroup, useUpdateGroup } from '@/modules/inventory/hooks/useGroup'
 import { Textarea } from '@/components/ui/textarea'
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
-  description: z.string().min(2).max(50),
-  image_url: z.string()
+  description: z.string().min(2).max(50)
 })
 
-const CategoryForm = () => {
+const GroupForm = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { createCategory, isMutating } = useCreateCategory()
-  const { updateCategory } = useUpdateCategory()
-  const { category } = useGetCategory(id)
+  const { createGroup, isMutating } = useCreateGroup()
+  const { updateGroup } = useUpdateGroup()
+  const { group } = useGetGroup(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       description: '',
-      image_url: '',
       name: ''
     }
   })
 
   useEffect(() => {
-    if (category) {
+    if (group) {
       form.reset({
-        name: category.name ?? '',
-        image_url: category.image_url ?? '',
-        description: category.description
+        name: group.name ?? '',
+        description: group.description ?? ''
       })
     }
-  }, [category, form])
+  }, [group, form])
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     if (id) {
-      toast.promise(updateCategory({
+      toast.promise(updateGroup({
         id,
         name: data.name,
-        description: data.description,
-        image_url: data.image_url
+        description: data.description
       }), {
-        loading: 'Actualizando sucursal...',
+        loading: 'Actualizando Grupo...',
         success: () => {
-          setTimeout(() => { navigate(PrivateRoutes.CATEGORY, { replace: true }) }, 1000)
-          return 'Sucursal actualizada exitosamente'
+          setTimeout(() => { navigate(PrivateRoutes.GROUP, { replace: true }) }, 1000)
+          return 'Grupo actualizada exitosamente'
         },
-        error: 'Error al actualizar la sucursal'
+        error: 'Error al actualizar la grupo'
       })
     } else {
-      toast.promise(createCategory({
+      toast.promise(createGroup({
         name: data.name,
-        description: data.description,
-        image_url: data.image_url
+        description: data.description
       }), {
-        loading: 'Creando usuario...',
+        loading: 'Creando grupo...',
         success: () => {
-          setTimeout(() => { navigate(PrivateRoutes.CATEGORY, { replace: true }) }, 1000)
-          return 'usuario creado exitosamente'
+          setTimeout(() => { navigate(PrivateRoutes.GROUP, { replace: true }) }, 1000)
+          return 'Grupo creado exitosamente'
         },
-        error: 'Error al crear el usuario'
+        error: 'Error al crear el grupo'
       })
     }
   }
@@ -83,15 +78,15 @@ const CategoryForm = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto w-full flex flex-col gap-4 lg:gap-6">
             <div>
               <div className="flex items-center gap-4">
-                <Button type='button' onClick={() => { navigate(PrivateRoutes.CATEGORY) }} variant="outline" size="icon" className="h-7 w-7">
+                <Button type='button' onClick={() => { navigate(PrivateRoutes.GROUP) }} variant="outline" size="icon" className="h-7 w-7">
                   <ChevronLeftIcon className="h-4 w-4" />
                   <span className="sr-only">Volver</span>
                 </Button>
                 <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                  {id ? 'Lista Categorias' : 'Crear Categoria'}
+                  {id ? 'Lista Grupos' : 'Crear Grupo'}
                 </h2>
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                  <Button type='button' onClick={() => { navigate(PrivateRoutes.CATEGORY) }} variant="outline" size="sm">
+                  <Button type='button' onClick={() => { navigate(PrivateRoutes.GROUP) }} variant="outline" size="sm">
                     Descartar
                   </Button>
                   <Button type='submit' size="sm" >{id ? 'Actualizar' : 'Guardar'}</Button>
@@ -102,44 +97,29 @@ const CategoryForm = () => {
               <div className="flex flex-row lg:flex-col gap-4 lg:gap-6 justify-center">
                 <Card x-chunk="dashboard-07-chunk-0" className='' >
                   <CardHeader>
-                    <CardTitle>{id ? 'Actualizar categoria' : 'Crear nuevo categoria'}</CardTitle>
+                    <CardTitle>{id ? 'Actualizar Grupo' : 'Crear nuevo Grupo'}</CardTitle>
                     <CardDescription>
-                      {id ? 'Complete los datos para actualizar su categoria' : 'Complete los datos para crear un nueva categoria'}
+                      {id ? 'Complete los datos para actualizar su grupo' : 'Complete los datos para crear un nueva grupo'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className='grid gap-4'>
-                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                      <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          defaultValue=""
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Nombre</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Tienda..." {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="image_url"
-                          defaultValue=""
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Url Imagen</FormLabel>
-                              <FormControl>
-                                <Input placeholder="categoria1.jpg..." {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
+                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nombre</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Tienda..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
                       <FormField
                         control={form.control}
                         name="description"
@@ -148,7 +128,7 @@ const CategoryForm = () => {
                           <FormItem>
                             <FormLabel>Descripcion</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="El usuario pordrá..." {...field} />
+                              <Textarea placeholder="Taller mec..." {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -172,4 +152,4 @@ const CategoryForm = () => {
   )
 }
 
-export default CategoryForm
+export default GroupForm

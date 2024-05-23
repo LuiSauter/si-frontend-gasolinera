@@ -31,11 +31,13 @@ import {
   TabsContent
 } from '@/components/ui/tabs'
 import { useNavigate } from 'react-router-dom'
-import { type Category } from '../../models/category.model'
+// import { useGetAllPermissions } from '../../hooks/usePermission'
 import { useHeader } from '@/hooks'
 import Loading from '@/components/shared/loading'
-import { useDeleteCategory, useGetAllCategorys } from '../../hooks/useCategory'
+import { useDeleteGroup, useGetAllGroup } from '../../hooks/useGroup'
+import { type Group } from '../../models/group.model'
 import { toast } from 'sonner'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,26 +51,27 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useState } from 'react'
 
-const CategoryPage = () => {
+const GroupPage = () => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Inventario', path: PrivateRoutes.USER },
-    { label: 'Categorias' }
+    { label: 'inventario', path: PrivateRoutes.GROUP },
+    { label: 'grupos' }
   ])
   const navigate = useNavigate()
-  const { categorys, isLoading } = useGetAllCategorys()
+  const { groups, isLoading } = useGetAllGroup()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const { deleteCategory } = useDeleteCategory()
-  const deletePermanentlyCategory = (id: string) => {
-    toast.promise(deleteCategory(id), {
+  const { deleteGroup } = useDeleteGroup()
+  const deletePermanentlyGroup = (id: string) => {
+    console.log(id)
+    toast.promise(deleteGroup(id), {
       loading: 'Cargando...',
       success: () => {
         setTimeout(() => {
-          navigate(PrivateRoutes.CATEGORY, { replace: true })
+          navigate(PrivateRoutes.GROUP, { replace: true })
         }, 1000)
-        return 'Categoria eliminado exitosamente'
+        return 'Grupo eliminado exitosamente'
       },
-      error: 'Puede que el usuario tenga permisos asignados, por lo que no se puede eliminar'
+      error: 'Puede que el grupo tenga permisos asignados, por lo que no se puede eliminar'
     })
     setIsDialogOpen(false)
   }
@@ -105,10 +108,10 @@ const CategoryPage = () => {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only">Exportar</span>
               </Button>
-              <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.CATEGORY_CREAR) }}>
+              <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.GROUP_CREAR) }}>
                 <PlusCircleIcon className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Agregar Categoria
+                  Agregar Grupo
                 </span>
               </Button>
             </div>
@@ -116,32 +119,25 @@ const CategoryPage = () => {
           <TabsContent value="week">
             <Card x-chunk="dashboard-05-chunk-3">
               <CardHeader className="px-6">
-                <CardTitle>Categorias</CardTitle>
+                <CardTitle>Grupos</CardTitle>
                 <CardDescription>
-                  Listado de los categorias disponibles
+                  Listado de los grupos disponibles
                 </CardDescription>
               </CardHeader>
               <CardContent className=''>
                 <Table >
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Imagen</TableHead>
                       <TableHead>Nombre</TableHead>
                       <TableHead className='hidden sm:table-cell'>Descripción</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {categorys?.length === 0 && <div>No hay permisos</div>}
-                    {categorys?.map((category: Category) => (
-                      <TableRow key={category.id}>
-                        <TableCell>
-                          <img
-                            src={category.image_url} alt=""
-                            className="w-16 h-16 object-cover rounded-lg"
-                          />
-                        </TableCell>
-                        <TableCell>{category.name}</TableCell>
-                        <TableCell className='hidden sm:table-cell'>{category?.description}</TableCell>
+                    {groups?.length === 0 && <div>No hay permisos</div>}
+                    {groups?.map((group: Group) => (
+                      <TableRow key={group.id}>
+                        <TableCell>{group.name}</TableCell>
+                        <TableCell className='hidden sm:table-cell'>{group?.description}</TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -156,7 +152,7 @@ const CategoryPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.CATEGORY_EDIT}/${category.id}`) }}>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.GROUP}/${group.id}`) }}>
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Editar
                               </DropdownMenuItem>
@@ -181,7 +177,7 @@ const CategoryPage = () => {
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Estas seguro de eliminar esta catego?</AlertDialogTitle>
+                                      <AlertDialogTitle>Estas seguro de eliminar este grupo?</AlertDialogTitle>
                                       <AlertDialogDescription>
                                         Esta acción no se puede deshacer. Esto eliminará permanentemente tu
                                         cuenta y eliminar sus datos de nuestros servidores.
@@ -189,12 +185,11 @@ const CategoryPage = () => {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => { deletePermanentlyCategory(category.id) }}>Continue</AlertDialogAction>
+                                      <AlertDialogAction onClick={() => { deletePermanentlyGroup(group.id) }}>Continue</AlertDialogAction>
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
                                 </AlertDialog>
                               </DropdownMenuItem>
-
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -212,4 +207,4 @@ const CategoryPage = () => {
   )
 }
 
-export default CategoryPage
+export default GroupPage

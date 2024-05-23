@@ -9,17 +9,17 @@ export class ResponseError extends Error {
   }
 
   get statusCode(): number {
-    return this.errorInfo.statusCode
+    return this.errorInfo.statusCode!
   }
 
   get errorMessages(): string[] {
     if (typeof this.errorInfo.message === 'string') {
       return [this.errorInfo.message]
     }
-    return this.errorInfo.message
+    return this.errorInfo.message!
   }
 
   get error(): string {
-    return this.errorInfo.error
+    return this.errorInfo.error!
   }
 }

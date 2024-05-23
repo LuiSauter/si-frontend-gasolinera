@@ -23,10 +23,16 @@ export enum PrivateRoutes {
   BINACLE = PrivateRoutes.COMPANY + '/bitacora',
   // inventory
   PRODUCT = '/productos',
+  PRODUCT_ADD = PrivateRoutes.PRODUCT + '/crear',
+  PRODCUT_EDIT = PrivateRoutes.PRODUCT + '/:id',
   FUEL = PrivateRoutes.PRODUCT + '/combustibles',
   FUEL_ADD = PrivateRoutes.PRODUCT + '/combustibles/crear',
-  CATEGORY_GROUP = PrivateRoutes.PRODUCT + '/categorias-grupos',
-  CATEGORY_GROUP_ADD = PrivateRoutes.CATEGORY_GROUP + '/crear',
+  CATEGORY = PrivateRoutes.PRODUCT + '/categorias',
+  CATEGORY_CREAR = PrivateRoutes.CATEGORY + '/crear',
+  CATEGORY_EDIT = PrivateRoutes.CATEGORY + '/:id',
+  GROUP = PrivateRoutes.PRODUCT + '/grupos',
+  GROUP_CREAR = PrivateRoutes.GROUP + '/crear',
+  GROUP_EDIT = PrivateRoutes.GROUP + '/:id'
 }
 
 export interface Route {

@@ -10,7 +10,7 @@ import { useAuth, useHeader } from '@/hooks'
 
 const Header = () => {
   const { breadcrumb } = useHeader()
-  const {signOut} = useAuth()
+  const { signOut } = useAuth()
   return (
     <header className="flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 dark:bg-dark-bg-secondary bg-light-bg-primary">
       <Sheet>
