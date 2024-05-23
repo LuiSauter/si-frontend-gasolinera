@@ -14,8 +14,32 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useNavigate } from 'react-router-dom'
+import { PrivateRoutes } from '@/models'
+import { useDeleteProduct, useGetAllProducts } from '../../hooks/useProduct'
+import { type Product } from '../../models/product.model'
+import { toast } from 'sonner'
+import Loading from '@/components/shared/loading'
 
 const ProductosPage = (): JSX.Element => {
+  const navigate = useNavigate()
+  const { products, isLoading } = useGetAllProducts()
+
+  const { deleteProduct } = useDeleteProduct()
+
+  const deletePermanentlyRole = (id: string) => {
+    toast.promise(deleteProduct(id), {
+      loading: 'Cargando...',
+      success: () => {
+        setTimeout(() => {
+          navigate(PrivateRoutes.PRODUCT, { replace: true })
+        }, 1000)
+        return 'Producto eliminado exitosamente'
+      },
+      error: 'Error al eliminar el producto'
+    })
+  }
+
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <Tabs defaultValue="all">
@@ -48,7 +72,7 @@ const ProductosPage = (): JSX.Element => {
                 Exportar
               </span>
             </Button>
-            <Button size="sm" className="h-8 gap-1">
+            <Button onClick={() => { navigate(PrivateRoutes.PRODUCT_ADD) }} size="sm" className="h-8 gap-1">
               <PlusCircle className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                 Agregar Producto
@@ -59,7 +83,7 @@ const ProductosPage = (): JSX.Element => {
         <TabsContent value="all">
           <Card x-chunk="dashboard-06-chunk-0">
             <CardHeader>
-              <CardTitle>Combustible</CardTitle>
+              <CardTitle>Todos los productos</CardTitle>
               <CardDescription>
                 Administre sus productos y vea su desempeño de ventas.
               </CardDescription>
@@ -69,18 +93,20 @@ const ProductosPage = (): JSX.Element => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="hidden w-[100px] sm:table-cell">
-                      <span className="sr-only">Imagen</span>
+                      Imagen
                     </TableHead>
-                    <TableHead>Nombre</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Precio
+                    <TableHead className=''>Nombre</TableHead>
+                    <TableHead className='hidden xl:table-cell'>Descripción</TableHead>
+                    <TableHead className=''>Stock Min.</TableHead>
+                    <TableHead className='hidden sm:table-cell'>Stock</TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      Precio de compra
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                      Total ventas
+                      Precio de venta
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
-                      Creado
+                      Estado
                     </TableHead>
                     <TableHead>
                       <span className="sr-only">Actions</span>
@@ -88,143 +114,67 @@ const ProductosPage = (): JSX.Element => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell className="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        className="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="https://images1.autocasion.com/actualidad/wp-content/uploads/2021/12/que-es-la-gasolina.jpg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      Gasolina premium
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">Activo</Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      Bs. 20
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      25
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      2024-04-12 10:42 AM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        className="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="https://static.motor.es/fotos-diccionario/2023/04//gasolina_1681484577.jpg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      Gasolina regular
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">Activo</Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      Bs. 15.99
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      100
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      2024-05-01 03:21 PM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="hidden sm:table-cell">
-                      <img
-                        alt="Product image"
-                        className="aspect-square rounded-md object-cover"
-                        height="64"
-                        src="https://lirp.cdn-website.com/fc969ed1/dms3rep/multi/opt/15636-51726679-640w.jpg"
-                        width="64"
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      Diesel
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">Activo</Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      Bs. 22.50
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      50
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      2024-04-29 08:15 AM
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
+                  {products?.map((product: Product) => (
+                    <TableRow key={product.id}>
+                      <TableCell className="hidden sm:table-cell">
+                        <img
+                          alt="Product image"
+                          className="aspect-square rounded-md object-cover"
+                          height="64"
+                          src={product.image_url}
+                          width="64"
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {product.name}
+                      </TableCell>
+                      <TableCell className="hidden xl:table-cell">
+                        {product.description}
+                      </TableCell>
+                      <TableCell>
+                        {product.minimum_tock}
+                      </TableCell>
+                      <TableCell className='hidden sm:table-cell'>
+                        {product.stock}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        Bs. {product.price_purchase}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        Bs. {product.price_sale}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <Badge variant={product.is_active ? 'default' : 'outline'}>
+                          {product.is_active ? 'Activo' : 'Inactivo'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup="true"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>Ver</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PRODUCT}/${product.id}`) }}>Editar</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { deletePermanentlyRole(product.id) }}>
+                              {product.is_active ? 'Desactivar' : 'Activar'}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
+              {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
             </CardContent>
             <CardFooter>
               <div className="text-xs text-muted-foreground">
