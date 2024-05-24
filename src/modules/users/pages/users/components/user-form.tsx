@@ -8,7 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronLeftIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
-import { toast } from 'sonner'
 
 import {
   Select,
@@ -26,6 +25,7 @@ import { type Role } from '@/modules/auth/models/role.model'
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
 import { type Branch } from '@/modules/company/models/branch.model'
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 const formSchema = z.object({
   ci: z.string().min(2).max(50),
@@ -42,7 +42,7 @@ const formSchema = z.object({
 const UserFormPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { createUser, isMutating } = useCreateUser()
+  const { createUser, isMutating, error } = useCreateUser()
   const { updateUser } = useUpdateUser()
   const { allRoles } = useGetAllRole()
   const { branches } = useGetAllBranches()
@@ -101,7 +101,7 @@ const UserFormPage = () => {
     data.branch = selectedValueSucursal ?? ''
     data.gender = selectedValueGender ?? ''
     const ciNumber = parseInt(data.ci, 10)
-    console.log(data)
+
     if (id) {
       toast.promise(updateUser({
         id,
@@ -144,6 +144,21 @@ const UserFormPage = () => {
     }
   }
 
+  // if (error) {
+  //   toast.error(error.errorMessages[0])
+  // }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+      // subscribe = false
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
+
   return (
     <>
       <section className="grid flex-1 items-start gap-4 lg:gap-6">
@@ -173,6 +188,9 @@ const UserFormPage = () => {
                   <CardDescription>
                     {id ? 'Complete los datos para actualizar su usuario' : 'Complete los datos para crear un nuevo usuario'}
                   </CardDescription>
+                  {error && <CardDescription className='text-danger dark:text-danger'>
+                    {error?.errorMessages[0]}
+                  </CardDescription>}
                 </CardHeader>
                 <CardContent className='grid gap-4 lg:gap-6'>
                   <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">

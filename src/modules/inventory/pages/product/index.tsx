@@ -34,9 +34,9 @@ const ProductosPage = (): JSX.Element => {
         setTimeout(() => {
           navigate(PrivateRoutes.PRODUCT, { replace: true })
         }, 1000)
-        return 'Producto eliminado exitosamente'
+        return 'Acción realizada exitosamente'
       },
-      error: 'Error al eliminar el producto'
+      error: 'Error al realizar esta acción'
     })
   }
 

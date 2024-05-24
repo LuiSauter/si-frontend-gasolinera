@@ -156,13 +156,13 @@ const CategoryPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.CATEGORY_EDIT}/${category.id}`) }}>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.CATEGORY}/${category.id}`) }}>
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Editar
                               </DropdownMenuItem>
 
                               <DropdownMenuItem className="text-red-600">
-                                <AlertDialog open={isDialogOpen} onOpenChange={() => { setIsDialogOpen(false) }}>
+                                <AlertDialog isOpen={isDialogOpen} onDismiss={() => { setIsDialogOpen(false) }}>
                                   <AlertDialogTrigger asChild>
                                     <div
                                       style={{
