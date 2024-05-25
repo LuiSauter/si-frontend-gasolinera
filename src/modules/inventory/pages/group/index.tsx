@@ -71,7 +71,7 @@ const GroupPage = () => {
         }, 1000)
         return 'Grupo eliminado exitosamente'
       },
-      error: 'Puede que el grupo tenga permisos asignados, por lo que no se puede eliminar'
+      error: 'Ocurrio un error al eliminar el grupo'
     })
     setIsDialogOpen(false)
   }

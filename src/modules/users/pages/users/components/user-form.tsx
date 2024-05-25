@@ -144,10 +144,6 @@ const UserFormPage = () => {
     }
   }
 
-  // if (error) {
-  //   toast.error(error.errorMessages[0])
-  // }
-
   let subscribe = true
   useEffect(() => {
     if (subscribe && error) {

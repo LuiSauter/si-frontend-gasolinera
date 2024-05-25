@@ -35,6 +35,7 @@ import {
 import { useGetLogsByMothAndYear } from '../../hooks/useBinnacle'
 import { useEffect } from 'react'
 import { MONTH } from '../../models/binnacle.model'
+import { toast } from 'sonner'
 
 function BinnaclePage(): JSX.Element {
   useHeader([
@@ -53,11 +54,15 @@ function BinnaclePage(): JSX.Element {
     })
   }, [])
 
-  if (error) {
-    return <div>
-      No tiene permisos para acceder a la bitácora
-    </div>
-  }
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
 
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">

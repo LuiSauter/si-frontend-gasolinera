@@ -35,7 +35,7 @@ const RoleFormPage = ({ title, buttonText }: IFormProps): JSX.Element => {
     { label: 'Crear Rol' }
   ])
 
-  const { createRole, isMutating } = useCreateRole()
+  const { createRole, isMutating, error } = useCreateRole()
   const { updateRole } = useUpdateRole()
   const { deleteRole, isMutating: isMutatingDelete } = useDeleteRole()
   const navigate = useNavigate()
@@ -94,6 +94,16 @@ const RoleFormPage = ({ title, buttonText }: IFormProps): JSX.Element => {
   if (errorGetRol) {
     return <NotFound />
   }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
 
   const deletePermanentlyRole = () => {
     toast.promise(deleteRole(id!), {
@@ -245,10 +255,10 @@ const RoleFormPage = ({ title, buttonText }: IFormProps): JSX.Element => {
               </div>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button type='button' variant="outline" size="sm">
-                Discard
+              <Button onClick={() => { navigate(PrivateRoutes.ROLES) }} type='button' variant="outline" size="sm">
+                Cancelar
               </Button>
-              <Button type='submit' size="sm">Save Product</Button>
+              <Button type='submit' size="sm">{buttonText}</Button>
             </div>
           </form>
         </Form>

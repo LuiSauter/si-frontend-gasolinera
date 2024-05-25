@@ -22,8 +22,8 @@ const formSchema = z.object({
 const GroupForm = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { createGroup, isMutating } = useCreateGroup()
-  const { updateGroup } = useUpdateGroup()
+  const { createGroup, isMutating, error } = useCreateGroup()
+  const { updateGroup, error: errorUpdate } = useUpdateGroup()
   const { group } = useGetGroup(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -70,6 +70,17 @@ const GroupForm = () => {
       })
     }
   }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && (error ?? errorUpdate)) {
+      const newError = error ?? errorUpdate
+      toast.error(newError?.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error, errorUpdate])
 
   return (
     <>

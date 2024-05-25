@@ -23,8 +23,8 @@ const formSchema = z.object({
 const CategoryForm = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { createCategory, isMutating } = useCreateCategory()
-  const { updateCategory } = useUpdateCategory()
+  const { createCategory, isMutating, error } = useCreateCategory()
+  const { updateCategory, error: errorUpdate } = useUpdateCategory()
   const { category } = useGetCategory(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,6 +75,17 @@ const CategoryForm = () => {
       })
     }
   }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && (error ?? errorUpdate)) {
+      const newError = error ?? errorUpdate
+      toast.error(newError?.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error, errorUpdate])
 
   return (
     <>

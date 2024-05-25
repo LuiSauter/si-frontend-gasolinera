@@ -35,13 +35,14 @@ const useUpdateProduct = () => {
 const useCreateOrUpdateProduct = () => {
   // const { categories, isLoading: isLoadingCategories, error: errorCategories } = useGetAllCategories()
   // const { groups, isLoading: isLoadingGroups, error: errorGroups } = useGetAllGroups()
-  const { createProduct, isMutating: isCreating, error: errorCreate } = useCreateProduct()
+  const { createProduct, isMutating: isCreating, error } = useCreateProduct()
   const { updateProduct, isMutating: isUpdating, error: errorUpdate } = useUpdateProduct()
 
-  return { createProduct, isCreating, errorCreate, updateProduct, isUpdating, errorUpdate }
+  return { createProduct, isCreating, error: error ?? errorUpdate, updateProduct, isUpdating }
 }
 
 const useGetProduct = (id?: string) => {
+  if (!id) return { product: null, isLoading: false, error: null, isValidating: false }
   const { data, isLoading, error, isValidating } = useSWR<Product, ResponseError>(API_BASEURL + ENDPOINTS.PRODUCT + `/${id}`, getProduct)
   return { product: data, isLoading, error, isValidating }
 }
