@@ -158,7 +158,7 @@ const GroupPage = () => {
                               </DropdownMenuItem>
 
                               <DropdownMenuItem className="text-red-600">
-                                <AlertDialog isOpen={isDialogOpen} onDismiss={() => { setIsDialogOpen(false) }}>
+                                <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                   <AlertDialogTrigger asChild>
                                     <div
                                       style={{

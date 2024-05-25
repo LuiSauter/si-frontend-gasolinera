@@ -66,9 +66,9 @@ const CategoryPage = () => {
         setTimeout(() => {
           navigate(PrivateRoutes.CATEGORY, { replace: true })
         }, 1000)
-        return 'Categoria eliminado exitosamente'
+        return 'Categoría eliminada exitosamente'
       },
-      error: 'Puede que el usuario tenga permisos asignados, por lo que no se puede eliminar'
+      error: 'Ocurrio un error al eliminar la categoría'
     })
     setIsDialogOpen(false)
   }
@@ -162,7 +162,7 @@ const CategoryPage = () => {
                               </DropdownMenuItem>
 
                               <DropdownMenuItem className="text-red-600">
-                                <AlertDialog isOpen={isDialogOpen} onDismiss={() => { setIsDialogOpen(false) }}>
+                                <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                   <AlertDialogTrigger asChild>
                                     <div
                                       style={{
@@ -181,10 +181,10 @@ const CategoryPage = () => {
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Estas seguro de eliminar esta catego?</AlertDialogTitle>
+                                      <AlertDialogTitle>¿Estas seguro de eliminar esta categoría?</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        Esta acción no se puede deshacer. Esto eliminará permanentemente tu
-                                        cuenta y eliminar sus datos de nuestros servidores.
+                                        Esta acción no se puede deshacer.
+                                        Esto eliminará permanentemente la categoría.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>

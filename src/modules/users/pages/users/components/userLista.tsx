@@ -150,7 +150,7 @@ export const columns: Array<ColumnDef<NewUser>> = [
             <DropdownMenuSeparator />
 
             <DropdownMenuItem className="text-red-600">
-              <AlertDialog isOpen={isDialogOpen} onDemiss={() => { setIsDialogOpen(false) }}>
+              <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <AlertDialogTrigger asChild>
                   <div
                     style={{

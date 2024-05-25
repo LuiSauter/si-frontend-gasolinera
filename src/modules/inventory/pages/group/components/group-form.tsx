@@ -99,7 +99,7 @@ const GroupForm = () => {
                   <CardHeader>
                     <CardTitle>{id ? 'Actualizar Grupo' : 'Crear nuevo Grupo'}</CardTitle>
                     <CardDescription>
-                      {id ? 'Complete los datos para actualizar su grupo' : 'Complete los datos para crear un nueva grupo'}
+                      {id ? 'Complete los datos para actualizar el grupo' : 'Complete los datos para crear un nuevo grupo'}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className='grid gap-4'>
