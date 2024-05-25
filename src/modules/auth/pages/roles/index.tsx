@@ -32,6 +32,9 @@ import { type Role } from '../../models/role.model'
 import { FormatDateMMMDYYYY } from '@/utils'
 import { useHeader } from '@/hooks'
 import Loading from '@/components/shared/loading'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { toast } from 'sonner'
+import { useEffect, useState } from 'react'
 
 const RolesPage = (): JSX.Element => {
   useHeader([
@@ -41,7 +44,34 @@ const RolesPage = (): JSX.Element => {
   ])
   const navigate = useNavigate()
   const { allRoles, isLoading } = useGetAllRole()
-  const { deleteRole } = useDeleteRole()
+  const { deleteRole, error } = useDeleteRole()
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const deletePermanently = (id: string) => {
+    toast.promise(deleteRole(id), {
+      loading: 'Cargando...',
+      success: () => {
+        setTimeout(() => {
+          navigate(PrivateRoutes.ROLES, { replace: true })
+        }, 1000)
+        return 'Rol eliminado exitosamente'
+      },
+      error: 'Ocurrio un error al eliminar el rol'
+    })
+    setIsDialogOpen(false)
+  }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
+
   return (
     <>
       <div className="grid auto-rows-max items-start gap-4 lg:gap-6">
@@ -102,7 +132,6 @@ const RolesPage = (): JSX.Element => {
                   <TableHead>Nombre</TableHead>
                   <TableHead>Fecha de creación</TableHead>
                   <TableHead>
-                    {/* empty */}
                     <div className='sr-only'></div>
                   </TableHead>
                 </TableRow>
@@ -116,25 +145,37 @@ const RolesPage = (): JSX.Element => {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
+                          <Button aria-haspopup="true" size="icon" variant="ghost">
                             <MoreHorizontal className="h-4 w-4" />
                             <span className="sr-only">Toggle menu</span>
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.ROLES}/${role.id}`) }}>Editar</DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => {
-                              void deleteRole(role.id)
-                            }}
-                          >
-                            Eliminar
+                          <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.ROLES}/${role.id}`) }}>
+                            Editar
                           </DropdownMenuItem>
+
+                          <DropdownMenuItem onClick={() => { setIsDialogOpen(false) }} className="text-red-600 hover:bg-danger/15 p-0">
+                            <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                              <AlertDialogTrigger asChild>
+                                <div onClick={(e) => { e.stopPropagation() }} className='w-full h-full px-2 py-1.5'>Delete</div>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>¿Estas seguro de eliminar este rol?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Esta acción no se puede deshacer. Esta acción <span className='text-warning'>eliminará permanentemente</span> el rol.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction onClick={() => { deletePermanently(role.id) }}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </DropdownMenuItem>
+
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

@@ -9,6 +9,7 @@ import { PrivateRoutes } from '@/models/routes.model'
 import { useCreatePermission, useUpdatePermission } from '@/modules/auth/hooks/usePermission'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronLeftIcon } from 'lucide-react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -28,7 +29,7 @@ const PermissionsPage = ({ title, buttonText }: IFormProps): JSX.Element => {
     { label: title }
   ])
 
-  const { createPermission, isMutating } = useCreatePermission()
+  const { createPermission, isMutating, error } = useCreatePermission()
   const { updatePermission, isMutating: isMutatingUpdate } = useUpdatePermission()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -67,6 +68,16 @@ const PermissionsPage = ({ title, buttonText }: IFormProps): JSX.Element => {
       })
     }
   }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
 
   return (
     <>
@@ -129,6 +140,12 @@ const PermissionsPage = ({ title, buttonText }: IFormProps): JSX.Element => {
                   </CardContent>
                 </Card>
               </div>
+            </div>
+            <div className="flex items-center justify-center gap-2 md:hidden">
+              <Button onClick={() => { navigate(PrivateRoutes.PERMISSIONS) }} type='button' variant="outline" size="sm">
+                Cancelar
+              </Button>
+              <Button type='submit' size="sm">{buttonText}</Button>
             </div>
           </form>
         </Form>

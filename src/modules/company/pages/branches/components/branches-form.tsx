@@ -8,6 +8,7 @@ import { PrivateRoutes } from '@/models/routes.model'
 import { useCreateBranch, useGetBranch, useUpdateBranch } from '@/modules/company/hooks/useBranch'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ChevronLeftIcon } from 'lucide-react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -31,8 +32,8 @@ const BranchesPage = ({ buttonText, title }: IFormProps): JSX.Element => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { branch } = useGetBranch(id)
-  const { createBranch, isMutating } = useCreateBranch()
-  const { updateBranch, isMutating: isMutatingUpdate } = useUpdateBranch()
+  const { createBranch, isMutating, error } = useCreateBranch()
+  const { updateBranch, isMutating: isMutatingUpdate, error: errorUpdate } = useUpdateBranch()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -76,6 +77,17 @@ const BranchesPage = ({ buttonText, title }: IFormProps): JSX.Element => {
       })
     }
   }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && (error ?? errorUpdate)) {
+      const newError = error ?? errorUpdate
+      toast.error(newError?.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error, errorUpdate])
 
   return (
     <>

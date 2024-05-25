@@ -1,36 +1,11 @@
 import { PrivateRoutes } from '@/models/routes.model'
-import { File, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
+import { File, ListFilterIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import {
-  Tabs,
-  TabsContent
-} from '@/components/ui/tabs'
-import { useNavigate } from 'react-router-dom'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { useGetAllPermissions } from '../../hooks/usePermission'
 import { type Permission } from '../../models/permission.model'
 import { useHeader } from '@/hooks'
@@ -42,7 +17,6 @@ const PermissionsPage = () => {
     { label: 'Usuarios', path: PrivateRoutes.USER },
     { label: 'Permisos' }
   ])
-  const navigate = useNavigate()
   const { permissions, isLoading } = useGetAllPermissions()
   return (
     <section className="grid flex-1 items-start gap-4 sm:py-0 md:gap-8">
@@ -77,12 +51,6 @@ const PermissionsPage = () => {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only">Exportar</span>
               </Button>
-              <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.PERMISSIONS_CREATE) }}>
-                <PlusCircleIcon className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Agregar Permisos
-                </span>
-              </Button>
             </div>
           </div>
           <TabsContent value="week">
@@ -100,7 +68,6 @@ const PermissionsPage = () => {
                       <TableHead>Nombre</TableHead>
                       <TableHead className='hidden sm:table-cell'>Descripción</TableHead>
                       <TableHead className='hidden lg:table-cell'>Fecha de creación</TableHead>
-                      <TableHead><div className='sr-only'></div></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -110,24 +77,6 @@ const PermissionsPage = () => {
                         <TableCell>{permission.name}</TableCell>
                         <TableCell className='hidden sm:table-cell'>{permission?.description}</TableCell>
                         <TableCell className='hidden lg:table-cell'>{permission.createdAt}</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.ROLES}/${permission.id}`) }}>Editar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

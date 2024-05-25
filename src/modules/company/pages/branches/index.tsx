@@ -34,6 +34,8 @@ import { useNavigate } from 'react-router-dom'
 import { useHeader } from '@/hooks'
 import { useGetAllBranches } from '../../hooks/useBranch'
 import Loading from '@/components/shared/loading'
+import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 const BranchesPage = () => {
   useHeader([
@@ -42,7 +44,18 @@ const BranchesPage = () => {
     { label: 'Sucursales' }
   ])
   const navigate = useNavigate()
-  const { branches, isLoading } = useGetAllBranches()
+  const { branches, isLoading, error } = useGetAllBranches()
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
+
   return (
     <main className="grid flex-1 items-start gap-4 lg:gap-6">
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">

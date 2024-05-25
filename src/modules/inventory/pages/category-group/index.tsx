@@ -161,7 +161,7 @@ const CategoryPage = () => {
                                 Editar
                               </DropdownMenuItem>
 
-                              <DropdownMenuItem className="text-red-600">
+                              <DropdownMenuItem className="text-red-600" onClick={() => { setIsDialogOpen(false) }} >
                                 <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                   <AlertDialogTrigger asChild>
                                     <div

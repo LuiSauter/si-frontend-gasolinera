@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { useGetCompany, useUpdateCompany } from '../../hooks/useCompany'
 import { toast } from 'sonner'
+import { useEffect } from 'react'
 
 const formSchema = z.object({
   name: z.string().min(4, 'El nombre debe tener al menos 2 caracteres')
@@ -33,7 +34,7 @@ const CompanyPage = (): JSX.Element => {
   const navigate = useNavigate()
 
   const { company } = useGetCompany()
-  const { updateCompany } = useUpdateCompany()
+  const { updateCompany, error } = useUpdateCompany()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -75,6 +76,16 @@ const CompanyPage = (): JSX.Element => {
       error: 'Error al actualizar los datos de la empresa'
     })
   }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
 
   return (
     <>

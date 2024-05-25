@@ -20,6 +20,7 @@ import { type Category } from '../../models/product.model'
 import Loading from '@/components/shared/loading'
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
 import { toast } from 'sonner'
+import { useEffect } from 'react'
 
 const formSchema = z.object({
   code: z
@@ -65,7 +66,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
   const navigate = useNavigate()
   const { id } = useParams()
 
-  const { createProduct, updateProduct } = useCreateOrUpdateProduct()
+  const { createProduct, updateProduct, error } = useCreateOrUpdateProduct()
   const { product } = useGetProduct(id)
 
   const { groups } = useGetAllGroups()
@@ -158,6 +159,16 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
       })
     }
   }
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
 
   return (
     <>
@@ -507,7 +518,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                                 type='string'
                                 placeholder="https://example.com/image.jpg"
                                 {...field}
-                                onChange={(e) => { field.onChange(Number(e.target.value)) }}
+                                onChange={field.onChange}
                               />
                             </FormControl>
                             <FormMessage />
@@ -559,7 +570,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
               </div>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button type="button" variant="outline" size="sm">
+              <Button onClick={() => { navigate(PrivateRoutes.PRODUCT) }} type="button" variant="outline" size="sm">
                 Descartar
               </Button>
               <Button type="submit" size="sm">
