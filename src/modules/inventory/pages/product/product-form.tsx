@@ -500,13 +500,6 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-4">
-                      {/* <img
-                        alt="Product image"
-                        className="aspect-square w-full rounded-md object-cover"
-                        height="300"
-                        // src="/placeholder.svg"
-                        width="300"
-                      /> */}
                       <FormField
                         control={form.control}
                         name="image_url"
