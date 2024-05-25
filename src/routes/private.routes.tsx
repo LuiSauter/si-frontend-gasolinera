@@ -1,13 +1,15 @@
 import { Route, Routes } from 'react-router-dom'
 import { lazy } from 'react'
-// import { PrivateRoutes } from '@/models/routes.model'
 import { PrivateAllRoutes } from './utils/routes.utils'
 import { SidebarProvider } from '@/context/sidebarContext'
 import { HeaderProvider } from '@/context/headerContext'
+import { useAuthorization } from '@/hooks/useAuthorization'
 
 const Layout = lazy(() => import('@/layout/index'))
 
 const Private = () => {
+  const { verifyPermission } = useAuthorization()
+
   return (
     <Routes>
       <Route element={
@@ -17,15 +19,16 @@ const Private = () => {
           </HeaderProvider>
         </SidebarProvider>
       }>
-        {/* <Route
-          path='/'
-          element={<Navigate to={PrivateRoutes.DASHBOARD} replace />}
-        /> */}
-
         {
-          PrivateAllRoutes.map(({ element, path }, index) => (
-            <Route key={index} path={path} element={element} />
-          ))
+          PrivateAllRoutes.map(({ element, path, permissions }, index) => {
+            if (permissions?.length === 0 || verifyPermission(permissions!)) {
+              return (
+                <Route key={index} path={path} element={element} />
+              )
+            } else {
+              return undefined
+            }
+          })
         }
 
       </Route >
