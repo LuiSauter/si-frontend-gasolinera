@@ -66,8 +66,9 @@ export const columns: Array<ColumnDef<NewUser>> = [
   {
     accessorKey: 'id',
     header: () => {
-      return <div className='pl-0'></div>
-    }
+      return <div className='pl-0 read-only'></div>
+    },
+    cell: ({ row }) => { console.log(row) }
   },
   {
     accessorKey: 'name',
@@ -149,7 +150,7 @@ export const columns: Array<ColumnDef<NewUser>> = [
             <DropdownMenuSeparator />
 
             <DropdownMenuItem className="text-red-600">
-              <AlertDialog open={isDialogOpen} onOpenChange={() => { setIsDialogOpen(false) }}>
+              <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <AlertDialogTrigger asChild>
                   <div
                     style={{

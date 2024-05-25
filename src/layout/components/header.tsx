@@ -1,5 +1,5 @@
 import { CircleUser, Menu } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet'
@@ -7,10 +7,13 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from '@/components/ui/breadcrumb'
 import Navigation from './navigation'
 import { useAuth, useHeader } from '@/hooks'
+import { PrivateRoutes } from '@/models'
 
 const Header = () => {
   const { breadcrumb } = useHeader()
   const { signOut } = useAuth()
+  const navigate = useNavigate()
+
   return (
     <header className="flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6 dark:bg-dark-bg-secondary bg-light-bg-primary">
       <Sheet>
@@ -49,31 +52,6 @@ const Header = () => {
                 </div>)
                 : <BreadcrumbItem key={index}><BreadcrumbPage>{item.label}</BreadcrumbPage></BreadcrumbItem>
             ))}
-            {/* <BreadcrumbItem>
-              <Link to="/">Dashboard</Link>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator /> */}
-            {/* <BreadcrumbItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1">
-                  <BreadcrumbEllipsis className="h-4 w-4" />
-                  <span className="sr-only">Toggle menu</span>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
-                  <DropdownMenuItem>Documentation</DropdownMenuItem>
-                  <DropdownMenuItem>Themes</DropdownMenuItem>
-                  <DropdownMenuItem>GitHub</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </BreadcrumbItem> */}
-            {/* <BreadcrumbSeparator /> */}
-            {/* <BreadcrumbItem>
-              <Link to="/usuarios">Usuarios</Link>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Crear</BreadcrumbPage>
-            </BreadcrumbItem> */}
           </BreadcrumbList>
         </Breadcrumb>
       </div>
@@ -88,7 +66,7 @@ const Header = () => {
           <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem className='cursor-pointer'>Perfil</DropdownMenuItem>
-          <DropdownMenuItem className='cursor-pointer'>Configuración</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.SETTINGS) }} className='cursor-pointer'>Configuración</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={signOut} className='cursor-pointer'>Cerrar sesión</DropdownMenuItem>
         </DropdownMenuContent>

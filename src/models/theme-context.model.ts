@@ -1,4 +1,4 @@
 export interface ThemeContextState {
   theme: string
-  toggleTheme: () => void
+  toggleTheme: (theme: string) => void
 }

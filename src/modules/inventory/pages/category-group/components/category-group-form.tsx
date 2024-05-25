@@ -53,12 +53,12 @@ const CategoryForm = () => {
         description: data.description,
         image_url: data.image_url
       }), {
-        loading: 'Actualizando sucursal...',
+        loading: 'Actualizando categoría...',
         success: () => {
           setTimeout(() => { navigate(PrivateRoutes.CATEGORY, { replace: true }) }, 1000)
           return 'Sucursal actualizada exitosamente'
         },
-        error: 'Error al actualizar la sucursal'
+        error: 'Error al actualizar la categoría'
       })
     } else {
       toast.promise(createCategory({
@@ -66,12 +66,12 @@ const CategoryForm = () => {
         description: data.description,
         image_url: data.image_url
       }), {
-        loading: 'Creando usuario...',
+        loading: 'Creando categoría...',
         success: () => {
           setTimeout(() => { navigate(PrivateRoutes.CATEGORY, { replace: true }) }, 1000)
-          return 'usuario creado exitosamente'
+          return 'Categoría creada exitosamente'
         },
-        error: 'Error al crear el usuario'
+        error: 'Error al crear la categoría'
       })
     }
   }
@@ -88,13 +88,13 @@ const CategoryForm = () => {
                   <span className="sr-only">Volver</span>
                 </Button>
                 <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                  {id ? 'Lista Categorias' : 'Crear Categoria'}
+                  {id ? 'Editar Categoria' : 'Crear Categoria'}
                 </h2>
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
                   <Button type='button' onClick={() => { navigate(PrivateRoutes.CATEGORY) }} variant="outline" size="sm">
                     Descartar
                   </Button>
-                  <Button type='submit' size="sm" >{id ? 'Actualizar' : 'Guardar'}</Button>
+                  <Button type='submit' size="sm" disabled={isMutating}>{id ? 'Actualizar' : 'Guardar'}</Button>
                 </div>
               </div>
             </div>
@@ -160,10 +160,10 @@ const CategoryForm = () => {
               </div>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button type='button' variant="outline" size="sm" >
-                Discard
+              <Button onClick={() => { navigate(PrivateRoutes.CATEGORY) }} type='button' variant="outline" size="sm" >
+                Cancelar
               </Button>
-              <Button type='submit' size="sm" disabled={isMutating}>Save Product</Button>
+              <Button type='submit' size="sm" disabled={isMutating}>{id ? 'Actualizar' : 'Guardar'}</Button>
             </div>
           </form>
         </Form>

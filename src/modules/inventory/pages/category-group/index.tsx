@@ -66,9 +66,9 @@ const CategoryPage = () => {
         setTimeout(() => {
           navigate(PrivateRoutes.CATEGORY, { replace: true })
         }, 1000)
-        return 'Categoria eliminado exitosamente'
+        return 'Categoría eliminada exitosamente'
       },
-      error: 'Puede que el usuario tenga permisos asignados, por lo que no se puede eliminar'
+      error: 'Ocurrio un error al eliminar la categoría'
     })
     setIsDialogOpen(false)
   }
@@ -156,13 +156,13 @@ const CategoryPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.CATEGORY_EDIT}/${category.id}`) }}>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.CATEGORY}/${category.id}`) }}>
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Editar
                               </DropdownMenuItem>
 
                               <DropdownMenuItem className="text-red-600">
-                                <AlertDialog open={isDialogOpen} onOpenChange={() => { setIsDialogOpen(false) }}>
+                                <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                   <AlertDialogTrigger asChild>
                                     <div
                                       style={{
@@ -181,10 +181,10 @@ const CategoryPage = () => {
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Estas seguro de eliminar esta catego?</AlertDialogTitle>
+                                      <AlertDialogTitle>¿Estas seguro de eliminar esta categoría?</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        Esta acción no se puede deshacer. Esto eliminará permanentemente tu
-                                        cuenta y eliminar sus datos de nuestros servidores.
+                                        Esta acción no se puede deshacer.
+                                        Esto eliminará permanentemente la categoría.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>

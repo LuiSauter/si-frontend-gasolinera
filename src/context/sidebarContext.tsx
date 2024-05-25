@@ -14,7 +14,8 @@ export interface ISidebarContext {
 
 const MENUACTIVE = {
   'Gestión de Usuarios': false,
-  'Administrar Empresa': false
+  'Administrar Empresa': false,
+  Inventario: false
 }
 
 export const SidebarContext = createContext<ISidebarContext>({} as ISidebarContext)

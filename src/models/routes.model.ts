@@ -1,3 +1,5 @@
+import { type PERMISSION } from '@/modules/auth/utils/permissions.constants'
+
 export enum PublicRoutes {
   LOGIN = '/login',
   RESET_PASSWORD = '/reset-password',
@@ -38,5 +40,5 @@ export enum PrivateRoutes {
 export interface Route {
   path: PrivateRoutes | PublicRoutes | '/*'
   element: JSX.Element | JSX.Element[]
-  permission?: string
+  permissions?: PERMISSION[]
 }

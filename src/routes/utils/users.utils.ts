@@ -1,5 +1,6 @@
 import { createElement, lazy } from 'react'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
+import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 
 const UserPage = lazy(() => import('@modules/users/pages/users'))
 const UserFormPage = lazy(() => import('@modules/users/pages/users/components/user-form'))
@@ -8,42 +9,50 @@ const RolesFormPage = lazy(() => import('@modules/auth/pages/roles/components/ro
 const PermissionsPage = lazy(() => import('@/modules/auth/pages/permissions'))
 const PermissionsFormPage = lazy(() => import('@/modules/auth/pages/permissions/components/permissions-form'))
 
-// TODO: add permissions to routes
 export const userRoutes: Route[] = [
   {
     path: PrivateRoutes.USER,
-    element: createElement(UserPage)
+    element: createElement(UserPage),
+    permissions: [PERMISSION.USER, PERMISSION.USER_SHOW]
   },
   {
     path: PrivateRoutes.USER_CREAR,
-    element: createElement(UserFormPage)
+    element: createElement(UserFormPage),
+    permissions: [PERMISSION.USER]
   },
   {
     path: PrivateRoutes.USER_EDIT,
-    element: createElement(UserFormPage)
+    element: createElement(UserFormPage),
+    permissions: [PERMISSION.USER]
   },
   {
     path: PrivateRoutes.ROLES,
-    element: createElement(RolesPage)
+    element: createElement(RolesPage),
+    permissions: [PERMISSION.ROLE, PERMISSION.ROLE_SHOW]
   },
   {
     path: PrivateRoutes.ROLE_FORM,
-    element: createElement(RolesFormPage, { title: 'Crear Rol', buttonText: 'Guardar Rol' })
+    element: createElement(RolesFormPage, { title: 'Crear Rol', buttonText: 'Guardar Rol' }),
+    permissions: [PERMISSION.ROLE]
   },
   {
     path: PrivateRoutes.ROLE_EDIT,
-    element: createElement(RolesFormPage, { title: 'Actualizar Rol', buttonText: 'Guardar Rol' })
+    element: createElement(RolesFormPage, { title: 'Actualizar Rol', buttonText: 'Guardar Rol' }),
+    permissions: [PERMISSION.ROLE]
   },
   {
     path: PrivateRoutes.PERMISSIONS,
-    element: createElement(PermissionsPage)
+    element: createElement(PermissionsPage),
+    permissions: [PERMISSION.PERMISSION, PERMISSION.PERMISSION_SHOW]
   },
   {
     path: PrivateRoutes.PERMISSIONS_CREATE,
-    element: createElement(PermissionsFormPage, { title: 'Crear Permiso', buttonText: 'Guardar Permiso' })
+    element: createElement(PermissionsFormPage, { title: 'Crear Permiso', buttonText: 'Guardar Permiso' }),
+    permissions: [PERMISSION.PERMISSION]
   },
   {
     path: PrivateRoutes.PERMISSIONS_EDIT,
-    element: createElement(PermissionsFormPage, { title: 'Actualizar Permiso', buttonText: 'Guardar Permiso' })
+    element: createElement(PermissionsFormPage, { title: 'Actualizar Permiso', buttonText: 'Guardar Permiso' }),
+    permissions: [PERMISSION.PERMISSION]
   }
 ]
