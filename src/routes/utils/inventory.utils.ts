@@ -34,7 +34,12 @@ export const inventoryRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.FUEL_ADD,
-    element: createElement(FuelForm),
+    element: createElement(FuelForm, { buttonText: 'Guardar Combustible', title: 'Crear Combustible' }),
+    permissions: [PERMISSION.FUEL]
+  },
+  {
+    path: PrivateRoutes.FUEL_EDIT,
+    element: createElement(FuelForm, { buttonText: 'Actualizar Combustible', title: 'Editar Combustible' }),
     permissions: [PERMISSION.FUEL]
   },
   {

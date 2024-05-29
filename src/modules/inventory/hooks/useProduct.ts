@@ -9,7 +9,9 @@ import { type Category, type Group, type CreateProduct, type Product } from '../
 const useGetAllProducts = () => {
   const { data, isLoading, error, mutate } = useSWR<ApiResponse, ResponseError>(API_BASEURL + ENDPOINTS.PRODUCT, getAllProducts)
 
-  return { products: data?.data, countData: data?.countData, isLoading, error, mutate }
+  const products: Product[] = data?.data as Product[] ?? []
+
+  return { products, countData: data?.countData, isLoading, error, mutate }
 }
 
 const useCreateProduct = () => {
@@ -24,7 +26,7 @@ const useGetAllCategories = () => {
 
 const useGetAllGroups = () => {
   const { data, isLoading, error } = useSWR<Group[], ResponseError>(API_BASEURL + ENDPOINTS.GROUP, getAllGroups)
-  return { groups: data, isLoading, error }
+  return { groups: data ?? [], isLoading, error }
 }
 
 const useUpdateProduct = () => {
@@ -33,8 +35,6 @@ const useUpdateProduct = () => {
 }
 
 const useCreateOrUpdateProduct = () => {
-  // const { categories, isLoading: isLoadingCategories, error: errorCategories } = useGetAllCategories()
-  // const { groups, isLoading: isLoadingGroups, error: errorGroups } = useGetAllGroups()
   const { createProduct, isMutating: isCreating, error } = useCreateProduct()
   const { updateProduct, isMutating: isUpdating, error: errorUpdate } = useUpdateProduct()
 
