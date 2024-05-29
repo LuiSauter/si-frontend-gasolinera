@@ -17,7 +17,7 @@ interface MultiselectProps {
   groups: Group[]
 }
 
-export function MultiSelect({ value, onChange, groups }: MultiselectProps) {
+function MultiSelect({ value, onChange, groups }: MultiselectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [open, setOpen] = React.useState(false)
   const [selected, setSelected] = React.useState<Group[]>(groups.filter((group) => value.includes(group.id)))
@@ -130,3 +130,5 @@ export function MultiSelect({ value, onChange, groups }: MultiselectProps) {
     </Command>
   )
 }
+
+export default MultiSelect
