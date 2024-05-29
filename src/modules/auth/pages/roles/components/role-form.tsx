@@ -66,7 +66,7 @@ const RoleFormPage = ({ title, buttonText }: IFormProps): JSX.Element => {
           }, 1000)
           return 'Rol actualizado exitosamente'
         },
-        error: 'Error al actualizar el ro'
+        error: 'Error al actualizar el rol'
       })
     } else {
       toast.promise(createRole({ name: data.name, permissions: data.permissions }), {
