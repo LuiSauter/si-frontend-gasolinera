@@ -55,8 +55,6 @@ function MultiSelect({ value, onChange, groups }: MultiselectProps) {
     (group) => !selected.map((s) => s.id).includes(group.id)
   )
 
-  console.log(selected)
-
   return (
     <Command
       onKeyDown={handleKeyDown}
