@@ -2,13 +2,7 @@ import { PrivateRoutes } from '@/models/routes.model'
 import { File, ListFilterIcon, MoreHorizontal, Pencil, PlusCircleIcon, Trash } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -18,20 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import {
-  Tabs,
-  TabsContent
-} from '@/components/ui/tabs'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { useNavigate } from 'react-router-dom'
-// import { useGetAllPermissions } from '../../hooks/usePermission'
 import { useHeader } from '@/hooks'
 import Loading from '@/components/shared/loading'
 import { useDeleteGroup, useGetAllGroup } from '../../hooks/useGroup'
@@ -61,8 +44,8 @@ const GroupPage = () => {
   const { groups, isLoading } = useGetAllGroup()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { deleteGroup } = useDeleteGroup()
+
   const deletePermanentlyGroup = (id: string) => {
-    console.log(id)
     toast.promise(deleteGroup(id), {
       loading: 'Cargando...',
       success: () => {
@@ -75,6 +58,7 @@ const GroupPage = () => {
     })
     setIsDialogOpen(false)
   }
+
   return (
     <section className="grid flex-1 items-start gap-4 sm:py-0 md:gap-8">
       <div className="grid auto-rows-max items-start gap-4 md:gap-6 lg:col-span-2">
@@ -133,7 +117,6 @@ const GroupPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {groups?.length === 0 && <div>No hay permisos</div>}
                     {groups?.map((group: Group) => (
                       <TableRow key={group.id}>
                         <TableCell>{group.name}</TableCell>
@@ -156,7 +139,6 @@ const GroupPage = () => {
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Editar
                               </DropdownMenuItem>
-
                               <DropdownMenuItem className="text-red-600">
                                 <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                   <AlertDialogTrigger asChild>
@@ -197,6 +179,7 @@ const GroupPage = () => {
                     ))}
                   </TableBody>
                 </Table>
+                {groups?.length === 0 && <div>Grupos</div>}
                 {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
               </CardContent>
             </Card>

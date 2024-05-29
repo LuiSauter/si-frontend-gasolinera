@@ -20,8 +20,13 @@ import { useDeleteProduct, useGetAllProducts } from '../../hooks/useProduct'
 import { type Product } from '../../models/product.model'
 import { toast } from 'sonner'
 import Loading from '@/components/shared/loading'
+import { useHeader } from '@/hooks'
 
 const ProductosPage = (): JSX.Element => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Productos' }
+  ])
   const navigate = useNavigate()
   const { products, isLoading } = useGetAllProducts()
 
@@ -41,7 +46,7 @@ const ProductosPage = (): JSX.Element => {
   }
 
   return (
-    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+    <main className="grid flex-1 items-start gap-4 lg:gap-6">
       <Tabs defaultValue="all">
         <div className="flex items-center">
           <TabsList>
@@ -102,9 +107,9 @@ const ProductosPage = (): JSX.Element => {
                     <TableHead className="hidden lg:table-cell">
                       Precio de compra
                     </TableHead>
-                    <TableHead className="hidden md:table-cell">
+                    {/* <TableHead className="hidden md:table-cell">
                       Precio de venta
-                    </TableHead>
+                    </TableHead> */}
                     <TableHead className="hidden md:table-cell">
                       Estado
                     </TableHead>
@@ -132,7 +137,7 @@ const ProductosPage = (): JSX.Element => {
                         {product.description}
                       </TableCell>
                       <TableCell>
-                        {product.minimum_tock}
+                        {product.minimum_stock}
                       </TableCell>
                       <TableCell className='hidden sm:table-cell'>
                         {product.stock}
@@ -140,9 +145,9 @@ const ProductosPage = (): JSX.Element => {
                       <TableCell className="hidden lg:table-cell">
                         Bs. {product.price_purchase}
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">
+                      {/* <TableCell className="hidden md:table-cell">
                         Bs. {product.price_sale}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell className="hidden md:table-cell">
                         <Badge variant={product.is_active ? 'default' : 'outline'}>
                           {product.is_active ? 'Activo' : 'Inactivo'}

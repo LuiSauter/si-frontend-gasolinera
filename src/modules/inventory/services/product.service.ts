@@ -37,12 +37,12 @@ const deleteProduct = async (url: string, { arg }: { arg: string }): Promise<voi
 
 const getAllCategories = async (url: string): Promise<Category[]> => {
   const response = await fetchData(url)
-  return response
+  return response.data
 }
 
 const getAllGroups = async (url: string): Promise<Group[]> => {
-  const response = await fetchData(url)
-  return response
+  const response: { data: Group[] } = await fetchData(url)
+  return response.data
 }
 
 export { getAllProducts, deleteProduct, createProduct, getAllCategories, getAllGroups, updateProduct, getProduct }

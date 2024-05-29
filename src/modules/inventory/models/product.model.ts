@@ -5,13 +5,10 @@ export interface Product extends ApiBase {
   code: string
   name: string
   stock: number
-  minimum_tock: number
+  minimum_stock: number
   description: string
-  price_sale: number
   price_purchase: number
-  iva: number
   image_url: string
-  discount: number
   is_active: boolean
   branch?: Branch
   category?: Category

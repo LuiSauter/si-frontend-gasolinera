@@ -29,6 +29,7 @@ export enum PrivateRoutes {
   PRODCUT_EDIT = PrivateRoutes.PRODUCT + '/:id',
   FUEL = PrivateRoutes.PRODUCT + '/combustibles',
   FUEL_ADD = PrivateRoutes.PRODUCT + '/combustibles/crear',
+  FUEL_EDIT = PrivateRoutes.PRODUCT + '/combustibles/:id',
   CATEGORY = PrivateRoutes.PRODUCT + '/categorias',
   CATEGORY_CREAR = PrivateRoutes.CATEGORY + '/crear',
   CATEGORY_EDIT = PrivateRoutes.CATEGORY + '/:id',

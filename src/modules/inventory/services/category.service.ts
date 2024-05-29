@@ -3,7 +3,7 @@ import { type CreateCategory, type Category, type CategoryUpdate } from '../mode
 
 const getAllCategorys = async (url: string): Promise<Category[]> => {
   const response = await fetchData(url)
-  return response
+  return response.data
 }
 
 const getCategory = async (url: string): Promise<Category> => {

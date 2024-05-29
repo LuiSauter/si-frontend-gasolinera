@@ -3,7 +3,7 @@ import { type GroupUpdate, type CreateGroup, type Group } from '../models/group.
 
 const getAllGroups = async (url: string): Promise<Group[]> => {
   const response = await fetchData(url)
-  return response
+  return response.data
 }
 
 const getGroup = async (url: string): Promise<Group> => {
