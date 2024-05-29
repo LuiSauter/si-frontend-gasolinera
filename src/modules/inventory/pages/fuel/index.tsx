@@ -32,14 +32,17 @@ import {
 } from '@/components/ui/tabs'
 import { useNavigate } from 'react-router-dom'
 import { useHeader } from '@/hooks'
+import { useGetAllFuels } from '../../hooks/useFuel'
+import Loading from '@/components/shared/loading'
 
 const FuelPage = () => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Usuarios', path: PrivateRoutes.USER },
-    { label: 'Permisos' }
+    { label: 'Combustible' }
   ])
   const navigate = useNavigate()
+
+  const { fuels, isLoading } = useGetAllFuels()
 
   return (
     <section className="grid flex-1 items-start gap-4 sm:py-0 md:gap-8">
@@ -77,7 +80,7 @@ const FuelPage = () => {
               <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.FUEL_ADD) }}>
                 <PlusCircleIcon className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Combustibles
+                  Agregar Combustible
                 </span>
               </Button>
             </div>
@@ -85,15 +88,16 @@ const FuelPage = () => {
           <TabsContent value="week">
             <Card x-chunk="dashboard-05-chunk-3">
               <CardHeader className="px-6">
-                <CardTitle>Combustibles</CardTitle>
+                <CardTitle>Tipos de Combustibles</CardTitle>
                 <CardDescription>
-                  Listado de todos los combustibles
+                  Listado de los tipos de combustibles registrados en el sistema
                 </CardDescription>
               </CardHeader>
               <CardContent className=''>
                 <Table >
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Tipo</TableHead>
                       <TableHead>Nombre</TableHead>
                       <TableHead className='hidden sm:table-cell'>Octanage</TableHead>
                       <TableHead className='hidden lg:table-cell'>Estado</TableHead>
@@ -101,80 +105,40 @@ const FuelPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {/* generate a list fuels with name, ocatanage, estado */}
-                    <TableRow>
-                      <TableCell>Gasolina</TableCell>
-                      <TableCell className='hidden sm:table-cell'>95</TableCell>
-                      <TableCell className='hidden lg:table-cell'>Activo</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuItem>Editar</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Diesel</TableCell>
-                      <TableCell className='hidden sm:table-cell'>--</TableCell>
-                      <TableCell className='hidden lg:table-cell'>Activo</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuItem>Editar</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Gasolina Premium</TableCell>
-                      <TableCell className='hidden sm:table-cell'>107</TableCell>
-                      <TableCell className='hidden lg:table-cell'>Activo</TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                            <DropdownMenuItem>Editar</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-
+                    {fuels?.map((fuel) => (
+                      <TableRow key={fuel.id}>
+                        <TableCell>{fuel.type}</TableCell>
+                        <TableCell>{fuel.name}</TableCell>
+                        <TableCell className='hidden sm:table-cell'>{fuel.octane}</TableCell>
+                        <TableCell className='hidden lg:table-cell'>{fuel.is_active ? 'Activo' : 'Inactivo'}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.FUEL}/${fuel.id}`) }}>Editar</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
-                {/* {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>} */}
+                {fuels?.length === 0 && (
+                  <div className='grid place-content-center place-items-center'>
+                    <span>No hay combustibles registrados</span>
+                  </div>
+                )}
+                {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
               </CardContent>
             </Card>
           </TabsContent>
