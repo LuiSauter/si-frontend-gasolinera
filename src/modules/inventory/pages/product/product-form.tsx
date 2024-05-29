@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useCreateOrUpdateProduct, useGetAllCategories, useGetAllGroups, useGetProduct } from '../../hooks/useProduct'
 import { type Category } from '../../models/product.model'
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
-import MultiSelect from './components/multiselect'
+import MultiSelect from './multiselect'
 
 const formSchema = z.object({
   code: z

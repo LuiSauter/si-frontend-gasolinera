@@ -1,9 +1,9 @@
+import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { type Group } from '@/modules/inventory/models/group.model'
-import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 interface MultiselectProps {
   value: string[]
