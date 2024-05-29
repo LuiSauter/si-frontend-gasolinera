@@ -162,7 +162,7 @@ function FuelForm({ buttonText, title }: IFormProps) {
                       name="octane"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Grado de Octanage o Cetano *</FormLabel>
+                          <FormLabel>Grado de Oct o Cet*</FormLabel>
                           <FormControl>
                             <Input
                               type='number'
@@ -179,8 +179,8 @@ function FuelForm({ buttonText, title }: IFormProps) {
                       control={form.control}
                       name="productId"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Producto *</FormLabel>
+                        <FormItem className="flex flex-col justify-between space-y-1 pt-1">
+                          <FormLabel className='leading-normal'>Producto *</FormLabel>
                           {!isLoadingProducts && <Popover>
                             <PopoverTrigger asChild>
                               <FormControl>
