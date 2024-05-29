@@ -84,7 +84,7 @@ const LoginPage = (): JSX.Element => {
                     </>
                   )}
                 />
-                <Button type="submit" className="w-full mt-4">
+                <Button type="submit" disabled={isMutating} className="w-full mt-4">
                   {isMutating ? <Loading /> : 'Iniciar sesión'}
                 </Button>
               </form>

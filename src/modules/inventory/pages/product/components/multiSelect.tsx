@@ -1,8 +1,7 @@
 import { X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
-import { Command as CommandPrimitive } from 'cmdk'
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { type Group } from '@/modules/inventory/models/group.model'
 import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 
@@ -79,8 +78,7 @@ function MultiSelect({ value, onChange, groups }: MultiselectProps): JSX.Element
               </Badge>
             )
           })}
-          {/* Avoid having the "Search" Icon */}
-          <CommandPrimitive.Input
+          <CommandInput
             ref={inputRef}
             value={inputValue}
             onValueChange={setInputValue}
