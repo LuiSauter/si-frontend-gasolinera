@@ -1,15 +1,10 @@
-import * as React from 'react'
 import { X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import {
-  Command,
-  CommandGroup,
-  CommandItem,
-  CommandList
-} from '@/components/ui/command'
+import { Command, CommandGroup, CommandItem, CommandList } from '@/components/ui/command'
 import { Command as CommandPrimitive } from 'cmdk'
 import { type Group } from '@/modules/inventory/models/group.model'
+import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 interface MultiselectProps {
   value: string[]
@@ -17,21 +12,21 @@ interface MultiselectProps {
   groups: Group[]
 }
 
-function MultiSelect({ value, onChange, groups }: MultiselectProps) {
-  const inputRef = React.useRef<HTMLInputElement>(null)
-  const [open, setOpen] = React.useState(false)
-  const [selected, setSelected] = React.useState<Group[]>(groups.filter((group) => value.includes(group.id)))
-  const [inputValue, setInputValue] = React.useState('')
+function MultiSelect({ value, onChange, groups }: MultiselectProps): JSX.Element {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [open, setOpen] = useState(false)
+  const [selected, setSelected] = useState<Group[]>(groups.filter((group) => value.includes(group.id)))
+  const [inputValue, setInputValue] = useState('')
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSelected(groups.filter((group) => value.includes(group.id)))
   }, [value])
 
-  const handleUnselect = React.useCallback((group: Group) => {
+  const handleUnselect = useCallback((group: Group) => {
     setSelected((prev) => prev.filter((s) => s.id !== group.id))
   }, [])
 
-  const handleKeyDown = React.useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     const input = inputRef.current
     if (input) {
       if (e.key === 'Delete' || e.key === 'Backspace') {
