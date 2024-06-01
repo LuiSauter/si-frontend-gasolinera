@@ -1,63 +1,23 @@
-import { File, ListFilter, MoreHorizontal, PlusCircle } from 'lucide-react'
-
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { useNavigate } from 'react-router-dom'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { PrivateRoutes } from '@/models'
-import { useDeleteProduct, useGetAllProducts } from '../../hooks/useProduct'
-import { type Product } from '../../models/product.model'
-import { toast } from 'sonner'
-import Loading from '@/components/shared/loading'
-import { useHeader } from '@/hooks'
+import { File, ListFilterIcon, PlusCircleIcon } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
-const ProductosPage = (): JSX.Element => {
-  useHeader([
-    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Productos' }
-  ])
+function BatchTable() {
   const navigate = useNavigate()
-  const { products, isLoading } = useGetAllProducts()
-
-  const { deleteProduct } = useDeleteProduct()
-
-  const deletePermanentlyRole = (id: string) => {
-    toast.promise(deleteProduct(id), {
-      loading: 'Cargando...',
-      success: () => {
-        setTimeout(() => {
-          navigate(PrivateRoutes.PRODUCT, { replace: true })
-        }, 1000)
-        return 'Acción realizada exitosamente'
-      },
-      error: 'Error al realizar esta acción'
-    })
-  }
-
   return (
-    <main className="grid flex-1 items-start gap-4 lg:gap-6">
-      <Tabs defaultValue="all">
-        <div className="flex items-center">
-          <TabsList>
-            <TabsTrigger value="all">Combustible</TabsTrigger>
-            <TabsTrigger value="active">Otro producto</TabsTrigger>
-          </TabsList>
+    <Card x-chunk="dashboard-06-chunk-0">
+      <CardHeader>
+        <CardTitle className='flex flex-row justify-between'>
+          <span>Lotes</span>
           <div className="ml-auto flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 gap-1">
-                  <ListFilter className="h-3.5 w-3.5" />
+                  <ListFilterIcon className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Filtrar
                   </span>
@@ -78,48 +38,45 @@ const ProductosPage = (): JSX.Element => {
               </span>
             </Button>
             <Button onClick={() => { navigate(PrivateRoutes.PRODUCT_ADD) }} size="sm" className="h-8 gap-1">
-              <PlusCircle className="h-3.5 w-3.5" />
+              <PlusCircleIcon className="h-3.5 w-3.5" />
               <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Agregar Producto
+                Agregar
               </span>
             </Button>
           </div>
-        </div>
-        <TabsContent value="all">
-          <Card x-chunk="dashboard-06-chunk-0">
-            <CardHeader>
-              <CardTitle>Todos los productos</CardTitle>
-              <CardDescription>
-                Administre sus productos y vea su desempeño de ventas.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="hidden w-[100px] sm:table-cell">
-                      Imagen
-                    </TableHead>
-                    <TableHead className=''>Nombre</TableHead>
-                    <TableHead className='hidden xl:table-cell'>Descripción</TableHead>
-                    <TableHead className=''>Stock Min.</TableHead>
-                    <TableHead className='hidden sm:table-cell'>Stock</TableHead>
-                    <TableHead className="hidden lg:table-cell">
-                      Precio de compra
-                    </TableHead>
-                    {/* <TableHead className="hidden md:table-cell">
+        </CardTitle>
+        {/* <CardDescription>
+          Los lotes son una forma de agrupar productos que comparten características similares.
+
+        </CardDescription> */}
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="hidden w-[100px] sm:table-cell">
+                Imagen
+              </TableHead>
+              <TableHead className=''>Nombre</TableHead>
+              <TableHead className='hidden xl:table-cell'>Descripción</TableHead>
+              <TableHead className=''>Stock Min.</TableHead>
+              <TableHead className='hidden sm:table-cell'>Stock</TableHead>
+              <TableHead className="hidden lg:table-cell">
+                Precio de compra
+              </TableHead>
+              {/* <TableHead className="hidden md:table-cell">
                       Precio de venta
                     </TableHead> */}
-                    <TableHead className="hidden md:table-cell">
-                      Estado
-                    </TableHead>
-                    <TableHead>
-                      <span className="sr-only">Actions</span>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products?.map((product: Product) => (
+              <TableHead className="hidden md:table-cell">
+                Estado
+              </TableHead>
+              <TableHead>
+                <span className="sr-only">Actions</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {/* {products?.map((product: Product) => (
                     <TableRow key={product.id}>
                       <TableCell className="hidden sm:table-cell">
                         <img
@@ -145,9 +102,6 @@ const ProductosPage = (): JSX.Element => {
                       <TableCell className="hidden lg:table-cell">
                         Bs. {product.price_purchase}
                       </TableCell>
-                      {/* <TableCell className="hidden md:table-cell">
-                        Bs. {product.price_sale}
-                      </TableCell> */}
                       <TableCell className="hidden md:table-cell">
                         <Badge variant={product.is_active ? 'default' : 'outline'}>
                           {product.is_active ? 'Activo' : 'Inactivo'}
@@ -176,22 +130,19 @@ const ProductosPage = (): JSX.Element => {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
-            </CardContent>
-            <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Mostrando <strong>1-3</strong> de <strong>3</strong>{' '}
-                productos
-              </div>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </main>
+                  ))} */}
+          </TableBody>
+        </Table>
+        {/* {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>} */}
+      </CardContent>
+      <CardFooter>
+        <div className="text-xs text-muted-foreground">
+          Mostrando <strong>1-3</strong> de <strong>3</strong>{' '}
+          productos
+        </div>
+      </CardFooter>
+    </Card>
   )
 }
 
-export default ProductosPage
+export default BatchTable

@@ -27,6 +27,7 @@ export enum PrivateRoutes {
   PRODUCT = '/productos',
   PRODUCT_ADD = PrivateRoutes.PRODUCT + '/crear',
   PRODCUT_EDIT = PrivateRoutes.PRODUCT + '/:id',
+  PRODUCT_DETAILS = PrivateRoutes.PRODUCT + '/:id/detalles',
   FUEL = PrivateRoutes.PRODUCT + '/combustibles',
   FUEL_ADD = PrivateRoutes.PRODUCT + '/combustibles/crear',
   FUEL_EDIT = PrivateRoutes.PRODUCT + '/combustibles/:id',
