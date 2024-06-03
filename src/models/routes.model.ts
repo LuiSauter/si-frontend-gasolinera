@@ -35,7 +35,11 @@ export enum PrivateRoutes {
   CATEGORY_EDIT = PrivateRoutes.CATEGORY + '/:id',
   GROUP = PrivateRoutes.PRODUCT + '/grupos',
   GROUP_CREAR = PrivateRoutes.GROUP + '/crear',
-  GROUP_EDIT = PrivateRoutes.GROUP + '/:id'
+  GROUP_EDIT = PrivateRoutes.GROUP + '/:id',
+  // buy
+  PROVIDER = '/proveedores',
+  PROVIDER_CREATE = PrivateRoutes.PROVIDER + '/crear',
+  PROVIDER_EDIT = PrivateRoutes.PROVIDER + '/:id'
 }
 
 export interface Route {

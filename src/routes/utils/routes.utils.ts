@@ -3,6 +3,7 @@ import { companyRoutes, userRoutes } from '.'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
 import { inventoryRoutes } from './inventory.utils'
 import { type PERMISSION } from '@/modules/auth/utils/permissions.constants'
+import { buyRoutes } from './buy.utils'
 
 const DashboardPage = lazy(() => import('@modules/dashboard'))
 const SettingPage = lazy(() => import('@modules/settings/pages/setting'))
@@ -26,5 +27,6 @@ export const PrivateAllRoutes: Route[] = [
   },
   ...userRoutes,
   ...companyRoutes,
-  ...inventoryRoutes
+  ...inventoryRoutes,
+  ...buyRoutes
 ]
