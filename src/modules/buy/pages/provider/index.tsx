@@ -1,0 +1,175 @@
+import { File, ListFilter, MoreHorizontal, PlusCircle } from 'lucide-react'
+
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useNavigate } from 'react-router-dom'
+import { PrivateRoutes } from '@/models'
+// import { useDeleteProduct, useGetAllProducts } from '../../hooks/useProduct'
+// import { type Product } from '../../models/product.model'
+import { toast } from 'sonner'
+import Loading from '@/components/shared/loading'
+import { useHeader } from '@/hooks'
+import { useDeleteProvider, useGetAllProvider } from '../../hooks/useProvider'
+import { type Provider } from '../../models/provider.model'
+
+const ProviderPage = (): JSX.Element => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Proveedores' }
+  ])
+  const navigate = useNavigate()
+  const { providers, isLoading } = useGetAllProvider()
+
+  const { deleteProvider } = useDeleteProvider()
+
+  const deletePermanentlyRole = (id: string) => {
+    toast.promise(deleteProvider(id), {
+      loading: 'Cargando...',
+      success: () => {
+        setTimeout(() => {
+          navigate(PrivateRoutes.PROVIDER, { replace: true })
+        }, 1000)
+        return 'Acción realizada exitosamente'
+      },
+      error: 'Error al realizar esta acción'
+    })
+  }
+
+  return (
+    <main className="grid flex-1 items-start gap-4 lg:gap-6">
+      <Tabs defaultValue="all">
+        <div className="flex items-center">
+          <TabsList>
+            <TabsTrigger value="all">Proveedores</TabsTrigger>
+            <TabsTrigger value="active">Otro producto</TabsTrigger>
+          </TabsList>
+          <div className="ml-auto flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 gap-1">
+                  <ListFilter className="h-3.5 w-3.5" />
+                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                    Filtrar
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuCheckboxItem checked>
+                  Active
+                </DropdownMenuCheckboxItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button size="sm" variant="outline" className="h-8 gap-1">
+              <File className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Exportar
+              </span>
+            </Button>
+            <Button onClick={() => { navigate(PrivateRoutes.PROVIDER_CREATE) }} size="sm" className="h-8 gap-1">
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Agregar Proveedor
+              </span>
+            </Button>
+          </div>
+        </div>
+        <TabsContent value="all">
+          <Card x-chunk="dashboard-06-chunk-0">
+            <CardHeader>
+              <CardTitle>Proveedores</CardTitle>
+              <CardDescription>
+              Listado de todos los proveedores de la empresa.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className=''>Nombre</TableHead>
+                    <TableHead className='hidden xl:table-cell'>Correo electronico</TableHead>
+                    <TableHead className=''>Telefono</TableHead>
+                    <TableHead className='hidden lg:table-cell'>Nit</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Estado
+                    </TableHead>
+                    <TableHead>
+                      <span className="sr-only">Actions</span>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {providers?.map((provider: Provider) => (
+                    <TableRow key={provider.id}>
+                      <TableCell className="font-medium">
+                        {provider.name}
+                      </TableCell>
+                      <TableCell className="hidden xl:table-cell">
+                        {provider.email}
+                      </TableCell>
+                      <TableCell>
+                        {provider.phone}
+                      </TableCell>
+                      <TableCell className='hidden lg:table-cell'>
+                        {provider.nit}
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        <Badge variant={provider.isActive ? 'default' : 'outline'}>
+                          {provider.isActive ? 'Activo' : 'Inactivo'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              aria-haspopup="true"
+                              size="icon"
+                              variant="ghost"
+                            >
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Toggle menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>Ver</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDER}/${provider.id}`) }}>Editar</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { deletePermanentlyRole(provider.id) }}>
+                              {provider.isActive ? 'Desactivar' : 'Activar'}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
+            </CardContent>
+            <CardFooter>
+              <div className="text-xs text-muted-foreground">
+                Mostrando <strong>1-3</strong> de <strong>3</strong>{' '}
+                productos
+              </div>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </main>
+  )
+}
+
+export default ProviderPage
