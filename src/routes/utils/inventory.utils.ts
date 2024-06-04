@@ -2,6 +2,7 @@ import { createElement, lazy } from 'react'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
 import GroupForm from '@/modules/inventory/pages/group/components/group-form'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
+import OuputProductsPage from '@/modules/inventory/pages/output-product'
 
 const ProductPage = lazy(() => import('@modules/inventory/pages/product'))
 const ProductFormPage = lazy(() => import('@modules/inventory/pages/product/product-form'))
@@ -77,5 +78,10 @@ export const inventoryRoutes: Route[] = [
     path: PrivateRoutes.GROUP_EDIT,
     element: createElement(GroupForm),
     permissions: [PERMISSION.GROUP]
+  },
+  {
+    path: PrivateRoutes.OUPUT_PRODUCT,
+    element: createElement(OuputProductsPage),
+    permissions: [PERMISSION.CATEGORY]
   }
 ]

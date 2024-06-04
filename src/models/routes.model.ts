@@ -37,6 +37,7 @@ export enum PrivateRoutes {
   GROUP = PrivateRoutes.PRODUCT + '/grupos',
   GROUP_CREAR = PrivateRoutes.GROUP + '/crear',
   GROUP_EDIT = PrivateRoutes.GROUP + '/:id',
+  OUPUT_PRODUCT = PrivateRoutes.COMPANY + '/salida-de-productos',
   // buy
   PROVIDER = '/proveedores',
   PROVIDER_CREATE = PrivateRoutes.PROVIDER + '/crear',

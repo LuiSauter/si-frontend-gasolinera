@@ -93,6 +93,12 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Grupos',
         icon: createElement(UsersIcon, { width: 20, height: 20 }),
         permissions: [PERMISSION.GROUP, PERMISSION.GROUP_SHOW]
+      },
+      {
+        path: PrivateRoutes.OUPUT_PRODUCT,
+        label: 'Salida de productos',
+        icon: createElement(FuelIcon, { width: 20, height: 20 }),
+        permissions: [PERMISSION.BRANCH, PERMISSION.BRANCH_SHOW]
       }
     ]
   },
