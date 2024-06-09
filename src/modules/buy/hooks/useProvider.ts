@@ -2,8 +2,8 @@ import useSWRMutation from 'swr/mutation'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { type ResponseError } from '@/utils/response-error.utils'
 import useSWR from 'swr'
-import { createProvider, deleteProvider, getAllProvider, getProvider, updateProvider } from '../services/provider.service'
 import { type UpdateProvider, type CreateProvider, type Provider } from '../models/provider.model'
+import { createProvider, deleteProvider, getAllProvider, getProvider, updateProvider } from '../services/provider.service'
 
 const useCreateProvider = () => {
   const { trigger, isMutating, error } = useSWRMutation<Promise<void>, ResponseError, string, CreateProvider>(API_BASEURL + ENDPOINTS.PROVIDER, createProvider)

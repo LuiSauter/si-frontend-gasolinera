@@ -21,9 +21,8 @@ import { PrivateRoutes } from '@/models'
 import { toast } from 'sonner'
 import Loading from '@/components/shared/loading'
 import { useHeader } from '@/hooks'
-// import { useDeleteProvider, useGetAllProvider } from '../../hooks/useProvider'
-import { type Provider } from '../../models/provider.model'
 import { useDeleteProvider, useGetAllProvider } from '../../hooks/useProvider'
+import { type Provider } from '../../models/provider.model'
 
 const ProviderPage = (): JSX.Element => {
   useHeader([
@@ -146,7 +145,7 @@ const ProviderPage = (): JSX.Element => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Ver</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${provider.id}/detalles`) }}>Ver</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDER}/${provider.id}`) }}>Editar</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => { deletePermanentlyRole(provider.id) }}>
                               {provider.isActive ? 'Desactivar' : 'Activar'}

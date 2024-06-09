@@ -1,5 +1,5 @@
 import { fetchData } from '@/utils'
-import { type Provider, type CreateProvider, type UpdateProvider } from '../models/provider.model'
+import { type UpdateProvider, type CreateProvider, type Provider } from '../models/provider.model'
 
 const createProvider = async (url: string, { arg }: { arg: CreateProvider }): Promise<void> => {
   const options: RequestInit = {
