@@ -27,20 +27,20 @@ const GroupForm = () => {
   const { group } = useGetGroup(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      description: '',
-      name: ''
+    values: {
+      name: group?.name ?? '',
+      description: group?.description ?? ''
     }
   })
 
-  useEffect(() => {
-    if (group) {
-      form.reset({
-        name: group.name ?? '',
-        description: group.description ?? ''
-      })
-    }
-  }, [group, form])
+  // useEffect(() => {
+  //   if (group) {
+  //     form.reset({
+  //       name: group.name ?? '',
+  //       description: group.description ?? ''
+  //     })
+  //   }
+  // }, [group, form])
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     if (id) {

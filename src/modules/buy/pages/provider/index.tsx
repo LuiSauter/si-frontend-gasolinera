@@ -145,7 +145,7 @@ const ProviderPage = (): JSX.Element => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Ver</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${provider.id}/detalles`) }}>Ver</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDER}/${provider.id}`) }}>Editar</DropdownMenuItem>
                             <DropdownMenuItem onClick={() => { deletePermanentlyRole(provider.id) }}>
                               {provider.isActive ? 'Desactivar' : 'Activar'}

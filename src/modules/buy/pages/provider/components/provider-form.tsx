@@ -21,7 +21,7 @@ const formSchema = z.object({
   phone: z.string().min(3, 'El telefono debe tener al menos 5 digitos'),
   email: z.string().email('Ingrese un correo valido'),
   nit: z.string().min(3, 'El nit debe tener al menos 3 digitos'),
-  detail: z.string().min(3, 'El nit debe tener al menos 3 caracteres')
+  detail: z.string().min(3, 'El detalle debe tener al menos 3 caracteres')
 })
 
 const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {

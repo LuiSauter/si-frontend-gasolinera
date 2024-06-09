@@ -19,7 +19,11 @@ export const ENDPOINTS = {
   PRODUCT: '/api/product',
   FUEL: '/api/fuel',
   // buys
-  PROVIDER: '/api/providers'
+  PROVIDER: '/api/providers',
+  PROVIDER_PRODUCT: '/api/provider-product/all',
+  PROVIDER_PRODUCT_CREATE: '/api/provider-product',
+  PROVIDER_PRODUCT_EDIT: '/api/provider-product/one'
+
 }
 
 export const API_BASEURL = AppConfig.API_URL

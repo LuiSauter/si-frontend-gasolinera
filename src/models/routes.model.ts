@@ -40,7 +40,11 @@ export enum PrivateRoutes {
   // Buys
   PROVIDER = '/proveedores',
   PROVIDER_CREATE = PrivateRoutes.PROVIDER + '/crear',
-  PROVIDER_EDIT = PrivateRoutes.PROVIDER + '/:id'
+  PROVIDER_EDIT = PrivateRoutes.PROVIDER + '/:id',
+  PROVIDERPRODUCT = PrivateRoutes.PROVIDER + '/proveedores&productos',
+  PROVIDER_DETAILS = PrivateRoutes.PROVIDERPRODUCT + '/:id/detalles',
+  PROVIDER_PRODUCT_CREATE = PrivateRoutes.PROVIDERPRODUCT + '/:idProvider/asignar',
+  PROVIDER_PRODUCT_EDIT = PrivateRoutes.PROVIDERPRODUCT + '/:idProvider/editar/:id'
 }
 
 export interface Route {
