@@ -1,19 +1,23 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { ChevronLeftIcon, MoreVerticalIcon } from 'lucide-react'
 
-// import { useGetProduct } from '../../hooks/useProduct'
 import { PrivateRoutes } from '@/models'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-// import { FormatDateMMMDYYYY } from '@/utils'
-// import { Separator } from '@/components/ui/separator'
-// import { useGetProvider } from '@/modules/buy/hooks/useProvider'
-import BatchTableProduct from './batchProduct'
 import { useGetProvider } from '@/modules/buy/hooks/useProvider'
+import ProviderProductTable from './providerProductTable'
+import { useHeader } from '@/hooks'
 
 function ProviderDetailsPage(): JSX.Element {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Compras', path: PrivateRoutes.PROVIDER },
+    { label: 'Proveedores', path: PrivateRoutes.PROVIDER },
+    { label: 'Detalles del proveedor' }
+  ])
+
   const navigate = useNavigate()
   const { id } = useParams()
   const { provider } = useGetProvider(id)
@@ -36,8 +40,8 @@ function ProviderDetailsPage(): JSX.Element {
           </h2>
           <div className="w-full sm:w-fit sm:ml-auto flex items-center justify-between gap-4">
             <TabsList>
-              <TabsTrigger value="all">Lotes</TabsTrigger>
-              <TabsTrigger value="product-output">Salidas</TabsTrigger>
+              <TabsTrigger value="all">Productos</TabsTrigger>
+              {/* <TabsTrigger value="product-output">Salidas</TabsTrigger> */}
               <TabsTrigger value="buys">Compras</TabsTrigger>
             </TabsList>
             <DropdownMenu>
@@ -118,71 +122,17 @@ function ProviderDetailsPage(): JSX.Element {
                       <span>{provider?.address}</span>
                     </li>
                   </ul>
-                  {/* <Separator className="my-2" />
-                  <ul className="grid gap-3">
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Correo</span>
-                      <span>{product?.stock}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Estado</span>
-                      <span>{product?.minimum_stock}</span>
-                    </li>
-                  </ul> */}
-                  {/* <Separator className="my-2" />
-                  <div className="font-semibold">Sucursal</div>
-                  <ul className="grid gap-3">
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Dirección</span>
-                      <span>{product?.branch?.name}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Dirección</span>
-                      <address className="grid gap-0.5 not-italic text-muted-foreground">
-                        <span>{product?.branch?.address}</span>
-                      </address>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Teléfono</span>
-                      <span>{product?.branch?.phone ?? 's/n'}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Email</span>
-                      <span>{product?.branch?.email ?? 's/n'}</span>
-                    </li>
-                  </ul> */}
                 </div>
               </CardContent>
-              {/* <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
-                <div className="text-xs text-muted-foreground">
-                  Actualizado <time dateTime={product?.updatedAt}>{FormatDateMMMDYYYY(product?.updatedAt ?? new Date().toDateString())}</time>
-                </div>
-              </CardFooter> */}
             </Card>
           </div>
 
           <div className="grid auto-rows-max items-start gap-4 lg:gap-6">
-            {/* <Tabs defaultValue="all"> */}
-            {/* <div className="flex items-center flex-wrap gap-2">
-              <TabsList>
-                <TabsTrigger value="all">Lotes</TabsTrigger>
-                <TabsTrigger value="product-output">Salidas</TabsTrigger>
-                <TabsTrigger value="buys">Compras</TabsTrigger>
-              </TabsList>
-            </div> */}
             <TabsContent value="all" className='mt-0'>
-              <BatchTableProduct />
+              <ProviderProductTable />
             </TabsContent>
-            {/* </Tabs> */}
           </div>
         </div>
-        {/* <div className="flex items-center justify-center gap-2 md:hidden">
-        <Button onClick={() => { navigate(PrivateRoutes.PRODUCT) }} type="button" variant="outline" size="sm">
-          Descartar
-        </Button>
-        <Button type="submit" size="sm">
-        </Button>
-      </div> */}
       </section>
     </Tabs>
   )

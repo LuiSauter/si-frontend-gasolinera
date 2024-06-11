@@ -220,7 +220,7 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
                   </div>
                 </CardContent>
               </Card>
-              {id && <Card className='h-full justify-evenly flex flex-col w-full min-w-80 lg:w-96'>
+              {/* {id && <Card className='h-full justify-evenly flex flex-col w-full min-w-80 lg:w-96'>
                 <CardHeader>
                   <CardTitle>Suspender proveedor</CardTitle>
                   <CardDescription>
@@ -238,7 +238,7 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
                     </Button>
                   </div>
                 </CardContent>
-              </Card>}
+              </Card>} */}
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
               <Button type='button' variant="outline" size="sm">

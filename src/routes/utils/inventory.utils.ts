@@ -55,12 +55,12 @@ export const inventoryRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.CATEGORY_CREAR,
-    element: createElement(CategoryForm),
+    element: createElement(CategoryForm, { buttonText: 'Guardar Categoría', title: 'Crear Categoría' }),
     permissions: [PERMISSION.CATEGORY]
   },
   {
     path: PrivateRoutes.CATEGORY_EDIT,
-    element: createElement(CategoryForm),
+    element: createElement(CategoryForm, { buttonText: 'Actualizar Categoría', title: 'Editar Categoría' }),
     permissions: [PERMISSION.CATEGORY]
   },
   {
@@ -70,12 +70,12 @@ export const inventoryRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.GROUP_CREAR,
-    element: createElement(GroupForm),
+    element: createElement(GroupForm, { buttonText: 'Guardar Grupo', title: 'Crear Grupo' }),
     permissions: [PERMISSION.GROUP]
   },
   {
     path: PrivateRoutes.GROUP_EDIT,
-    element: createElement(GroupForm),
+    element: createElement(GroupForm, { buttonText: 'Actualizar Grupo', title: 'Editar Grupo' }),
     permissions: [PERMISSION.GROUP]
   }
 ]
