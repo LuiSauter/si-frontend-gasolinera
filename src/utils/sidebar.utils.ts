@@ -1,6 +1,6 @@
 import { PrivateRoutes } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { Building2Icon, BuildingIcon, FlameIcon, FuelIcon, KeyIcon, LayoutDashboardIcon, PackageIcon, ScrollTextIcon, ShoppingCart, Truck, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
+import { Box, Building2Icon, BuildingIcon, DollarSignIcon, FlameIcon, FuelIcon, KeyIcon, LayoutDashboardIcon, PackageIcon, ScrollTextIcon, ShoppingCart, Truck, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -107,6 +107,20 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Proveedores',
         icon: createElement(Truck, { width: 20, height: 20 }),
         permissions: [PERMISSION.PROVIDER, PERMISSION.PROVIDER_SHOW]
+      }
+    ]
+  },
+  {
+    label: 'Ventas',
+    icon: createElement(DollarSignIcon, { width: 20, height: 20 }),
+    path: '/ventas',
+    permissions: [PERMISSION.DISCOUNT, PERMISSION.DISCOUNT_SHOW, PERMISSION.SALE_NOTE, PERMISSION.SALE_NOTE_SHOW, PERMISSION.DISPENSER, PERMISSION.DISPENSER_SHOW],
+    children: [
+      {
+        path: PrivateRoutes.DiSPENSER,
+        label: 'Dispensador',
+        icon: createElement(Box, { width: 20, height: 20 }),
+        permissions: [PERMISSION.DISPENSER, PERMISSION.DISPENSER_SHOW]
       }
     ]
   }

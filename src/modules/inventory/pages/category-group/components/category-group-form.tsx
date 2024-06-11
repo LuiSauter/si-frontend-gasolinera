@@ -13,6 +13,8 @@ import { z } from 'zod'
 import { useEffect } from 'react'
 import { useCreateCategory, useGetCategory, useUpdateCategory } from '@/modules/inventory/hooks/useCategory'
 import { Textarea } from '@/components/ui/textarea'
+import { type IFormProps } from '@/models'
+import { useHeader } from '@/hooks'
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -20,7 +22,13 @@ const formSchema = z.object({
   image_url: z.string()
 })
 
-const CategoryForm = () => {
+const CategoryForm = ({ buttonText, title }: IFormProps) => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Inventario', path: PrivateRoutes.CATEGORY },
+    { label: 'Categorias', path: PrivateRoutes.CATEGORY },
+    { label: title }
+  ])
   const { id } = useParams()
   const navigate = useNavigate()
   const { createCategory, isMutating, error } = useCreateCategory()
@@ -99,13 +107,13 @@ const CategoryForm = () => {
                   <span className="sr-only">Volver</span>
                 </Button>
                 <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                  {id ? 'Editar Categoria' : 'Crear Categoria'}
+                  {title}
                 </h2>
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
                   <Button type='button' onClick={() => { navigate(PrivateRoutes.CATEGORY) }} variant="outline" size="sm">
                     Descartar
                   </Button>
-                  <Button type='submit' size="sm" disabled={isMutating}>{id ? 'Actualizar' : 'Guardar'}</Button>
+                  <Button type='submit' size="sm" disabled={isMutating}>{buttonText}</Button>
                 </div>
               </div>
             </div>
@@ -174,7 +182,7 @@ const CategoryForm = () => {
               <Button onClick={() => { navigate(PrivateRoutes.CATEGORY) }} type='button' variant="outline" size="sm" >
                 Cancelar
               </Button>
-              <Button type='submit' size="sm" disabled={isMutating}>{id ? 'Actualizar' : 'Guardar'}</Button>
+              <Button type='submit' size="sm" disabled={isMutating}>{buttonText}</Button>
             </div>
           </form>
         </Form>

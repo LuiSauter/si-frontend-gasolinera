@@ -48,6 +48,8 @@ import {
 import { useDeleteUser, useGetAllUser } from '@/modules/users/hooks/useUser'
 import { toast } from 'sonner'
 import { type ApiBase } from '@/models'
+import Loading from '@/components/shared/loading'
+import { useHeader } from '@/hooks'
 
 export interface NewUser extends ApiBase {
   name: string
@@ -118,7 +120,6 @@ export const columns: Array<ColumnDef<NewUser>> = [
       const navigation = useNavigate()
       const { deleteUser } = useDeleteUser()
       const deletePermanentlyRole = () => {
-        console.log(row.getValue('id'))
         toast.promise(deleteUser(row.getValue('id')), {
           loading: 'Cargando...',
           success: () => {
@@ -191,8 +192,12 @@ export const columns: Array<ColumnDef<NewUser>> = [
 ]
 
 export function DataTableDemo() {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Usuario', path: PrivateRoutes.USER }
+  ])
   const navigate = useNavigate()
-  const { allUsers } = useGetAllUser() ?? { allUsers: [] }
+  const { allUsers, isLoading } = useGetAllUser() ?? { allUsers: [] }
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -207,7 +212,6 @@ export function DataTableDemo() {
     role: user.role.name
   })) ?? [], [allUsers])
 
-  // console.log(newAllUsers)
   const table = useReactTable({
     data: newAllUsers ?? [],
     columns,
@@ -295,7 +299,7 @@ export function DataTableDemo() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                 {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
                 </TableCell>
               </TableRow>)}
           </TableBody>

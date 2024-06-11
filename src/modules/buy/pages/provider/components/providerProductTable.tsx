@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { PrivateRoutes } from '@/models'
 import { useDeleteProviderProduct, useGetAllProductsProviders } from '@/modules/buy/hooks/useProviderProduct'
 import { type ProviderProduct } from '@/modules/buy/models/providerProduct.model'
-import { File, ListFilterIcon, MoreHorizontal, PlusCircleIcon, Trash } from 'lucide-react'
+import { File, ListFilterIcon, MoreHorizontal, Pencil, PlusCircleIcon, Trash } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
 import {
   AlertDialog,
@@ -21,12 +21,12 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import Loading from '@/components/shared/loading'
 
-function BatchTableProduct() {
+function ProviderProductTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const { id } = useParams()
-  console.log(id)
-  const { providerProducts, mutate } = useGetAllProductsProviders(id)
+  const { providerProducts, isLoading, mutate } = useGetAllProductsProviders(id)
   const navigate = useNavigate()
   const { deleteProviderProduct } = useDeleteProviderProduct()
 
@@ -81,10 +81,6 @@ function BatchTableProduct() {
             </Button>
           </div>
         </CardTitle>
-        {/* <CardDescription>
-          Los lotes son una forma de agrupar productos que comparten características similares.
-
-        </CardDescription> */}
       </CardHeader>
       <CardContent>
         <Table>
@@ -157,8 +153,14 @@ function BatchTableProduct() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PRODUCT}/${productProvider.product.id}/detalles`) }}>Ver detalles</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${id}/editar/${productProvider.id}`) }}>Editar</DropdownMenuItem>
+                            {/* <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PRODUCT}/${productProvider.product.id}/detalles`) }}>
+                              <Info className="mr-2 h-4 w-4" />
+                              Detalles
+                            </DropdownMenuItem> */}
+                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${id}/editar/${productProvider.id}`) }}>
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Editar
+                            </DropdownMenuItem>
                             <DropdownMenuItem className="text-red-600">
                               <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                   <AlertDialogTrigger asChild>
@@ -199,7 +201,7 @@ function BatchTableProduct() {
             ))}
           </TableBody>
         </Table>
-        {/* {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>} */}
+        {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
       </CardContent>
       <CardFooter>
         <div className="text-xs text-muted-foreground">
@@ -211,4 +213,4 @@ function BatchTableProduct() {
   )
 }
 
-export default BatchTableProduct
+export default ProviderProductTable

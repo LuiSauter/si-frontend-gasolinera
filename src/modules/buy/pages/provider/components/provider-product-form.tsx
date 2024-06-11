@@ -28,13 +28,16 @@ const formSchema = z.object({
 })
 
 function ProviderProductForm({ buttonText, title }: IFormProps) {
+  const { idProvider, id } = useParams()
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Proveedor', path: PrivateRoutes.PROVIDERPRODUCT },
+    { label: 'Compras', path: PrivateRoutes.PROVIDER },
+    { label: 'Proveedores', path: PrivateRoutes.PROVIDER },
+    { label: 'Detalles del proveedor', path: `${PrivateRoutes.PROVIDERPRODUCT}/${idProvider}/detalles` },
     { label: title }
+
   ])
   const navigate = useNavigate()
-  const { idProvider, id } = useParams()
 
   const { createProviderProduct, error, isMutating } = useCreateProviderProduct()
   const { updateProviderProduct, isMutating: isMutatingUpdate, error: errorUpdate } = useUpdateProviderProduct()
@@ -116,7 +119,7 @@ function ProviderProductForm({ buttonText, title }: IFormProps) {
               {title}
             </h1>
             <div className="hidden items-center gap-2 md:ml-auto md:flex">
-              <Button type='button' onClick={() => { navigate(PrivateRoutes.FUEL) }} variant="outline" size="sm">
+              <Button type='button' onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${idProvider}/detalles`) }} variant="outline" size="sm">
                 Descartar
               </Button>
               <Button type='submit' size="sm" disabled={isMutating ?? isMutatingUpdate}>{buttonText}</Button>

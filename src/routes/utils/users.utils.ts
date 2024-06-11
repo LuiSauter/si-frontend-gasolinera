@@ -17,12 +17,12 @@ export const userRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.USER_CREAR,
-    element: createElement(UserFormPage),
+    element: createElement(UserFormPage, { buttonText: 'Guardar Usuario', title: 'Crear Usuario' }),
     permissions: [PERMISSION.USER]
   },
   {
     path: PrivateRoutes.USER_EDIT,
-    element: createElement(UserFormPage),
+    element: createElement(UserFormPage, { buttonText: 'Editar Usuario', title: 'Actualizar Usuario' }),
     permissions: [PERMISSION.USER]
   },
   {
