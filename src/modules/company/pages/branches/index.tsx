@@ -140,7 +140,7 @@ const BranchesPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => {}}>Editar</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>

@@ -8,7 +8,7 @@ const getAllGroups = async (url: string): Promise<Group[]> => {
 
 const getGroup = async (url: string): Promise<Group> => {
   const response = await fetchData(url)
-  return response
+  return response.data
 }
 
 const createGroup = async (url: string, { arg }: { arg: CreateGroup }): Promise<void> => {

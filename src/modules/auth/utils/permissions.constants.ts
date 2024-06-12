@@ -22,8 +22,6 @@ export enum PERMISSION {
   TANK_SHOW = 'Mostrar tanques',
   FUEL = 'Combustible',
   FUEL_SHOW = 'Mostrar combustibles',
-  PROVIDER = 'Proveedor',
-  PROVIDER_SHOW = 'Mostrar proveedores',
   PRODUCT_OUTPUT = 'Salida de producto',
   PRODUCT_OUTPUT_SHOW = 'Mostrar salidas de producto',
 
@@ -46,6 +44,8 @@ export enum PERMISSION {
   PURCHASE_ORDER_SHOW = 'Mostrar ordenes de compra',
   BUY_NOTE = 'Nota de compra',
   BUY_NOTE_SHOW = 'Mostrar notas de compra',
+  PROVIDER = 'Proveedor',
+  PROVIDER_SHOW = 'Mostrar proveedores',
 }
 
 export const modulePermissions = {
