@@ -11,83 +11,103 @@ import { toast } from 'sonner'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { z } from 'zod'
 import { useEffect } from 'react'
-import { useCreateDispenser, useGetDispenser, useUpdateDispenser } from '@/modules/sales/hooks/useDispenser'
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
 import { type IFormProps } from '@/models'
 import { useHeader } from '@/hooks'
+import { useCreateDiscount, useGetDiscount, useUpdateDiscount } from '@/modules/sales/hooks/useDiscount'
+import { Textarea } from '@/components/ui/textarea'
 
 const formSchema = z.object({
-  ubication: z.string().min(2, 'La ubicación debe tener al menos 3 caracteres')
+  name: z.string().min(2, 'La ubicación debe tener al menos 3 caracteres')
     .max(50, 'La ubicación debe tener máximo 50 caracteres'),
-  max_capacity: z.string(),
+  amount: z.number({ required_error: 'La cantidad es requerida' })
+    .positive('El cantidad debe ser positivo'),
+  type: z.string().max(20, 'El tipo debe tener máximo 20 catacteres'),
+  percentage: z.number({ required_error: 'El porcentaje es requerido' })
+    .positive('El porcentaje debe ser positivo')
+    .min(0, 'El porcentaje minimo es 0')
+    .max(100, 'El porcentaje máximo es 100'),
   branchId: z.string().min(2).max(50),
-  is_active: z.boolean().default(true).optional()
+  is_active: z.boolean().default(true).optional(),
+  description: z.string()
 })
 
-const DispenserForm = ({ buttonText, title }: IFormProps) => {
+const DiscountForm = ({ buttonText, title }: IFormProps) => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
     { label: 'Ventas', path: PrivateRoutes.DiSPENSER },
-    { label: 'Dispensador', path: PrivateRoutes.DiSPENSER },
+    { label: 'Descuentos', path: PrivateRoutes.DISCOUNT },
     { label: title }
   ])
 
   const { branches } = useGetAllBranches()
   const { id } = useParams()
   const navigate = useNavigate()
-  const { createDispenser, isMutating, error } = useCreateDispenser()
-  const { updateDispenser, error: errorUpdate } = useUpdateDispenser()
-  const { dispenser } = useGetDispenser(id)
+  const { createDiscount, isMutating, error } = useCreateDiscount()
+  const { updateDiscount, error: errorUpdate } = useUpdateDiscount()
+  const { discount } = useGetDiscount(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      ubication: dispenser?.ubication ?? '',
-      max_capacity: dispenser?.max_capacity ?? '',
-      branchId: dispenser?.branch.id ?? '',
-      is_active: dispenser?.is_active ?? true
+      name: discount?.name ?? '',
+      amount: discount?.amount ?? 0,
+      type: discount?.type ?? '',
+      description: discount?.description ?? '',
+      branchId: discount?.branch.id ?? '',
+      is_active: discount?.is_active ?? true,
+      percentage: discount?.percentage ?? 0
     }
   })
 
   useEffect(() => {
-    if (dispenser) {
+    if (discount) {
       form.reset({
-        ubication: dispenser.ubication ?? '',
-        branchId: dispenser.branch.id ?? '',
-        is_active: dispenser.is_active ?? true,
-        max_capacity: dispenser.max_capacity ?? ''
+        name: discount?.name ?? '',
+        amount: discount?.amount ?? 0,
+        type: discount?.type ?? '',
+        description: discount?.description ?? '',
+        branchId: discount?.branch.id ?? '',
+        is_active: discount?.is_active ?? true,
+        percentage: discount?.percentage ?? 0
       })
     }
-  }, [dispenser, form])
+  }, [discount, form])
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     if (id) {
-      toast.promise(updateDispenser({
+      toast.promise(updateDiscount({
         id,
+        name: data.name,
+        amount: data.amount,
+        type: data.type,
+        description: data.description,
         branchId: data.branchId,
         is_active: data.is_active ?? true,
-        max_capacity: data.max_capacity,
-        ubication: data.ubication
+        percentage: data.percentage
       }), {
-        loading: 'Actualizando dispensador...',
+        loading: 'Actualizando descuento...',
         success: () => {
-          setTimeout(() => { navigate(PrivateRoutes.DiSPENSER, { replace: true }) }, 1000)
-          return 'Dispensador actualizada exitosamente'
+          setTimeout(() => { navigate(PrivateRoutes.DISCOUNT, { replace: true }) }, 1000)
+          return 'Descuento actualizada exitosamente'
         },
-        error: 'Error al actualizar el dispensador'
+        error: 'Error al actualizar el descuento'
       })
     } else {
-      toast.promise(createDispenser({
-        ubication: data.ubication,
-        max_capacity: data.max_capacity,
+      toast.promise(createDiscount({
+        name: data.name,
+        amount: data.amount,
+        type: data.type,
+        description: data.description,
         branchId: data.branchId,
-        is_active: data.is_active ?? true
+        is_active: data.is_active ?? true,
+        percentage: data.percentage
       }), {
-        loading: 'Creando dispensador...',
+        loading: 'Creando descuento...',
         success: () => {
-          setTimeout(() => { navigate(PrivateRoutes.DiSPENSER, { replace: true }) }, 1000)
-          return 'Dispensador creado exitosamente'
+          setTimeout(() => { navigate(PrivateRoutes.DISCOUNT, { replace: true }) }, 1000)
+          return 'Descuent creado exitosamente'
         },
-        error: 'Error al crear el grupo'
+        error: 'Error al crear el descuento'
       })
     }
   }
@@ -129,7 +149,7 @@ const DispenserForm = ({ buttonText, title }: IFormProps) => {
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
                 <Button
                   type="button"
-                  onClick={() => { navigate(PrivateRoutes.DiSPENSER) }}
+                  onClick={() => { navigate(PrivateRoutes.DISCOUNT) }}
                   variant="outline"
                   size="sm"
                 >
@@ -147,22 +167,22 @@ const DispenserForm = ({ buttonText, title }: IFormProps) => {
               <div className="flex flex-col gap-4 lg:gap-6">
                 <Card x-chunk="dashboard-07-chunk-0" className="w-full">
                   <CardHeader className='px-4 lg:px-6'>
-                    <CardTitle>Detalles del Dispensador</CardTitle>
+                    <CardTitle>Detalles del descuento</CardTitle>
                     <CardDescription>
-                      Ingrese los detalles del dispensador
+                      Ingrese los detalles del descuento
                     </CardDescription>
                   </CardHeader>
                   <CardContent className='px-4 flex flex-col gap-4 lg:px-6 lg:gap-6'>
-                    {/* <div className="grid gap-4 md:grid-cols-2 lg:gap-6"> */}
+                    <div className="grid gap-4 md:grid-cols-2 lg:gap-6">
                       <FormField
                         control={form.control}
-                        name="ubication"
+                        name="name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Ubicación</FormLabel>
+                            <FormLabel>Nombre</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Av. Bolivar..."
+                                placeholder="Descuento por..."
                                 {...field}
                               />
                             </FormControl>
@@ -172,13 +192,13 @@ const DispenserForm = ({ buttonText, title }: IFormProps) => {
                       />
                       <FormField
                         control={form.control}
-                        name="max_capacity"
+                        name="type"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Capacidad Máxima</FormLabel>
+                            <FormLabel>Tipo</FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="100.00"
+                                placeholder="porcentual..."
                                 {...field}
                               />
                             </FormControl>
@@ -186,7 +206,61 @@ const DispenserForm = ({ buttonText, title }: IFormProps) => {
                           </FormItem>
                         )}
                       />
-                    {/* </div> */}
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2 lg:gap-6">
+                      <FormField
+                        control={form.control}
+                        name="amount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Cantidad de descuentos</FormLabel>
+                            <FormControl>
+                              <Input
+                                type='number'
+                                placeholder="0"
+                                {...field}
+                                onChange={(e) => { field.onChange(Number(e.target.value)) }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="percentage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Porcentaje</FormLabel>
+                            <FormControl>
+                              <Input
+                                type='number'
+                                placeholder="50"
+                                {...field}
+                                onChange={(e) => { field.onChange(Number(e.target.value)) }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Descripción</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Descripción del descuento..."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </CardContent>
                 </Card>
               </div>
@@ -267,7 +341,7 @@ const DispenserForm = ({ buttonText, title }: IFormProps) => {
               </div>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button onClick={() => { navigate(PrivateRoutes.DiSPENSER) }} type="button" variant="outline" size="sm">
+              <Button onClick={() => { navigate(PrivateRoutes.DISCOUNT) }} type="button" variant="outline" size="sm">
                 Descartar
               </Button>
               <Button type="submit" size="sm" disabled = {isMutating}>
@@ -281,4 +355,4 @@ const DispenserForm = ({ buttonText, title }: IFormProps) => {
   )
 }
 
-export default DispenserForm
+export default DiscountForm
