@@ -1,6 +1,6 @@
 import { PrivateRoutes } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { Box, Building2Icon, BuildingIcon, DollarSignIcon, FlameIcon, FuelIcon, KeyIcon, LayoutDashboardIcon, PackageIcon, ScrollTextIcon, ShoppingCart, Truck, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
+import { Box, Building2Icon, BuildingIcon, DollarSignIcon, FileText, FlameIcon, FuelIcon, KeyIcon, LayoutDashboardIcon, LogOut, PackageIcon, ScrollTextIcon, ShoppingCart, Tag, Truck, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -93,6 +93,12 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Grupos',
         icon: createElement(UsersIcon, { width: 20, height: 20 }),
         permissions: [PERMISSION.GROUP, PERMISSION.GROUP_SHOW]
+      },
+      {
+        path: PrivateRoutes.OUPUT_PRODUCT,
+        label: 'Salida de productos',
+        icon: createElement(LogOut, { width: 20, height: 20 }),
+        permissions: [PERMISSION.PRODUCT_OUTPUT, PERMISSION.PRODUCT_OUTPUT_SHOW]
       }
     ]
   },
@@ -107,6 +113,12 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Proveedores',
         icon: createElement(Truck, { width: 20, height: 20 }),
         permissions: [PERMISSION.PROVIDER, PERMISSION.PROVIDER_SHOW]
+      },
+      {
+        path: PrivateRoutes.PURCHASE_ORDER,
+        label: 'Ordenes de compra',
+        icon: createElement(FileText, { width: 20, height: 20 }),
+        permissions: [PERMISSION.PURCHASE_ORDER, PERMISSION.PURCHASE_ORDER_SHOW]
       }
     ]
   },
@@ -121,6 +133,12 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Dispensador',
         icon: createElement(Box, { width: 20, height: 20 }),
         permissions: [PERMISSION.DISPENSER, PERMISSION.DISPENSER_SHOW]
+      },
+      {
+        path: PrivateRoutes.DISCOUNT,
+        label: 'Descuentos',
+        icon: createElement(Tag, { width: 20, height: 20 }),
+        permissions: [PERMISSION.DISCOUNT, PERMISSION.DISCOUNT_SHOW]
       }
     ]
   }

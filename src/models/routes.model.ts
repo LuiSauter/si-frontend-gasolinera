@@ -37,6 +37,7 @@ export enum PrivateRoutes {
   GROUP = PrivateRoutes.PRODUCT + '/grupos',
   GROUP_CREAR = PrivateRoutes.GROUP + '/crear',
   GROUP_EDIT = PrivateRoutes.GROUP + '/:id',
+  OUPUT_PRODUCT = PrivateRoutes.PRODUCT + '/salida-productos',
   // Buys
   PROVIDER = '/proveedores',
   PROVIDER_CREATE = PrivateRoutes.PROVIDER + '/crear',
@@ -45,10 +46,14 @@ export enum PrivateRoutes {
   PROVIDER_DETAILS = PrivateRoutes.PROVIDERPRODUCT + '/:id/detalles',
   PROVIDER_PRODUCT_CREATE = PrivateRoutes.PROVIDERPRODUCT + '/:idProvider/asignar',
   PROVIDER_PRODUCT_EDIT = PrivateRoutes.PROVIDERPRODUCT + '/:idProvider/editar/:id',
+  PURCHASE_ORDER = PrivateRoutes.PROVIDER + '/ordenes-de-compras',
   // Sales
   DiSPENSER = '/dispensador',
   DiSPENSER_CREATE = PrivateRoutes.DiSPENSER + '/crear',
   DISPENSER_EDIT = PrivateRoutes.DiSPENSER + '/:id',
+  DISCOUNT = PrivateRoutes.DiSPENSER + '/descuentos',
+  DISCOUNT_CREATE = PrivateRoutes.DISCOUNT + '/crear',
+  DISCOUNT_EDIT = PrivateRoutes.DISCOUNT + '/:id',
 }
 
 export interface Route {

@@ -11,6 +11,7 @@ const FuelForm = lazy(() => import('@modules/inventory/pages/fuel/components/fue
 const CategoryPage = lazy(() => import('@modules/inventory/pages/category-group'))
 const CategoryForm = lazy(() => import('@/modules/inventory/pages/category-group/components/category-group-form'))
 const GroupPage = lazy(() => import('@/modules/inventory/pages/group'))
+const OuputProductsPage = lazy(() => import('@/modules/inventory/pages/output-product'))
 
 export const inventoryRoutes: Route[] = [
   {
@@ -77,5 +78,10 @@ export const inventoryRoutes: Route[] = [
     path: PrivateRoutes.GROUP_EDIT,
     element: createElement(GroupForm, { buttonText: 'Actualizar Grupo', title: 'Editar Grupo' }),
     permissions: [PERMISSION.GROUP]
+  },
+  {
+    path: PrivateRoutes.OUPUT_PRODUCT,
+    element: createElement(OuputProductsPage),
+    permissions: [PERMISSION.PRODUCT_OUTPUT, PERMISSION.PRODUCT_OUTPUT_SHOW]
   }
 ]
