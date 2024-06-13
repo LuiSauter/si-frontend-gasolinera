@@ -35,8 +35,6 @@ import { useHeader } from '@/hooks'
 import Loading from '@/components/shared/loading'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { useDeleteDispenser, useGetAllDispensers } from '../../hooks/useDispenser'
-import { Badge } from '@/components/ui/badge'
 
 import {
   AlertDialog,
@@ -49,18 +47,18 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
+import { useDeleteDiscount, useGetAllDiscounts } from '../../hooks/useDiscount'
 
-const DispenserPage = () => {
+const DiscountPage = () => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
     { label: 'Ventas', path: PrivateRoutes.DiSPENSER },
-    { label: 'Dispensador' }
+    { label: 'Descuentos' }
   ])
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const navigate = useNavigate()
-  const { dispensers, isLoading, error } = useGetAllDispensers()
-  const { deleteDispenser } = useDeleteDispenser()
-
+  const { discounts, isLoading, error, mutate } = useGetAllDiscounts()
+  const { deleteDiscount } = useDeleteDiscount()
   let subscribe = true
   useEffect(() => {
     if (subscribe && error) {
@@ -71,16 +69,17 @@ const DispenserPage = () => {
     }
   }, [error])
 
-  const deletePermanentlyDispenser = (id: string) => {
-    toast.promise(deleteDispenser(id), {
+  const deletePermanentlyDiscount = (id: string) => {
+    toast.promise(deleteDiscount(id), {
       loading: 'Cargando...',
       success: () => {
         setTimeout(() => {
-          navigate(PrivateRoutes.DiSPENSER, { replace: true })
+          void mutate()
+          navigate(PrivateRoutes.DISCOUNT, { replace: true })
         }, 1000)
-        return 'Dispensador desactivado'
+        return 'Descuento eliminado'
       },
-      error: 'Ocurrio un error al desactivar el dispensador'
+      error: 'Ocurrio un error al eliminar el descuento'
     })
     setIsDialogOpen(false)
   }
@@ -118,10 +117,10 @@ const DispenserPage = () => {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only">Exportar</span>
               </Button>
-              <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.DiSPENSER_CREATE) }}>
+              <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.DISCOUNT_CREATE) }}>
                 <PlusCircleIcon className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Agregar Dispensador
+                  Agregar Descuento
                 </span>
               </Button>
             </div>
@@ -129,36 +128,30 @@ const DispenserPage = () => {
           <TabsContent value="week">
             <Card x-chunk="dashboard-05-chunk-3">
               <CardHeader className="px-7">
-                <CardTitle>Dispensadores</CardTitle>
+                <CardTitle>Todos los Descuentos</CardTitle>
                 <CardDescription>
-                  Listado de los dispensadores asociados
+                  Listado de todos los descuentos.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Fecha y hora</TableHead>
-                      <TableHead className='hidden sm:table-cell'>Max. Capacidad</TableHead>
-                      <TableHead className='hidden md:table-cell'>Ubicación</TableHead>
+                      <TableHead>Nombre</TableHead>
+                      <TableHead className='hidden md:table-cell'>Monto</TableHead>
+                      <TableHead className='hidden sm:table-cell'>%Descuento</TableHead>
                       <TableHead className='hidden lg:table-cell'>Sucursal</TableHead>
-                      <TableHead>Estado</TableHead>
                       <TableHead><div className='sr-only'></div></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {dispensers?.length === 0 && <div>No hay dispensadores</div>}
-                    {dispensers?.map((dispenser) => (
-                      <TableRow key={dispenser.id}>
-                        <TableCell>{dispenser.createdAt}</TableCell>
-                        <TableCell className='hidden sm:table-cell'>{dispenser.max_capacity}</TableCell>
-                        <TableCell className='hidden md:table-cell'>{dispenser.ubication}</TableCell>
-                        <TableCell className='hidden lg:table-cell'>{dispenser.branch.name}</TableCell>
-                        <TableCell>
-                            <Badge variant={dispenser.is_active ? 'default' : 'outline'}>
-                                {dispenser.is_active ? 'Activo' : 'Inactivo'}
-                            </Badge>
-                        </TableCell>
+                    {discounts?.length === 0 && <div>No hay dispensadores</div>}
+                    {discounts?.map((discount) => (
+                      <TableRow key={discount.id}>
+                        <TableCell>{discount.name}</TableCell>
+                        <TableCell className='hidden md:table-cell'>{discount.amount}</TableCell>
+                        <TableCell className='hidden sm:table-cell'>{`${discount.percentage} %`}</TableCell>
+                        <TableCell className='hidden lg:table-cell'>{discount.branch.name}</TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -173,7 +166,7 @@ const DispenserPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.DiSPENSER}/${dispenser.id}`) }}>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.DISCOUNT}/${discount.id}`) }}>
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Editar
                               </DropdownMenuItem>
@@ -197,15 +190,15 @@ const DispenserPage = () => {
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Estas seguro de eliminar este dispensador?</AlertDialogTitle>
+                                      <AlertDialogTitle>Estas seguro de eliminar este descuento?</AlertDialogTitle>
                                       <AlertDialogDescription>
                                         Esta acción no se puede deshacer. Esto eliminará permanentemente tu
-                                        dispensador.
+                                        descuento.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => { deletePermanentlyDispenser(dispenser.id) }}>Continue</AlertDialogAction>
+                                      <AlertDialogAction onClick={() => { deletePermanentlyDiscount(discount.id) }}>Continue</AlertDialogAction>
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
                                 </AlertDialog>
@@ -227,4 +220,4 @@ const DispenserPage = () => {
   )
 }
 
-export default DispenserPage
+export default DiscountPage

@@ -1,5 +1,6 @@
 import { type ApiBase } from '@/models'
 import { type Branch } from '@/modules/company/models/branch.model'
+import { type Fuel } from './fuel.model'
 
 export interface Product extends ApiBase {
   code: string
@@ -13,6 +14,7 @@ export interface Product extends ApiBase {
   branch?: Branch
   category?: Category
   groups?: ProductGroup[]
+  fuel?: Fuel
 }
 
 export interface CreateProduct extends Partial<Product> {

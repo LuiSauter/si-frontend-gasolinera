@@ -10,6 +10,8 @@ export enum PrivateRoutes {
   SETTINGS = '/configuracion',
   // users
   USER = '/usuarios',
+  PROFILE = PrivateRoutes.USER + '/perfil',
+  PROFILE_UPDATE = PrivateRoutes.PROFILE + '/editar',
   USER_CREAR = PrivateRoutes.USER + '/crear',
   USER_EDIT = PrivateRoutes.USER + '/:id',
   ROLES = PrivateRoutes.USER + '/roles',
@@ -37,18 +39,27 @@ export enum PrivateRoutes {
   GROUP = PrivateRoutes.PRODUCT + '/grupos',
   GROUP_CREAR = PrivateRoutes.GROUP + '/crear',
   GROUP_EDIT = PrivateRoutes.GROUP + '/:id',
+  OUPUT_PRODUCT = PrivateRoutes.PRODUCT + '/salida-productos',
   // Buys
-  PROVIDER = '/proveedores',
+  BUY = '/compras',
+  PROVIDER = PrivateRoutes.BUY + '/proveedores',
   PROVIDER_CREATE = PrivateRoutes.PROVIDER + '/crear',
   PROVIDER_EDIT = PrivateRoutes.PROVIDER + '/:id',
   PROVIDERPRODUCT = PrivateRoutes.PROVIDER + '/proveedores&productos',
   PROVIDER_DETAILS = PrivateRoutes.PROVIDERPRODUCT + '/:id/detalles',
   PROVIDER_PRODUCT_CREATE = PrivateRoutes.PROVIDERPRODUCT + '/:idProvider/asignar',
   PROVIDER_PRODUCT_EDIT = PrivateRoutes.PROVIDERPRODUCT + '/:idProvider/editar/:id',
+  PURCHASE_ORDER = PrivateRoutes.BUY + '/ordenes-de-compras',
+  PURCHASE_ORDER_CREATE = PrivateRoutes.PURCHASE_ORDER + '/crear',
+  PURCHASE_ORDER_EDIT = PrivateRoutes.PURCHASE_ORDER + '/:id',
+  PURCHASE_ORDER_DETAIL = PrivateRoutes.PURCHASE_ORDER + '/:id' + '/detalles',
   // Sales
   DiSPENSER = '/dispensador',
   DiSPENSER_CREATE = PrivateRoutes.DiSPENSER + '/crear',
   DISPENSER_EDIT = PrivateRoutes.DiSPENSER + '/:id',
+  DISCOUNT = PrivateRoutes.DiSPENSER + '/descuentos',
+  DISCOUNT_CREATE = PrivateRoutes.DISCOUNT + '/crear',
+  DISCOUNT_EDIT = PrivateRoutes.DISCOUNT + '/:id',
 }
 
 export interface Route {

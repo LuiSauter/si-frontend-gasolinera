@@ -44,7 +44,7 @@ function ProviderProductForm({ buttonText, title }: IFormProps) {
 
   const { providerProduct } = useGetProviderProduct(id)
   // const { updateFuel, isMutating: isMutatingUpdate, error: errorUpdate } = useUpdateFuel()
-  const { products, isLoading: isLoadingProducts } = useGetAllProducts()
+  const { products, isLoading: isLoadingProducts } = useGetAllProducts({ isGetAll: true })
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -126,118 +126,118 @@ function ProviderProductForm({ buttonText, title }: IFormProps) {
             </div>
           </div>
           {/* <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8"> */}
-            <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+          <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
             <Card x-chunk="dashboard-07-chunk-0">
-                <CardHeader>
-                  <CardTitle>Detalles del producto para el Proveedor</CardTitle>
-                  <CardDescription>
-                    En esta sección puede asignar un producto al proveedor. Recuerda que los campos marcados con * son obligatorios
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='grid gap-4 lg:gap-6'>
-                  <div className="grid lg:grid-cols-2 gap-4 lg:gap-6">
-                    <FormField
-                      control={form.control}
-                      name="last_price"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Último precio *</FormLabel>
-                          <FormControl>
-                            <Input
-                              type='number'
-                              placeholder="Coloque un precio..."
-                              {...field}
-                              onChange={(e) => { field.onChange(Number(e.target.value)) }}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="productId"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col justify-between space-y-1 pt-1">
-                          <FormLabel className='leading-normal'>Producto *</FormLabel>
-                          {!isLoadingProducts && <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant="outline"
-                                  role="combobox"
-                                  className={cn(
-                                    'justify-between',
-                                    !field.value && 'text-muted-foreground'
-                                  )}
-                                >
-                                  {field.value
-                                    ? products?.find(
-                                      (product) => product.id === field.value
-                                    )?.name
-                                    : 'Selecciona un producto'}
-                                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="p-0">
-                              <Command>
-                                <CommandInput placeholder="Seleccionar un producto..." />
-                                <CommandList>
+              <CardHeader>
+                <CardTitle>Detalles del producto para el Proveedor</CardTitle>
+                <CardDescription>
+                  En esta sección puede asignar un producto al proveedor. Recuerda que los campos marcados con * son obligatorios
+                </CardDescription>
+              </CardHeader>
+              <CardContent className='grid gap-4 lg:gap-6'>
+                <div className="grid lg:grid-cols-2 gap-4 lg:gap-6">
+                  <FormField
+                    control={form.control}
+                    name="last_price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Último precio *</FormLabel>
+                        <FormControl>
+                          <Input
+                            type='number'
+                            placeholder="Coloque un precio..."
+                            {...field}
+                            onChange={(e) => { field.onChange(Number(e.target.value)) }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="productId"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col justify-between space-y-1 pt-1">
+                        <FormLabel className='leading-normal'>Producto *</FormLabel>
+                        {!isLoadingProducts && <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  'justify-between',
+                                  !field.value && 'text-muted-foreground'
+                                )}
+                              >
+                                {field.value
+                                  ? products?.find(
+                                    (product) => product.id === field.value
+                                  )?.name
+                                  : 'Selecciona un producto'}
+                                <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="p-0">
+                            <Command>
+                              <CommandInput placeholder="Seleccionar un producto..." />
+                              <CommandList>
 
-                                  <CommandEmpty>Producto no encontrado.</CommandEmpty>
-                                  <CommandGroup>
-                                    {products?.map((product) => (
-                                      <CommandItem
-                                        value={product.name}
-                                        key={product.id}
-                                        onSelect={() => {
-                                          form.setValue('productId', product.id)
-                                        }}
-                                      >
-                                        <CheckCheckIcon
-                                          className={cn(
-                                            'mr-2 h-4 w-4',
-                                            product.id === field.value
-                                              ? 'opacity-100'
-                                              : 'opacity-0'
-                                          )}
-                                        />
-                                        {product.name}
-                                      </CommandItem>
-                                    ))}
-                                  </CommandGroup>
-                                </CommandList>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>}
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="grid lg:grid-cols-1 gap-4 lg:gap-6">
-                    <FormField
-                      control={form.control}
-                      name="detail"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Detalle *</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Coloque un detalle..."
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-            {/* <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+                                <CommandEmpty>Producto no encontrado.</CommandEmpty>
+                                <CommandGroup>
+                                  {products?.map((product) => (
+                                    <CommandItem
+                                      value={product.name}
+                                      key={product.id}
+                                      onSelect={() => {
+                                        form.setValue('productId', product.id)
+                                      }}
+                                    >
+                                      <CheckCheckIcon
+                                        className={cn(
+                                          'mr-2 h-4 w-4',
+                                          product.id === field.value
+                                            ? 'opacity-100'
+                                            : 'opacity-0'
+                                        )}
+                                      />
+                                      {product.name}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>}
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid lg:grid-cols-1 gap-4 lg:gap-6">
+                  <FormField
+                    control={form.control}
+                    name="detail"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Detalle *</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Coloque un detalle..."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          {/* <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
               <Card x-chunk="dashboard-07-chunk-3">
                 <CardHeader>
                   <CardTitle>Estado del combustible</CardTitle>
