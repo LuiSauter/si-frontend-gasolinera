@@ -11,7 +11,7 @@ import {
   useReactTable
   , type ColumnDef
 } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal, Search, PlusCircleIcon, Trash, Pencil } from 'lucide-react'
+import { ArrowUpDown, MoreHorizontal, Search, PlusCircleIcon, Pencil, PowerOff, Power } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -45,11 +45,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { useDeleteUser, useGetAllUser } from '@/modules/users/hooks/useUser'
+import { useDeleteUser, useGetAllUser, useGetUser } from '@/modules/users/hooks/useUser'
 import { toast } from 'sonner'
 import { type ApiBase } from '@/models'
 import Loading from '@/components/shared/loading'
 import { useHeader } from '@/hooks'
+import { Badge } from '@/components/ui/badge'
 
 export interface NewUser extends ApiBase {
   name: string
@@ -104,10 +105,20 @@ export const columns: Array<ColumnDef<NewUser>> = [
   },
   {
     accessorKey: 'phone',
-    header: () => <div>Telefono</div>,
+    header: 'Teléfono',
     cell: ({ row }) => {
-      const phone = parseFloat(row.getValue('phone'))
-      return <div className="font-medium">{phone}</div>
+      return <div className="font-medium">{row.getValue('phone')}</div>
+    }
+  },
+  {
+    accessorKey: 'isActive',
+    header: 'Estado',
+    cell: ({ row }) => {
+      return <div className="font-medium">
+              <Badge variant={row.getValue('isActive') ? 'default' : 'outline'}>
+                  {row.getValue('isActive') ? 'Activo' : 'Inactivo'}
+              </Badge>
+      </div>
     }
   },
   {
@@ -118,6 +129,7 @@ export const columns: Array<ColumnDef<NewUser>> = [
     cell: ({ row }) => {
       const [isDialogOpen, setIsDialogOpen] = React.useState(false)
       const navigation = useNavigate()
+      const { user } = useGetUser(row.getValue('id'))
       const { deleteUser } = useDeleteUser()
       const deletePermanentlyRole = () => {
         toast.promise(deleteUser(row.getValue('id')), {
@@ -126,7 +138,7 @@ export const columns: Array<ColumnDef<NewUser>> = [
             setTimeout(() => {
               navigation(PrivateRoutes.USER, { replace: true })
             }, 1000)
-            return 'Usuario eliminado exitosamente'
+            return 'Usuario desactivado exitosamente'
           },
           error: 'Puede que el usuario tenga permisos asignados, por lo que no se puede eliminar'
         })
@@ -163,17 +175,29 @@ export const columns: Array<ColumnDef<NewUser>> = [
                     onClick={(event) => { event.stopPropagation() }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Trash className="mr-2 h-4 w-4" />
-                      Delete
+                      {user?.isActive
+                        ? (
+                        <>
+                            <PowerOff className="mr-2 h-4 w-4" />
+                            Desactivar
+                        </>
+                          )
+                        : (
+                        <>
+                            <Power className="mr-2 h-4 w-4" />
+                            Activar
+                        </>
+                          )
+                      }
                     </div>
                   </div>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Estas seguro de eliminar este usuario?</AlertDialogTitle>
+                    <AlertDialogTitle>Estas seguro de desactivar este usuario?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Esta acción no se puede deshacer. Esto eliminará permanentemente tu
-                      cuenta y eliminar sus datos de nuestros servidores.
+                      Esta acción no se puede deshacer. Esto desactivara permanentemente tu
+                      usuario.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

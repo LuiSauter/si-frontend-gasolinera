@@ -12,19 +12,15 @@ import { useNavigate, useParams } from 'react-router-dom'
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
 
 import { z } from 'zod'
 import { useGetAllRole } from '@/modules/auth/hooks/useRole'
-import { type Role } from '@/modules/auth/models/role.model'
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
-import { type Branch } from '@/modules/company/models/branch.model'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { useHeader } from '@/hooks'
 import { type IFormProps } from '@/models'
@@ -56,54 +52,20 @@ const UserFormPage = ({ buttonText, title }: IFormProps) => {
   const { user } = useGetUser(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      address: '',
-      email: '',
-      name: '',
-      phone: '',
-      password: '',
-      gender: '',
-      rol: '',
-      branch: '',
-      ci: ''
+    values: {
+      name: user?.name ?? '',
+      ci: (user?.ci ?? 0).toString(),
+      address: user?.address ?? '',
+      phone: user?.phone ?? '',
+      email: user?.email ?? '',
+      rol: user?.role?.id ?? '',
+      branch: user?.branch?.id ?? '',
+      password: user?.password ?? '',
+      gender: user?.gender ?? ''
     }
   })
 
-  const [selectedValueRol, setSelectedValueRol] = useState('')
-  const handleValueChangeRol = (value: string) => {
-    setSelectedValueRol(value)
-  }
-
-  const [selectedValueSucursal, setSelectedValueSucursal] = useState('')
-  const handleValueChangeSucursal = (value: string) => {
-    setSelectedValueSucursal(value)
-  }
-
-  const [selectedValueGender, setSelectedValueGender] = useState('')
-  const handleValueChangeGender = (value: string) => {
-    setSelectedValueGender(value)
-  }
-
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user.name ?? '',
-        ci: (user.ci ?? 0).toString(),
-        address: user.address ?? '',
-        phone: user.phone ?? '',
-        email: user.email ?? '',
-        rol: user.role.id ?? '',
-        branch: user.branch.id ?? '',
-        password: user.password ?? '', // Ensure password is blank
-        gender: user.gender ?? ''
-      })
-    }
-  }, [user, form])
-
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    data.rol = selectedValueRol ?? ''
-    data.branch = selectedValueSucursal ?? ''
-    data.gender = selectedValueGender ?? ''
     const ciNumber = parseInt(data.ci, 10)
 
     if (id) {
@@ -181,196 +143,220 @@ const UserFormPage = ({ buttonText, title }: IFormProps) => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
-              <Card x-chunk="dashboard-07-chunk-0" className='w-full' >
-                <CardHeader>
-                  <CardTitle>{id ? 'Actualizar usuario' : 'Crear nuevo usuario'}</CardTitle>
-                  <CardDescription>
-                    {id ? 'Complete los datos para actualizar su usuario' : 'Complete los datos para crear un nuevo usuario'}
-                  </CardDescription>
-                  {error && <CardDescription className='text-danger dark:text-danger'>
-                    {error?.errorMessages[0]}
-                  </CardDescription>}
-                </CardHeader>
-                <CardContent className='grid gap-4 lg:gap-6'>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="ci"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>CI</FormLabel>
-                          <FormControl>
-                            <Input placeholder="10360074.." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nombre</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Sucursal 4to anillo..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Contraseña</FormLabel>
-                          <FormControl>
-                            <Input placeholder="************" type='password' {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Teléfono</FormLabel>
-                          <FormControl>
-                            <Input placeholder="77112200..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Correo electronico</FormLabel>
-                          <FormControl>
-                            <Input placeholder="sucursal@example.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Direccion</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Av. Mapaizo..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                  </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="rol"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Rol</FormLabel>
-                          <FormControl>
-                            <Select value={selectedValueRol} onValueChange={handleValueChangeRol}>
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Seleccione el rol" {...field}>
-                                </SelectValue>
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Roles</SelectLabel>
-                                  {allRoles?.map((role: Role) => (
-                                    <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            {/* <Input placeholder="Selecciona un rol" {...field} /> */}
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
+            <div className="grid gap-4 lg:gap-6 lg:grid-cols-[1fr_250px] xl:grid-cols-[1fr_300px]">
+              <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+                <Card x-chunk="dashboard-07-chunk-0" className='w-full' >
+                  <CardHeader>
+                    <CardTitle>{id ? 'Actualizar usuario' : 'Crear nuevo usuario'}</CardTitle>
+                    <CardDescription>
+                      {id ? 'Complete los datos para actualizar su usuario' : 'Complete los datos para crear un nuevo usuario'}
+                    </CardDescription>
+                    {error && <CardDescription className='text-danger dark:text-danger'>
+                      {error?.errorMessages[0]}
+                    </CardDescription>}
+                  </CardHeader>
+                  <CardContent className='grid gap-4 lg:gap-6'>
+                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                      <FormField
+                        control={form.control}
+                        name="ci"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>CI</FormLabel>
+                            <FormControl>
+                              <Input placeholder="10360074.." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nombre</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Sucursal 4to anillo..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Contraseña</FormLabel>
+                            <FormControl>
+                              <Input placeholder="************" type='password' {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Teléfono</FormLabel>
+                            <FormControl>
+                              <Input placeholder="77112200..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Correo electronico</FormLabel>
+                            <FormControl>
+                              <Input placeholder="sucursal@example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="address"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Direccion</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Av. Mapaizo..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              <div className="grid auto-rows-max items-start gap-4 lg:gap-6">
+                <Card x-chunk="dashboard-07-chunk-3">
+                  <CardHeader>
+                    <CardTitle>Genero</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                  <FormField
                       control={form.control}
                       name="gender"
-                      defaultValue=""
-                      render={() => (
+                      render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Genero</FormLabel>
-                          <FormControl>
-                            <Select value={selectedValueGender} onValueChange={handleValueChangeGender}>
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Seleccione el genero" />
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger id="gender" aria-label="Selecciona un género">
+                                <SelectValue placeholder="Selecciona un género" />
                               </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Generos</SelectLabel>
-                                  <SelectItem value="masculino">masculino</SelectItem>
-                                  <SelectItem value="femenino">femenino</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
+                            </FormControl>
+                            <SelectContent>
+                                <SelectItem value={'masculino'}>
+                                  masculino
+                                </SelectItem>
+                                <SelectItem value={'femenino'}>
+                                  femenino
+                                </SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                  </CardContent>
+                </Card>
+                <Card x-chunk="dashboard-07-chunk-5">
+                  <CardHeader>
+                    <CardTitle>Sucursal</CardTitle>
+                    <CardDescription>
+                      Seleccione la sucursal del producto
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
                     <FormField
                       control={form.control}
                       name="branch"
-                      defaultValue=""
-                      render={() => (
+                      render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Sucursal</FormLabel>
-                          <FormControl>
-                            <Select value={selectedValueSucursal} onValueChange={handleValueChangeSucursal}>
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Seleccione la sucursal">
-
-                                </SelectValue>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger id="branch" aria-label="Selecciona una sucursal">
+                                <SelectValue placeholder="Selecciona una sucursal" />
                               </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Sucursales</SelectLabel>
-                                  {branches?.map((branch: Branch) => (
-                                    <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
+                            </FormControl>
+                            <SelectContent>
+                              {branches?.map((branch) => (
+                                <SelectItem key={branch.id} value={branch.id}>
+                                  {branch.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+                <Card x-chunk="dashboard-07-chunk-5">
+                  <CardHeader>
+                    <CardTitle>Roles</CardTitle>
+                    <CardDescription>
+                      Seleccione el rol para el usuario
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <FormField
+                      control={form.control}
+                      name="rol"
+                      render={({ field }) => (
+                        <FormItem>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger id="rol" aria-label="Selecciona un rol">
+                                <SelectValue placeholder="Selecciona una sucursal" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {allRoles?.map((role) => (
+                                <SelectItem key={role.id} value={role.id}>
+                                  {role.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
               <Button type='button' variant="outline" size="sm" >
