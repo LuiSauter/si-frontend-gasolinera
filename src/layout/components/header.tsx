@@ -43,7 +43,7 @@ const Header = () => {
           <BreadcrumbList>
             {breadcrumb.map((item, index) => (
               item.path
-                ? (<div className='flex items-center gap-2' key={index}>
+                ? (<div className='flex items-center sm:gap-2' key={index}>
                   <BreadcrumbItem>
 
                     <Link to={item.path}>{item.label}</Link>
