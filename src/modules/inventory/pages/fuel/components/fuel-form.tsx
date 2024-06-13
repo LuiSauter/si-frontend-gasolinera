@@ -40,7 +40,7 @@ function FuelForm({ buttonText, title }: IFormProps) {
   const { fuel } = useGetFuel(id)
   const { createFuel, error, isMutating } = useCreateFuel()
   const { updateFuel, isMutating: isMutatingUpdate, error: errorUpdate } = useUpdateFuel()
-  const { products, isLoading: isLoadingProducts } = useGetAllProducts()
+  const { products, isLoading: isLoadingProducts } = useGetAllProducts({ isGetAll: true })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -188,15 +188,17 @@ function FuelForm({ buttonText, title }: IFormProps) {
                                   variant="outline"
                                   role="combobox"
                                   className={cn(
-                                    'justify-between',
+                                    'justify-between font-normal',
                                     !field.value && 'text-muted-foreground'
                                   )}
                                 >
                                   {field.value
-                                    ? products?.find(
-                                      (product) => product.id === field.value
-                                    )?.name
-                                    : 'Selecciona un producto'}
+                                    ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
+                                      {products?.find(
+                                        (product) => product.id === field.value
+                                      )?.name}
+                                    </span>)
+                                    : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Selecciona un producto</span>}
                                   <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
                               </FormControl>
@@ -205,7 +207,6 @@ function FuelForm({ buttonText, title }: IFormProps) {
                               <Command>
                                 <CommandInput placeholder="Seleccionar un producto..." />
                                 <CommandList>
-
                                   <CommandEmpty>Producto no encontrado.</CommandEmpty>
                                   <CommandGroup>
                                     {products?.map((product) => (

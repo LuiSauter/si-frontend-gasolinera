@@ -18,6 +18,8 @@ export const ENDPOINTS = {
   GROUP: '/api/group',
   PRODUCT: '/api/product',
   FUEL: '/api/fuel',
+  BATCH: '/api/batch',
+  TANK: '/api/tank',
   // buys
   PROVIDER: '/api/providers',
   PROVIDER_PRODUCT: '/api/provider-product/all',
