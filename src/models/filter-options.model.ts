@@ -12,3 +12,7 @@ export interface FilterOptions {
   attr?: string
   value?: string
 }
+
+export interface GetAllProps {
+  isGetAll?: boolean
+}
