@@ -31,11 +31,13 @@ import {
   TabsContent
 } from '@/components/ui/tabs'
 import { useNavigate } from 'react-router-dom'
-import { type Category } from '../../models/category.model'
 import { useHeader } from '@/hooks'
 import Loading from '@/components/shared/loading'
-import { useDeleteCategory, useGetAllCategorys } from '../../hooks/useCategory'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { useDeleteDispenser, useGetAllDispensers } from '../../hooks/useDispenser'
+import { Badge } from '@/components/ui/badge'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,35 +49,46 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { useState } from 'react'
 
-const CategoryPage = () => {
+const DispenserPage = () => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Inventario', path: PrivateRoutes.CATEGORY },
-    { label: 'Categorias' }
+    { label: 'Ventas', path: PrivateRoutes.DiSPENSER },
+    { label: 'Dispensador' }
   ])
-  const navigate = useNavigate()
-  const { categorys, isLoading } = useGetAllCategorys()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const { deleteCategory } = useDeleteCategory()
-  const deletePermanentlyCategory = (id: string) => {
-    toast.promise(deleteCategory(id), {
+  const navigate = useNavigate()
+  const { dispensers, isLoading, error } = useGetAllDispensers()
+  const { deleteDispenser } = useDeleteDispenser()
+
+  let subscribe = true
+  useEffect(() => {
+    if (subscribe && error) {
+      toast.error(error.errorMessages[0])
+    }
+    return () => {
+      subscribe = false
+    }
+  }, [error])
+
+  const deletePermanentlyDispenser = (id: string) => {
+    toast.promise(deleteDispenser(id), {
       loading: 'Cargando...',
       success: () => {
         setTimeout(() => {
-          navigate(PrivateRoutes.CATEGORY, { replace: true })
+          navigate(PrivateRoutes.DiSPENSER, { replace: true })
         }, 1000)
-        return 'Categoría eliminada exitosamente'
+        return 'Dispensador desactivado'
       },
-      error: 'Ocurrio un error al eliminar la categoría'
+      error: 'Ocurrio un error al desactivar el dispensador'
     })
     setIsDialogOpen(false)
   }
+
   return (
-    <section className="grid flex-1 items-start gap-4 sm:py-0 md:gap-8">
-      <div className="grid auto-rows-max items-start gap-4 md:gap-6 lg:col-span-2">
-        <Tabs defaultValue="week" className='grid gap-4'>
+    <main className="grid flex-1 items-start gap-4 lg:gap-6">
+      <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+        <Tabs defaultValue="week">
           <div className="flex items-center">
             <div className="ml-auto flex items-center gap-2">
               <DropdownMenu>
@@ -105,43 +118,47 @@ const CategoryPage = () => {
                 <File className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only">Exportar</span>
               </Button>
-              <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.CATEGORY_CREAR) }}>
+              <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.DiSPENSER_CREATE) }}>
                 <PlusCircleIcon className="h-3.5 w-3.5" />
                 <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Agregar Categoria
+                  Agregar Dispensador
                 </span>
               </Button>
             </div>
           </div>
           <TabsContent value="week">
             <Card x-chunk="dashboard-05-chunk-3">
-              <CardHeader className="px-6">
-                <CardTitle>Categorias</CardTitle>
+              <CardHeader className="px-7">
+                <CardTitle>Dispensadores</CardTitle>
                 <CardDescription>
-                  Listado de los categorias disponibles
+                  Listado de los dispensadores asociados
                 </CardDescription>
               </CardHeader>
-              <CardContent className=''>
-                <Table >
+              <CardContent>
+                <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Imagen</TableHead>
-                      <TableHead>Nombre</TableHead>
-                      <TableHead className='hidden sm:table-cell'>Descripción</TableHead>
+                      <TableHead>Fecha y hora</TableHead>
+                      <TableHead className='hidden sm:table-cell'>Max. Capacidad</TableHead>
+                      <TableHead className='hidden md:table-cell'>Ubicación</TableHead>
+                      <TableHead className='hidden lg:table-cell'>Sucursal</TableHead>
+                      <TableHead>Estado</TableHead>
+                      <TableHead><div className='sr-only'></div></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {categorys?.length === 0 && <div>No hay permisos</div>}
-                    {categorys?.map((category: Category) => (
-                      <TableRow key={category.id}>
+                    {dispensers?.length === 0 && <div>No hay dispensadores</div>}
+                    {dispensers?.map((dispenser) => (
+                      <TableRow key={dispenser.id}>
+                        <TableCell>{dispenser.createdAt}</TableCell>
+                        <TableCell className='hidden sm:table-cell'>{dispenser.max_capacity}</TableCell>
+                        <TableCell className='hidden md:table-cell'>{dispenser.ubication}</TableCell>
+                        <TableCell className='hidden lg:table-cell'>{dispenser.branch.name}</TableCell>
                         <TableCell>
-                          <img
-                            src={category.image_url} alt=""
-                            className="w-16 h-16 object-cover rounded-lg"
-                          />
+                            <Badge variant={dispenser.is_active ? 'default' : 'outline'}>
+                                {dispenser.is_active ? 'Activo' : 'Inactivo'}
+                            </Badge>
                         </TableCell>
-                        <TableCell>{category.name}</TableCell>
-                        <TableCell className='hidden sm:table-cell'>{category?.description}</TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -156,12 +173,11 @@ const CategoryPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.CATEGORY}/${category.id}`) }}>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.DiSPENSER}/${dispenser.id}`) }}>
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Editar
                               </DropdownMenuItem>
-
-                              <DropdownMenuItem className="text-red-600" onClick={() => { setIsDialogOpen(false) }} >
+                              <DropdownMenuItem className="text-red-600">
                                 <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                   <AlertDialogTrigger asChild>
                                     <div
@@ -181,20 +197,19 @@ const CategoryPage = () => {
                                   </AlertDialogTrigger>
                                   <AlertDialogContent>
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>¿Estas seguro de eliminar esta categoría?</AlertDialogTitle>
+                                      <AlertDialogTitle>Estas seguro de eliminar este dispensador?</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        Esta acción no se puede deshacer.
-                                        Esto eliminará permanentemente la categoría.
+                                        Esta acción no se puede deshacer. Esto eliminará permanentemente tu
+                                        dispensador.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => { deletePermanentlyCategory(category.id) }}>Continue</AlertDialogAction>
+                                      <AlertDialogAction onClick={() => { deletePermanentlyDispenser(dispenser.id) }}>Continue</AlertDialogAction>
                                     </AlertDialogFooter>
                                   </AlertDialogContent>
                                 </AlertDialog>
                               </DropdownMenuItem>
-
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -208,8 +223,8 @@ const CategoryPage = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </section>
+    </main>
   )
 }
 
-export default CategoryPage
+export default DispenserPage

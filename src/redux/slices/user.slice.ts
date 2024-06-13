@@ -1,6 +1,7 @@
+import { type User } from '@/modules/users/models/user.model'
 import { createSlice } from '@reduxjs/toolkit'
 
-const UserEmptyState: any = {} as any
+const UserEmptyState: User = {} as User
 
 export const userSlice = createSlice({
   name: 'user',

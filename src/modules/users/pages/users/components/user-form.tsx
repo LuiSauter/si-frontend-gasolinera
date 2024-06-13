@@ -26,6 +26,8 @@ import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
 import { type Branch } from '@/modules/company/models/branch.model'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { useHeader } from '@/hooks'
+import { type IFormProps } from '@/models'
 
 const formSchema = z.object({
   ci: z.string().min(2).max(50),
@@ -39,7 +41,12 @@ const formSchema = z.object({
   branch: z.string()
 })
 
-const UserFormPage = () => {
+const UserFormPage = ({ buttonText, title }: IFormProps) => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Usuario', path: PrivateRoutes.USER },
+    { label: title }
+  ])
   const { id } = useParams()
   const navigate = useNavigate()
   const { createUser, isMutating, error } = useCreateUser()
@@ -65,19 +72,16 @@ const UserFormPage = () => {
   const [selectedValueRol, setSelectedValueRol] = useState('')
   const handleValueChangeRol = (value: string) => {
     setSelectedValueRol(value)
-    console.log('Selected Value:', value)
   }
 
   const [selectedValueSucursal, setSelectedValueSucursal] = useState('')
   const handleValueChangeSucursal = (value: string) => {
     setSelectedValueSucursal(value)
-    console.log('Selected Value:', value)
   }
 
   const [selectedValueGender, setSelectedValueGender] = useState('')
   const handleValueChangeGender = (value: string) => {
     setSelectedValueGender(value)
-    console.log('Selected Value:', value)
   }
 
   useEffect(() => {
@@ -167,13 +171,13 @@ const UserFormPage = () => {
                   <span className="sr-only">Volver</span>
                 </Button>
                 <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                  {id ? 'Lista usuarios' : 'Crear Usuario'}
+                  {title}
                 </h2>
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
                   <Button type='button' onClick={() => { navigate(PrivateRoutes.USER) }} variant="outline" size="sm">
                     Descartar
                   </Button>
-                  <Button type='submit' size="sm" >{id ? 'Actualizar' : 'Guardar'}</Button>
+                  <Button type='submit' size="sm" >{buttonText}</Button>
                 </div>
               </div>
             </div>
@@ -359,48 +363,14 @@ const UserFormPage = () => {
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
-                            {/* <Input placeholder="Sucursal 1" {...field} /> */}
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    {/* <FormField
-                      control={form.control}
-                      name="gender"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Teléfono</FormLabel>
-                          <FormControl>
-                            <Input placeholder="masculino" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    /> */}
                   </div>
                 </CardContent>
               </Card>
-              {/* {id && <Card className='h-full justify-evenly flex flex-col w-full min-w-80 lg:w-96'>
-                <CardHeader>
-                  <CardTitle>Suspender Sucursal</CardTitle>
-                  <CardDescription>
-                    Suspender la sucursal seleccionada de la empresa
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4 lg:gap-6">
-                    <Button
-                      type='button'
-                      variant="outline"
-                      size="sm"
-                    >
-                      Suspender
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>} */}
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
               <Button type='button' variant="outline" size="sm" >
@@ -411,96 +381,6 @@ const UserFormPage = () => {
           </form>
         </Form>
       </section>
-      {/* <CardHeader className="px-7">
-        <CardTitle>{id ? 'Actualizar usuario' : 'Crear nuevo usuario'}</CardTitle>
-        <CardDescription>
-          {id ? 'Complete los datos para actualizar su usuario' : 'Complete los datos para crear un nuevo usuario'}
-        </CardDescription>
-      </CardHeader>
-      <div className='max-w-screen-md mx-auto'>
-        <Card x-chunk="dashboard-05-chunk-3">
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full min-w-[700px]">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <>
-                      <div className='grid gap-4 lg:grid-cols-2'>
-                        <FormItem>
-                          <FormLabel>Nombre Completo</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Juan" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem>
-                          <FormLabel>Género</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Seleciona un género" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      </div>
-                      <div className='grid gap-4 lg:grid-cols-2'>
-                        <FormItem>
-                          <FormLabel>Carnet de identidad</FormLabel>
-                          <FormControl>
-                            <Input placeholder="9807687" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem>
-                          <FormLabel>Teléfono</FormLabel>
-                          <FormControl>
-                            <Input placeholder="78010833" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      </div>
-                      <div className='grid gap-4 lg:grid-cols-2'>
-                        <FormItem>
-                          <FormLabel>Domicilio</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Calle falsa #123" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem>
-                          <FormLabel>Rol</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Selecciona un rol" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      </div>
-                      <div className='grid gap-4 lg:grid-cols-2'>
-                        <FormItem>
-                          <FormLabel>Correo electronico</FormLabel>
-                          <FormControl>
-                            <Input placeholder="ejemplo@gmail.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem>
-                          <FormLabel>Contraseña</FormLabel>
-                          <FormControl>
-                            <Input placeholder="**********" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      </div>
-                    </>
-                  )}
-                />
-                <Button type="submit">{id ? 'Actualizar' : 'Crear usuario'}</Button>
-              </form>
-
-            </Form>
-          </CardContent>
-        </Card>
-      </div> */}
     </>
   )
 }

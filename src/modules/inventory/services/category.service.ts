@@ -8,7 +8,7 @@ const getAllCategorys = async (url: string): Promise<Category[]> => {
 
 const getCategory = async (url: string): Promise<Category> => {
   const response = await fetchData(url)
-  return response
+  return response.data
 }
 
 const createCategory = async (url: string, { arg }: { arg: CreateCategory }): Promise<void> => {
