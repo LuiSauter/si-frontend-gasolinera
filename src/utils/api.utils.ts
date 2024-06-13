@@ -25,6 +25,7 @@ export const ENDPOINTS = {
   PROVIDER_PRODUCT: '/api/provider-product/all',
   PROVIDER_PRODUCT_CREATE: '/api/provider-product',
   PROVIDER_PRODUCT_EDIT: '/api/provider-product/one',
+  PURCHASE_ORDER: '/api/purchase-order',
   // sales
   DISPENSER: '/api/dispenser',
   DISCOUNT: '/api/discount',

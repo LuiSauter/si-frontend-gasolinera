@@ -83,3 +83,9 @@ export const extractDate = (date: string) => { // '15/02/2021' to 'Mon Feb 15 20
   const year = parseInt(dateParts[2], 10)
   return new Date(year, month, day).toDateString()
 }
+
+// Date to date hour: 15 feb 2021 15:30
+export function FormatDateMMMDYYYYHHMM(dateString: string): string {
+  const date = new Date(dateString)
+  return `${date.getDate()} ${date.toLocaleDateString('es-BO', { month: 'short' })} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+}
