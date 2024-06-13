@@ -1,5 +1,6 @@
 import { ModeToggle } from '@/components/mode-toggle'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import ProfileForm from '@/modules/users/pages/profile/components/profile-form'
 
 const SettingPage = (): JSX.Element => {
   return (
@@ -14,11 +15,7 @@ const SettingPage = (): JSX.Element => {
             <TabsTrigger value="appearance">Apariencia</TabsTrigger>
           </TabsList>
           <TabsContent value="account">
-            <div className="mx-auto grid w-full pt-2 lg:pt-4">
-              <p className='text-light-text-secondary dark:text-dark-text-secondary'>
-                Actualice la configuración de su cuenta
-              </p>
-            </div>
+            <ProfileForm title='Actualizar cuenta' buttonText='Actualizar'></ProfileForm>
           </TabsContent>
           <TabsContent value="appearance">
             <div className="mx-auto grid w-full pt-2 lg:pt-4 gap-4 lg:gap-6">

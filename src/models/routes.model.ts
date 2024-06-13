@@ -10,6 +10,8 @@ export enum PrivateRoutes {
   SETTINGS = '/configuracion',
   // users
   USER = '/usuarios',
+  PROFILE = PrivateRoutes.USER + '/perfil',
+  PROFILE_UPDATE = PrivateRoutes.PROFILE + '/editar',
   USER_CREAR = PrivateRoutes.USER + '/crear',
   USER_EDIT = PrivateRoutes.USER + '/:id',
   ROLES = PrivateRoutes.USER + '/roles',

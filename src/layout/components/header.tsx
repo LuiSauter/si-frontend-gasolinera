@@ -1,4 +1,4 @@
-import { CircleUser, Menu } from 'lucide-react'
+import { CircleUser, LogOut, Menu, Settings, User } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
@@ -65,10 +65,19 @@ const Header = () => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className='cursor-pointer'>Perfil</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.SETTINGS) }} className='cursor-pointer'>Configuración</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.PROFILE) }} className='cursor-pointer'>
+            <User className="mr-2 h-4 w-4" />
+            Perfil
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.SETTINGS) }} className='cursor-pointer'>
+            <Settings className="mr-2 h-4 w-4" />
+            Configuración
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={signOut} className='cursor-pointer'>Cerrar sesión</DropdownMenuItem>
+          <DropdownMenuItem onClick={signOut} className='cursor-pointer'>
+            <LogOut className="mr-2 h-4 w-4" />
+            Cerrar sesión
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
