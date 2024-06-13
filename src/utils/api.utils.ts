@@ -17,7 +17,9 @@ export const ENDPOINTS = {
   CATEGORY: '/api/category',
   GROUP: '/api/group',
   PRODUCT: '/api/product',
-  FUEL: '/api/fuel'
+  FUEL: '/api/fuel',
+  BATCH: '/api/batch',
+  TANK: '/api/tank'
 }
 
 export const API_BASEURL = AppConfig.API_URL

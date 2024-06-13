@@ -1,17 +1,61 @@
-import { type ApiResponse } from '@/models'
+import { type GetAllProps, type ApiResponse } from '@/models'
+import useSWR, { type KeyedMutator } from 'swr'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { type ResponseError } from '@/utils/response-error.utils'
-import useSWR from 'swr'
 import { createProduct, deleteProduct, getAllCategories, getAllGroups, getAllProducts, getProduct, updateProduct } from '../services/product.service'
 import useSWRMutation from 'swr/mutation'
 import { type Category, type Group, type CreateProduct, type Product } from '../models/product.model'
+import { useAuthorization } from '@/hooks/useAuthorization'
+import { useEffect } from 'react'
+import { toast } from 'sonner'
+import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
+import { filterStateDefault, useFilterData } from '@/hooks/useFilterData'
 
-const useGetAllProducts = () => {
-  const { data, isLoading, error, mutate } = useSWR<ApiResponse, ResponseError>(API_BASEURL + ENDPOINTS.PRODUCT, getAllProducts)
+interface UseGetAllProductsProps extends GetAllProps {
+  branchId?: string
+}
+
+const useGetAllProducts = ({ isGetAll }: UseGetAllProductsProps) => {
+  const { verifyPermission } = useAuthorization()
+  let mounted = true
+  useEffect(() => {
+    if (!verifyPermission([PERMISSION.PRODUCT, PERMISSION.PRODUCT_SHOW])) {
+      mounted && toast.info('No tienes permisos para listar los productos, comunícate con un administrador.')
+    }
+    return () => {
+      mounted = false
+    }
+  }, [!verifyPermission([PERMISSION.PRODUCT, PERMISSION.PRODUCT_SHOW])])
+
+  if (!verifyPermission([PERMISSION.PRODUCT, PERMISSION.PRODUCT_SHOW])) {
+    return {
+      products: [],
+      countData: 0,
+      isLoading: false,
+      error: undefined,
+      mutate: (() => { }) as KeyedMutator<ApiResponse>,
+
+      search: () => { },
+      setFilterOptions: () => { },
+      setOffset: () => { },
+      changeOrder: () => { },
+      filterOptions: filterStateDefault,
+      newPage: () => { },
+      prevPage: () => { }
+    }
+  }
+
+  const { changeOrder, filterOptions, newPage, prevPage, queryParams, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
+
+  const query = isGetAll ? '' : queryParams
+  const fetchURL = `${API_BASEURL + ENDPOINTS.PRODUCT}?${query}`
+  const { data, isLoading, error, mutate } = useSWR<ApiResponse, ResponseError>(fetchURL, getAllProducts)
 
   const products: Product[] = data?.data as Product[] ?? []
 
-  return { products, countData: data?.countData, isLoading, error, mutate }
+  return {
+    products, countData: data?.countData, isLoading, error, mutate, changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset
+  }
 }
 
 const useCreateProduct = () => {
