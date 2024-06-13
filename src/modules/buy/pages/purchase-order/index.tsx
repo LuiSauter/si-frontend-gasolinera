@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
@@ -30,13 +31,12 @@ import {
   Tabs,
   TabsContent
 } from '@/components/ui/tabs'
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useHeader } from '@/hooks'
-import { Badge } from '@/components/ui/badge'
-// import { useGetAllBranches } from '../../hooks/useBranch'
-// import Loading from '@/components/shared/loading'
-// import { useEffect } from 'react'
-// import { toast } from 'sonner'
+import { useGetAllPurchaseOrders } from '../../hooks/usePurchaseOrder'
+import Skeleton from '@/components/shared/skeleton'
+import Pagination from '@/components/shared/pagination'
+import { FormatDateMMMDYYYYHHMM } from '@/utils'
 
 const PurchaseOrderPage = () => {
   useHeader([
@@ -44,7 +44,8 @@ const PurchaseOrderPage = () => {
     { label: 'Compras', path: PrivateRoutes.COMPANY },
     { label: 'Ordenes de compra' }
   ])
-  //   const navigate = useNavigate()
+  const { purchaseOrders, filterOptions, isLoading, newPage, prevPage, setOffset, countData } = useGetAllPurchaseOrders({ isGetAll: false })
+  const navigate = useNavigate()
   //   const { branches, isLoading, error } = useGetAllBranches()
 
   //   let subscribe = true
@@ -58,205 +59,125 @@ const PurchaseOrderPage = () => {
   //   }, [error])
 
   return (
-    <main className="grid flex-1 items-start gap-4 lg:gap-6">
-      <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-        <Tabs defaultValue="week">
-          <div className="flex items-center">
-            <div className="ml-auto flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 gap-1 text-sm"
-                  >
-                    <ListFilterIcon className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only">Filtrar</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>
-                    Todos
-                  </DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+    <Tabs defaultValue="week" className='grid gap-2 overflow-hidden w-full relative'>
+      <div className="flex items-center">
+        <div className="ml-auto flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button
-                size="sm"
                 variant="outline"
+                size="sm"
                 className="h-7 gap-1 text-sm"
               >
-                <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only">Exportar</span>
+                <ListFilterIcon className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only">Filtrar</span>
               </Button>
-              {/* onClick={() => { navigate(PrivateRoutes.BRANCH_CREATE) }} */}
-              <Button size="sm" className="h-8 gap-1" >
-                <PlusCircleIcon className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Agregar Orden
-                </span>
-              </Button>
-            </div>
-          </div>
-          <TabsContent value="week">
-            <Card x-chunk="dashboard-05-chunk-3">
-              <CardHeader className="px-7">
-                <CardTitle>Ordenes de Compra</CardTitle>
-                <CardDescription>
-                  Listado de todas las ordenes de compra.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className='hidden sm:table-cell'>Fecha y hora</TableHead>
-                      <TableHead>Motivo</TableHead>
-                      <TableHead className='hidden md:table-cell'>Proveedor</TableHead>
-                      <TableHead className='hidden lg:table-cell'>Sucursal</TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        Estado
-                      </TableHead>
-                      <TableHead className="hidden md:table-cell">Productos</TableHead>
-                      <TableHead><div className='sr-only'></div></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {/* {branches?.length === 0 && <div>No hay sucursales</div>}
-                    {branches?.map((branch) => (
-                      <TableRow key={branch.id}>
-                        <TableCell>{branch.name}</TableCell>
-                        <TableCell className='hidden sm:table-cell'>{branch.address}</TableCell>
-                        <TableCell className='hidden md:table-cell'>{branch.email}</TableCell>
-                        <TableCell className='hidden lg:table-cell'>{branch.phone}</TableCell>
-                        <TableCell>{branch.is_suspended ? 'Suspendido' : 'Activo'}</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))} */}
-                    <TableRow >
-                        <TableCell className='hidden sm:table-cell'>03/06/2024</TableCell>
-                        <TableCell>Adicionar stock</TableCell>
-                        <TableCell className='hidden md:table-cell'>Penzoil</TableCell>
-                        <TableCell className='hidden lg:table-cell'>Sucursal 1</TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <Badge variant= 'default'>
-                            {/* {provider.isActive ? 'Activo' : 'Inactivo'} */}
-                            finalizado
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">3</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow >
-                        <TableCell className='hidden sm:table-cell'>13/12/2024</TableCell>
-                        <TableCell>Restaurar stock</TableCell>
-                        <TableCell className='hidden md:table-cell'>YPFB</TableCell>
-                        <TableCell className='hidden lg:table-cell'>Sucursal 2</TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <Badge variant= 'destructive'>
-                            {/* {provider.isActive ? 'Activo' : 'Inactivo'} */}
-                            cancelado
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">5</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow >
-                        <TableCell className='hidden sm:table-cell'>14/12/2024</TableCell>
-                        <TableCell>Restaurar stock</TableCell>
-                        <TableCell className='hidden md:table-cell'>Coca Cola</TableCell>
-                        <TableCell className='hidden lg:table-cell'>Sucursal 1</TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          <Badge variant= 'secondary'>
-                            {/* {provider.isActive ? 'Activo' : 'Inactivo'} */}
-                            en proceso
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">1</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                  </TableBody>
-                </Table>
-                {/* {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>} */}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem checked>
+                Todos
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 gap-1 text-sm"
+          >
+            <File className="h-3.5 w-3.5" />
+            <span className="sr-only sm:not-sr-only">Exportar</span>
+          </Button>
+          <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.PURCHASE_ORDER_CREATE) }}>
+            <PlusCircleIcon className="h-3.5 w-3.5" />
+            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+              Agregar Orden
+            </span>
+          </Button>
+        </div>
       </div>
-    </main>
+      <TabsContent value="week" className='relative overflow-hidden'>
+        <Card x-chunk="dashboard-05-chunk-3">
+          <CardHeader className="px-7">
+            <CardTitle>Ordenes de Compra</CardTitle>
+            <CardDescription>
+              Listado de todas las ordenes de compra.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='overflow-hidden relative w-full'>
+            <div className='overflow-x-auto'>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Fecha y hora</TableHead>
+                    <TableHead>Motivo</TableHead>
+                    <TableHead>Proveedor</TableHead>
+                    <TableHead>Sucursal</TableHead>
+                    <TableHead>
+                      Estado
+                    </TableHead>
+                    {/* <TableHead className="hidden md:table-cell">Productos</TableHead> */}
+                    <TableHead><div className='sr-only'></div></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {/* {branches?.length === 0 && <div>No hay sucursales</div>} */}
+                  {isLoading
+                    ? <Skeleton rows={filterOptions.limit} columns={6} />
+                    : purchaseOrders?.map((purchaseOrder) => (
+                      <TableRow key={purchaseOrder.id}>
+                        <TableCell>{FormatDateMMMDYYYYHHMM(purchaseOrder.createdAt)}</TableCell>
+                        <TableCell title={purchaseOrder.reason}>
+                          {purchaseOrder.reason
+                            ? (purchaseOrder.reason.length > 40 ? purchaseOrder.reason.substring(0, 40) + '...' : purchaseOrder.reason)
+                            : '-'
+                          }
+                        </TableCell>
+                        <TableCell>{purchaseOrder.provider.name}</TableCell>
+                        <TableCell>{purchaseOrder.state}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                              <DropdownMenuItem onClick={() => { }}>Ver detalle</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Pagination
+              allItems={countData ?? 0}
+              currentItems={purchaseOrders?.length ?? 0}
+              limit={filterOptions.limit}
+              newPage={() => { newPage(countData ?? 0) }}
+              offset={filterOptions.offset}
+              prevPage={prevPage}
+              setOffset={setOffset}
+              setLimit={() => { }}
+              params={true}
+            />
+          </CardFooter>
+        </Card>
+      </TabsContent>
+    </Tabs>
   )
 }
 
