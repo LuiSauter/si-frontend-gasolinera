@@ -4,11 +4,14 @@ import { createCategory, deleteCategory, getAllCategorys, getCategory, updateCat
 import { type ResponseError } from '@/utils/response-error.utils'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import useSWRMutation from 'swr/mutation'
+import { filterStateDefault, useFilterData } from '@/hooks/useFilterData'
+import { type ApiResponse } from '@/models'
 
 const useGetAllCategorys = () => {
-  const { data, isLoading, error, mutate } = useSWR<Category[], ResponseError>(API_BASEURL + ENDPOINTS.CATEGORY, getAllCategorys)
+  const { changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
+  const { data, isLoading, error, mutate } = useSWR<ApiResponse, ResponseError>(API_BASEURL + ENDPOINTS.CATEGORY, getAllCategorys)
 
-  return { categorys: data, isLoading, error, mutate }
+  return { categorys: data?.data as Category[], countData: data?.countData ?? 0, isLoading, error, mutate, changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset }
 }
 
 const useCreateCategory = () => {
