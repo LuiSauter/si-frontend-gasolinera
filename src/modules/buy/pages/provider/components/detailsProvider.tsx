@@ -21,6 +21,7 @@ function ProviderDetailsPage(): JSX.Element {
   const navigate = useNavigate()
   const { id } = useParams()
   const { provider } = useGetProvider(id)
+
   return (
     <Tabs defaultValue="all">
       <section className="grid flex-1 items-start gap-4 lg:gap-6">
@@ -41,7 +42,6 @@ function ProviderDetailsPage(): JSX.Element {
           <div className="w-full sm:w-fit sm:ml-auto flex items-center justify-between gap-4">
             <TabsList>
               <TabsTrigger value="all">Productos</TabsTrigger>
-              {/* <TabsTrigger value="product-output">Salidas</TabsTrigger> */}
               <TabsTrigger value="buys">Compras</TabsTrigger>
             </TabsList>
             <DropdownMenu>
@@ -52,7 +52,7 @@ function ProviderDetailsPage(): JSX.Element {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PRODUCT}/${id}`) }}>Editar</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDER}/${provider?.id}`) }}>Editar</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className='text-danger'>{provider?.isActive ? 'Desactivar' : 'Activar'}</DropdownMenuItem>
               </DropdownMenuContent>
@@ -127,7 +127,7 @@ function ProviderDetailsPage(): JSX.Element {
             </Card>
           </div>
 
-          <div className="grid auto-rows-max items-start gap-4 lg:gap-6">
+          <div className="flex flex-col gap-4 overflow-hidden lg:gap-6">
             <TabsContent value="all" className='mt-0'>
               <ProviderProductTable />
             </TabsContent>
