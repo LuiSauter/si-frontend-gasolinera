@@ -47,7 +47,7 @@ export const buyRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.PURCHASE_ORDER_CREATE,
-    element: createElement(PurchaseOrderFormPage, { buttonText: 'Guardar Orden de Compra', title: 'Crear Orden de Compra' }),
+    element: createElement(PurchaseOrderFormPage, { buttonText: 'Guardar', title: 'Crear Orden de Compra' }),
     permissions: [PERMISSION.PURCHASE_ORDER]
   },
   {
