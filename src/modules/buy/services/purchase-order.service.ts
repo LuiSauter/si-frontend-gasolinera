@@ -1,5 +1,5 @@
 import { fetchData } from '@/utils'
-import { type CreatePurchaseOrder, type PurchaseOrder } from '../models/purchase-order'
+import { type CreatePurchaseOrder, type PurchaseOrder } from '../models/purchase-order.model'
 import { type ApiResponse } from '@/models'
 
 const createPurchaseOrder = async (url: string, { arg }: { arg: CreatePurchaseOrder }): Promise<void> => {
