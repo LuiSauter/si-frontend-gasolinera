@@ -210,20 +210,20 @@ const UserFormPage = ({ buttonText, title }: IFormProps) => {
                       )}
                     />
                   </div>
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      defaultValue={user?.password}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Contraseña</FormLabel>
-                          <FormControl>
-                            <Input placeholder="************" type='password' {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    defaultValue={user?.password}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contraseña</FormLabel>
+                        <FormControl>
+                          <Input placeholder="************" type='password' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="address"
