@@ -294,7 +294,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                               <Command>
                                 <CommandInput placeholder="Seleccionar un producto..." />
                                 <CommandList>
-                                  <CommandEmpty>Producto no encontrado.</CommandEmpty>
+                                  <CommandEmpty>Sucursal no encontrada</CommandEmpty>
                                   <CommandGroup>
                                     {branches?.map((branch) => (
                                       <CommandItem

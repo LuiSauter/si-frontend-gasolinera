@@ -4,11 +4,8 @@ import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { type ResponseError } from '@/utils/response-error.utils'
 import { type User, type CreateUser, type UpdateUser } from '../models/user.model'
 import useSWR from 'swr'
-
-// const useCreateUser = () => {
-//   const { trigger, isMutating, error } = useSWRMutation<Promise<void>, ResponseError, string, CreateUser>(API_BASEURL + ENDPOINTS.USER, createUser)
-//   return { createUser: trigger, isMutating, error }
-// }
+import { filterStateDefault, useFilterData } from '@/hooks/useFilterData'
+import { type ApiResponse } from '@/models'
 
 const useCreateUser = () => {
   const { trigger, isMutating, error } = useSWRMutation<Promise<void>, ResponseError, string, CreateUser>(API_BASEURL + ENDPOINTS.USER, createUser)
@@ -21,8 +18,9 @@ const useGetUser = (id?: string) => {
 }
 
 const useGetAllUser = () => {
-  const { data, error, isLoading } = useSWR<User[], ResponseError>(API_BASEURL + ENDPOINTS.USER, getAllUser)
-  return { allUsers: data, error, isLoading }
+  const { changeOrder, filterOptions, newPage, prevPage, queryParams, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
+  const { data, error, isLoading, mutate } = useSWR<ApiResponse, ResponseError>(`${API_BASEURL + ENDPOINTS.USER}?${queryParams}`, getAllUser)
+  return { allUsers: data?.data ?? [], countData: data?.countData ?? 0, error, isLoading, mutate, changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset }
 }
 
 const useUpdateUser = () => {
