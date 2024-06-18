@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { useHeader } from '@/hooks'
 import { type IFormProps } from '@/models'
 import { PrivateRoutes } from '@/models/routes.model'
@@ -104,7 +105,7 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto w-full flex flex-col gap-4 lg:gap-6">
             <div>
               <div className="flex items-center gap-4">
-                <Button type='button' onClick={() => { navigate(PrivateRoutes.PROVIDER) }} variant="outline" size="icon" className="h-7 w-7">
+                <Button type='button' onClick={() => { navigate(-1) }} variant="outline" size="icon" className="h-7 w-7">
                   <ChevronLeftIcon className="h-4 w-4" />
                   <span className="sr-only">Volver</span>
                 </Button>
@@ -128,7 +129,7 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className='grid gap-4 lg:gap-6'>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                  <div className="grid gap-4 lg:gap-6 md:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="name"
@@ -157,8 +158,6 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
                         </FormItem>
                       )}
                     />
-                  </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
                     <FormField
                       control={form.control}
                       name="phone"
@@ -188,36 +187,34 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
                       )}
                     />
                   </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Dirección</FormLabel>
-                          <FormControl>
-                            <Input placeholder=" Av. Bolivar, 4to anillo..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="detail"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Detalle</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Proveedor de productos" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dirección</FormLabel>
+                        <FormControl>
+                          <Input placeholder=" Av. Bolivar, 4to anillo..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="detail"
+                    defaultValue=""
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Detalle</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Proveedor de productos" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </CardContent>
               </Card>
               {/* {id && <Card className='h-full justify-evenly flex flex-col w-full min-w-80 lg:w-96'>

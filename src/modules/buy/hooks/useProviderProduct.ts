@@ -5,6 +5,7 @@ import useSWR from 'swr'
 import { createProviderProduct, deleteProviderProduct, getAllProductProvider, getProviderProduct, updateProviderProduct } from '../services/providerProduct.service'
 import { type UpdateProviderProduct, type CreateProviderProduct, type ProviderProduct } from '../models/providerProduct.model'
 import useSWRMutation from 'swr/mutation'
+import { useMemo } from 'react'
 
 // const useGetProduct = (id?: string) => {
 //   if (!id) return { product: null, isLoading: false, error: null, isValidating: false }
@@ -21,6 +22,9 @@ const useDeleteProviderProduct = () => {
 //   return { deleteGroup: trigger, error, isMutating }
 // }
 const useGetProviderProduct = (id?: string) => {
+  if (!id || id === '') {
+    return { providerProduct: null, isLoading: false, error: null, isValidating: false }
+  }
   const { data, isLoading, error, isValidating } = useSWR<ProviderProduct, ResponseError>(id ? API_BASEURL + ENDPOINTS.PROVIDER_PRODUCT_EDIT + `/${id}` : null, getProviderProduct)
   return { providerProduct: data, isLoading, error, isValidating }
 }
@@ -36,9 +40,16 @@ const useUpdateProviderProduct = () => {
 }
 
 const useGetAllProductsProviders = (id?: string) => {
-  const { data, isLoading, error, mutate } = useSWR<ProviderProduct[], ResponseError>(API_BASEURL + ENDPOINTS.PROVIDER_PRODUCT + `/${id}`, getAllProductProvider)
+  // if (!id) return { providerProducts: null, isLoading: false, error: null, mutate: null }
+  const apiURL = id ? API_BASEURL + ENDPOINTS.PROVIDER_PRODUCT + `/${id}` : null
+  const { data, isLoading, error, mutate } = useSWR<ProviderProduct[], ResponseError>(apiURL, getAllProductProvider)
 
-  return { providerProducts: data, isLoading, error, mutate }
+  const value = useMemo(() => {
+    return { providerProducts: data, isLoading, error, mutate }
+  }, [data, isLoading, error, mutate])
+
+  // return { providerProducts: data, isLoading, error, mutate }
+  return value
 }
 
 export { useGetAllProductsProviders, useCreateProviderProduct, useGetProviderProduct, useUpdateProviderProduct, useDeleteProviderProduct }

@@ -114,15 +114,11 @@ const PurchaseOrderPage = () => {
                     <TableHead>Motivo</TableHead>
                     <TableHead>Proveedor</TableHead>
                     <TableHead>Sucursal</TableHead>
-                    <TableHead>
-                      Estado
-                    </TableHead>
-                    {/* <TableHead className="hidden md:table-cell">Productos</TableHead> */}
+                    <TableHead>Estado</TableHead>
                     <TableHead><div className='sr-only'></div></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {/* {branches?.length === 0 && <div>No hay sucursales</div>} */}
                   {isLoading
                     ? <Skeleton rows={filterOptions.limit} columns={6} />
                     : purchaseOrders?.map((purchaseOrder) => (
@@ -135,6 +131,7 @@ const PurchaseOrderPage = () => {
                           }
                         </TableCell>
                         <TableCell>{purchaseOrder.provider.name}</TableCell>
+                        <TableCell>{purchaseOrder.branch.name}</TableCell>
                         <TableCell>{purchaseOrder.state}</TableCell>
                         <TableCell>
                           <DropdownMenu>
@@ -151,7 +148,7 @@ const PurchaseOrderPage = () => {
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                               <DropdownMenuItem onClick={() => { }}>Ver detalle</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PURCHASE_ORDER}/${purchaseOrder.id}`) }}>Editar</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>

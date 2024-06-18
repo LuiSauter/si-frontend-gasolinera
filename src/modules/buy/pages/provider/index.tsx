@@ -36,6 +36,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { useState } from 'react'
+import Pagination from '@/components/shared/pagination'
 
 const ProviderPage = (): JSX.Element => {
   useHeader([
@@ -44,7 +45,7 @@ const ProviderPage = (): JSX.Element => {
     { label: 'Proveedores' }
   ])
   const navigate = useNavigate()
-  const { providers, isLoading } = useGetAllProvider()
+  const { providers, countData, isLoading, filterOptions, newPage, prevPage, setOffset } = useGetAllProvider()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const { deleteProvider } = useDeleteProvider()
@@ -108,7 +109,7 @@ const ProviderPage = (): JSX.Element => {
             <CardHeader>
               <CardTitle>Proveedores</CardTitle>
               <CardDescription>
-              Listado de todos los proveedores de la empresa.
+                Listado de todos los proveedores de la empresa.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -171,46 +172,41 @@ const ProviderPage = (): JSX.Element => {
                             </DropdownMenuItem>
                             <DropdownMenuItem >
                               <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                    <AlertDialogTrigger asChild>
-                                      <div
-                                        style={{
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          width: '100%',
-                                          justifyContent: 'space-between'
-                                        }}
-                                        onClick={(event) => { event.stopPropagation() }}
-                                      >
-                                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        {provider.isActive
-                                          ? (
-                                          <>
-                                              <PowerOff className="mr-2 h-4 w-4" />
-                                              Desactivar
-                                          </>
-                                            )
-                                          : (
-                                          <>
-                                              <Power className="mr-2 h-4 w-4" />
-                                              Activar
-                                          </>
-                                            )
-                                        }
-                                      </div>
-                                      </div>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle>Estas seguro de que quieres desactivar este proveedor?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          Esta acción no se puede deshacer. Esto desactivara permanentemente este proveedor.
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => { deletePermanentlyProvider(provider.id) }}>Continue</AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
+                                <AlertDialogTrigger asChild>
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      width: '100%',
+                                      justifyContent: 'space-between'
+                                    }}
+                                    onClick={(event) => { event.stopPropagation() }}
+                                  >
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                      {provider.isActive
+                                        ? <>
+                                          <PowerOff className="mr-2 h-4 w-4" />
+                                          Desactivar
+                                        </>
+                                        : <>
+                                          <Power className="mr-2 h-4 w-4" />
+                                          Activar
+                                        </>}
+                                    </div>
+                                  </div>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Estas seguro de que quieres desactivar este proveedor?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Esta acción no se puede deshacer. Esto desactivara permanentemente este proveedor.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => { deletePermanentlyProvider(provider.id) }}>Continue</AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
                               </AlertDialog>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -222,11 +218,18 @@ const ProviderPage = (): JSX.Element => {
               </Table>
               {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
             </CardContent>
-            <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Mostrando <strong>1-3</strong> de <strong>3</strong>{' '}
-                productos
-              </div>
+            <CardFooter className='w-full'>
+              <Pagination
+                allItems={countData ?? 0}
+                currentItems={providers?.length ?? 0}
+                limit={filterOptions.limit}
+                newPage={() => { newPage(countData ?? 0) }}
+                offset={filterOptions.offset}
+                prevPage={prevPage}
+                setOffset={setOffset}
+                setLimit={() => { }}
+                params={true}
+              />
             </CardFooter>
           </Card>
         </TabsContent>

@@ -1,36 +1,14 @@
 import * as React from 'react'
 import {
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable
-  , type ColumnDef
+  type ColumnFiltersState, type SortingState, type VisibilityState, type ColumnDef,
+  flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable
 } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal, Search, PlusCircleIcon, Pencil, PowerOff, Power } from 'lucide-react'
+import { ArrowUpDown, MoreHorizontal, Search, PlusCircleIcon, Trash, Pencil } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CardHeader, CardDescription, CardTitle } from '@/components/ui/card'
 import { useNavigate } from 'react-router-dom'
 import { PrivateRoutes } from '@/models/routes.model'
@@ -45,12 +23,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { useDeleteUser, useGetAllUser, useGetUser } from '@/modules/users/hooks/useUser'
+import { useDeleteUser, useGetAllUser } from '@/modules/users/hooks/useUser'
 import { toast } from 'sonner'
-import { type ApiBase } from '@/models'
 import Loading from '@/components/shared/loading'
 import { useHeader } from '@/hooks'
-import { Badge } from '@/components/ui/badge'
+import { type ApiBase } from '@/models'
+import { type User } from '@/modules/users/models/user.model'
 
 export interface NewUser extends ApiBase {
   name: string
@@ -71,7 +49,7 @@ export const columns: Array<ColumnDef<NewUser>> = [
     header: () => {
       return <div className='pl-0 read-only'></div>
     },
-    cell: ({ row }) => { console.log(row) }
+    cell: () => { }
   },
   {
     accessorKey: 'name',
@@ -105,20 +83,18 @@ export const columns: Array<ColumnDef<NewUser>> = [
   },
   {
     accessorKey: 'phone',
-    header: 'Teléfono',
+    header: () => <div>Telefono</div>,
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue('phone')}</div>
+      const phone = parseFloat(row.getValue('phone'))
+      return <div className="font-medium">{phone}</div>
     }
   },
   {
-    accessorKey: 'isActive',
-    header: 'Estado',
+    accessorKey: 'branch',
+    header: () => <div>Sucursal</div>,
     cell: ({ row }) => {
-      return <div className="font-medium">
-              <Badge variant={row.getValue('isActive') ? 'default' : 'outline'}>
-                  {row.getValue('isActive') ? 'Activo' : 'Inactivo'}
-              </Badge>
-      </div>
+      // const branch = row.getValue('branch')
+      return <div className="font-medium">{row.getValue('branch')}</div>
     }
   },
   {
@@ -129,7 +105,6 @@ export const columns: Array<ColumnDef<NewUser>> = [
     cell: ({ row }) => {
       const [isDialogOpen, setIsDialogOpen] = React.useState(false)
       const navigation = useNavigate()
-      const { user } = useGetUser(row.getValue('id'))
       const { deleteUser } = useDeleteUser()
       const deletePermanentlyRole = () => {
         toast.promise(deleteUser(row.getValue('id')), {
@@ -138,9 +113,11 @@ export const columns: Array<ColumnDef<NewUser>> = [
             setTimeout(() => {
               navigation(PrivateRoutes.USER, { replace: true })
             }, 1000)
-            return 'Usuario desactivado exitosamente'
+            return 'Usuario eliminado exitosamente'
           },
-          error: 'Puede que el usuario tenga permisos asignados, por lo que no se puede eliminar'
+          error(error) {
+            return error.errorMessages[0] ?? 'Puede que el usuario tenga permisos asignados, por lo que no se puede eliminar'
+          }
         })
         setIsDialogOpen(false)
       }
@@ -175,29 +152,17 @@ export const columns: Array<ColumnDef<NewUser>> = [
                     onClick={(event) => { event.stopPropagation() }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      {user?.isActive
-                        ? (
-                        <>
-                            <PowerOff className="mr-2 h-4 w-4" />
-                            Desactivar
-                        </>
-                          )
-                        : (
-                        <>
-                            <Power className="mr-2 h-4 w-4" />
-                            Activar
-                        </>
-                          )
-                      }
+                      <Trash className="mr-2 h-4 w-4" />
+                      Delete
                     </div>
                   </div>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Estas seguro de desactivar este usuario?</AlertDialogTitle>
+                    <AlertDialogTitle>Estas seguro de eliminar este usuario?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Esta acción no se puede deshacer. Esto desactivara permanentemente tu
-                      usuario.
+                      Esta acción no se puede deshacer. Esto eliminará permanentemente tu
+                      cuenta y eliminar sus datos de nuestros servidores.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -230,7 +195,7 @@ export function DataTableDemo() {
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
-  const newAllUsers = React.useMemo(() => allUsers?.map((user) => ({
+  const newAllUsers = React.useMemo(() => allUsers?.map((user: User) => ({
     ...user,
     branch: user.branch.name,
     role: user.role.name
@@ -258,9 +223,7 @@ export function DataTableDemo() {
     <div className="w-full">
       <CardHeader className="p-0">
         <CardTitle>Usuarios</CardTitle>
-        <CardDescription>
-          Listado de todos los usuarios
-        </CardDescription>
+        <CardDescription>Listado de todos los usuarios</CardDescription>
       </CardHeader>
       <div className="flex items-center py-4 justify-between">
         <div className="relative max-w-sm">
@@ -323,7 +286,7 @@ export function DataTableDemo() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                 {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
+                  {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
                 </TableCell>
               </TableRow>)}
           </TableBody>

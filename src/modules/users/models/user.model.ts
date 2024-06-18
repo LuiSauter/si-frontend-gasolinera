@@ -15,18 +15,10 @@ export interface User extends ApiBase {
   branch: Branch
   password: string
 }
-export interface CreateUser {
-  ci: number
-  name: string
-  email: string
-  password: string
+export interface CreateUser extends Partial<Omit<User, 'role' | 'branch' | 'gender'>> {
   gender: string
-  address: string
-  phone: string
   role: string
-  branch: string
+  branch?: string
 }
 
-export interface UpdateUser extends CreateUser {
-  id: string
-}
+export interface UpdateUser extends CreateUser { }

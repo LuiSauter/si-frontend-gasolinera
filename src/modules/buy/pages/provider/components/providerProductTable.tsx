@@ -89,19 +89,12 @@ function ProviderProductTable() {
               <TableHead className="hidden w-[100px] sm:table-cell">
                 Imagen
               </TableHead>
-              <TableHead className=''>Nombre</TableHead>
-              <TableHead className='hidden xl:table-cell'>Descripción</TableHead>
-              <TableHead className=''>Stock Min.</TableHead>
-              <TableHead className='hidden sm:table-cell'>Stock</TableHead>
-              <TableHead className="hidden lg:table-cell">
-                Precio de compra
-              </TableHead>
-              {/* <TableHead className="hidden md:table-cell">
-                      Precio de venta
-                    </TableHead> */}
-              <TableHead className="hidden md:table-cell">
-                Estado
-              </TableHead>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Descripción</TableHead>
+              <TableHead>Stock Min.</TableHead>
+              <TableHead>Stock</TableHead>
+              <TableHead>Precio de compra</TableHead>
+              <TableHead>Estado</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
@@ -109,95 +102,86 @@ function ProviderProductTable() {
           </TableHeader>
           <TableBody>
             {providerProducts?.map((productProvider: ProviderProduct) => (
-                    <TableRow key={productProvider.product.id}>
-                      <TableCell className="hidden sm:table-cell">
-                        <img
-                          alt="Product image"
-                          className="aspect-square rounded-md object-cover"
-                          height="64"
-                          src={productProvider.product.image_url}
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {productProvider.product.name}
-                      </TableCell>
-                      <TableCell className="hidden xl:table-cell">
-                        {productProvider.product.description}
-                      </TableCell>
-                      <TableCell>
-                        {productProvider.product.minimum_stock}
-                      </TableCell>
-                      <TableCell className='hidden sm:table-cell'>
-                        {productProvider.product.stock}
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        Bs. {productProvider.product.price_purchase}
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <Badge variant={productProvider.product.is_active ? 'default' : 'outline'}>
-                          {productProvider.product.is_active ? 'Activo' : 'Inactivo'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            {/* <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PRODUCT}/${productProvider.product.id}/detalles`) }}>
+              <TableRow key={productProvider.product.id}>
+                <TableCell className="hidden sm:table-cell">
+                  <img
+                    alt="Product image"
+                    className="aspect-square rounded-md object-cover"
+                    height="64"
+                    src={productProvider.product.image_url}
+                    width="64"
+                  />
+                </TableCell>
+                <TableCell className="font-medium">{productProvider.product.name}</TableCell>
+                <TableCell>{productProvider.product.description}</TableCell>
+                <TableCell>{productProvider.product.minimum_stock}</TableCell>
+                <TableCell>{productProvider.product.stock}</TableCell>
+                <TableCell>
+                  Bs. {productProvider.product.price_purchase}
+                </TableCell>
+                <TableCell>
+                  <Badge variant={productProvider.product.is_active ? 'default' : 'outline'}>
+                    {productProvider.product.is_active ? 'Activo' : 'Inactivo'}
+                  </Badge>
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        aria-haspopup="true"
+                        size="icon"
+                        variant="ghost"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      {/* <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PRODUCT}/${productProvider.product.id}/detalles`) }}>
                               <Info className="mr-2 h-4 w-4" />
                               Detalles
                             </DropdownMenuItem> */}
-                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${id}/editar/${productProvider.id}`) }}>
-                              <Pencil className="mr-2 h-4 w-4" />
-                              Editar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">
-                              <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                  <AlertDialogTrigger asChild>
-                                    <div
-                                      style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        width: '100%',
-                                        justifyContent: 'space-between'
-                                      }}
-                                      onClick={(event) => { event.stopPropagation() }}
-                                    >
-                                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <Trash className="mr-2 h-4 w-4" />
-                                        Delete
-                                      </div>
-                                    </div>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Estas seguro de eliminar este grupo?</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Esta acción no se puede deshacer. Esto eliminará permanentemente tu
-                                        cuenta y eliminar sus datos de nuestros servidores.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => { deletePermanentlyGroup(productProvider.id) }}>Continue</AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                      <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${id}/editar/${productProvider.id}`) }}>
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-600">
+                        <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                          <AlertDialogTrigger asChild>
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                width: '100%',
+                                justifyContent: 'space-between'
+                              }}
+                              onClick={(event) => { event.stopPropagation() }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Trash className="mr-2 h-4 w-4" />
+                                Delete
+                              </div>
+                            </div>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>¿Estás seguro de eliminar este proveedor?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Esta acción no se puede deshacer. Esto eliminará permanentemente el proveedor y todos los productos asociados.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction onClick={() => { deletePermanentlyGroup(productProvider.id) }}>Continuar</AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
             ))}
           </TableBody>
         </Table>

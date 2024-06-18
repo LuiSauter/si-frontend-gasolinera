@@ -1,7 +1,7 @@
 import useSWRMutation from 'swr/mutation'
 import { type ApiResponse, type GetAllProps } from '@/models'
 import { type ResponseError } from '@/utils/response-error.utils'
-import { type PurchaseOrder, type CreatePurchaseOrder } from '../models/purchase-order'
+import { type PurchaseOrder, type CreatePurchaseOrder } from '../models/purchase-order.model'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 import { createPurchaseOrder, deletePurchaseOrder, getAllPurchaseOrder, getPurchaseOrder, updatePurchaseOrder } from '../services/purchase-order.service'
@@ -50,7 +50,7 @@ const useGetAllPurchaseOrders = ({ isGetAll }: UseGetAllProps) => {
   const { changeOrder, filterOptions, newPage, prevPage, queryParams, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
 
   const query = isGetAll ? '' : queryParams
-  const fetchURL = `${API_BASEURL + ENDPOINTS.PURCHASE_ORDER}/all?${query}`
+  const fetchURL = `${API_BASEURL + ENDPOINTS.PURCHASE_ORDER}?${query}`
 
   const { data, error, isLoading, mutate } = useSWR<ApiResponse, ResponseError>(fetchURL, getAllPurchaseOrder)
 
