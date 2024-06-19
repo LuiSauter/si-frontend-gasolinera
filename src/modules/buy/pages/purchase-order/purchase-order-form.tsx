@@ -35,7 +35,6 @@ import { toast } from 'sonner'
 import { type CreatePurchaseOrder } from '../../models/purchase-order.model'
 
 const formSchema = z.object({
-  code: z.number().int().positive().min(1, 'El código es requerido'),
   reason: z.string({ required_error: 'La razón es requerida' }).min(1, 'La razón es requerida'),
   state: z.string({ required_error: 'El estado es requerido' }).min(1, 'El estado es requerido'),
   branchId: z.string({ required_error: 'La sucursal es requerida' }).min(1, 'La sucursal es requerida'),
@@ -72,8 +71,8 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
   const { purchaseOrder, error: errorGetPurchase } = useGetPurchaseOrder(id)
   const { branches, error: errorBranchs } = useGetAllBranches()
   const { providers, error: errorProvider } = useGetAllProvider()
-  const { createPurchaseOrder } = useCreatePurchaseOrder()
-  const { updatePurchaseOrder } = useUpdatePurchaseOrder()
+  const { createPurchaseOrder, isMutating: isMutatingCreate } = useCreatePurchaseOrder()
+  const { updatePurchaseOrder, isMutating: isMutatingUpdate } = useUpdatePurchaseOrder()
 
   const { providerProducts } = useGetAllProductsProviders(providerParam)
 
@@ -83,7 +82,6 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      code: purchaseOrder?.code ?? 1,
       reason: purchaseOrder?.reason ?? '',
       state: purchaseOrder?.state ?? STATE.DRAFT,
       branchId: purchaseOrder?.branch?.id ?? '',
@@ -196,7 +194,7 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
           <div className="flex items-center gap-4">
             <Button
               type="button"
-              onClick={() => { navigate(-1) }}
+              onClick={() => { navigate(PrivateRoutes.PURCHASE_ORDER) }}
               variant="outline"
               size="icon"
               className="h-7 w-7"
@@ -211,10 +209,10 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
               <Button type="button" onClick={() => { navigate(PrivateRoutes.PURCHASE_ORDER) }} variant="outline" size="sm">
                 Descartar
               </Button>
-              <Button type="submit" size="sm">{buttonText}</Button>
+              <Button type="submit" size="sm" disabled={isMutatingCreate || isMutatingUpdate}>{buttonText}</Button>
             </div>
           </div>
-          <div className='grid gap-4 lg:gap-6 lg:grid-cols-[300px_1fr]'>
+          <div className='grid gap-4 lg:gap-6 lg:grid-cols-[300px_1fr] xl:grid-cols-[350px_1fr]'>
             <div className="grid gap-4 lg:gap-6">
               <div className="flex flex-col gap-4 lg:gap-6">
                 <Card x-chunk="dashboard-07-chunk-0" className="w-full">
@@ -222,21 +220,130 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                     <CardTitle>Detalles de la orden</CardTitle>
                   </CardHeader>
                   <CardContent className='px-4 flex flex-col gap-4 lg:px-6 lg:gap-6'>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-6">
+                    <div className="grid md:grid-cols-1 lg:grid-cols-1 gap-4 lg:gap-6">
                       <FormField
                         control={form.control}
-                        name="code"
+                        name="reason"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Código *</FormLabel>
+                            <FormLabel>Razón *</FormLabel>
                             <FormControl>
-                              <Input
-                                type='number'
-                                placeholder="0001, 0002, 0002, etc..."
-                                {...field}
-                                onChange={(e) => { form.setValue('code', parseInt(e.target.value)) }}
-                              />
+                              <Textarea placeholder="Razón de la orden de compra..." {...field} />
                             </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-1 lg:gap-6 w-full relative">
+                      <FormField
+                        control={form.control}
+                        name="providerId"
+                        defaultValue={purchaseOrder?.provider?.id}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col justify-between space-y-1 pt-1">
+                            <FormLabel className='leading-normal'>Proveedor *</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className={cn('justify-between font-normal', !field.value && 'text-muted-foreground')}
+                                  >
+                                    {field.value
+                                      ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
+                                        {providers?.find((provider: Provider) => provider.id === field.value)?.name}
+                                      </span>)
+                                      : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar proveedor</span>}
+                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="p-0">
+                                <Command>
+                                  <CommandInput placeholder="Seleccionar un producto..." />
+                                  <CommandList>
+                                    <CommandEmpty>Proveedor no encontrado.</CommandEmpty>
+                                    <CommandGroup>
+                                      {providers?.map((provider: Provider) => (
+                                        <CommandItem
+                                          value={provider.name}
+                                          key={provider.id}
+                                          onSelect={() => {
+                                            form.setValue('providerId', provider.id)
+                                            form.clearErrors('providerId')
+                                            if (searchParams.get('id') !== provider.id) {
+                                              form.setValue('details', [])
+                                              formDetails.reset()
+                                            }
+                                            setSearchParams({ id: provider.id })
+                                          }}
+                                        >
+                                          <CheckCheckIcon
+                                            className={cn('mr-2 h-4 w-4', provider.id === field.value ? 'opacity-100' : 'opacity-0')}
+                                          />
+                                          {provider.name}
+                                        </CommandItem>
+                                      ))}
+                                    </CommandGroup>
+                                  </CommandList>
+                                </Command>
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="branchId"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col justify-between space-y-1 pt-1">
+                            <FormLabel className='leading-normal'>Sucursal *</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className={cn('justify-between font-normal', !field.value && 'text-muted-foreground')}
+                                  >
+                                    {field.value
+                                      ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
+                                        {branches?.find((branch: Branch) => branch.id === field.value)?.name}
+                                      </span>)
+                                      : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar sucursal</span>}
+                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="p-0">
+                                <Command>
+                                  <CommandInput placeholder="Seleccionar un producto..." />
+                                  <CommandList>
+                                    <CommandEmpty>Sucursal no encontradoa.</CommandEmpty>
+                                    <CommandGroup>
+                                      {branches?.map((branch: Branch) => (
+                                        <CommandItem
+                                          value={branch.name}
+                                          key={branch.id}
+                                          onSelect={() => {
+                                            form.setValue('branchId', branch.id)
+                                            form.clearErrors('branchId')
+                                          }}
+                                        >
+                                          <CheckCheckIcon
+                                            className={cn('mr-2 h-4 w-4', branch.id === field.value ? 'opacity-100' : 'opacity-0')}
+                                          />
+                                          {branch.name}
+                                        </CommandItem>
+                                      ))}
+                                    </CommandGroup>
+                                  </CommandList>
+                                </Command>
+                              </PopoverContent>
+                            </Popover>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -246,7 +353,7 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                         name="state"
                         defaultValue={purchaseOrder?.state}
                         render={({ field }) => (
-                          <FormItem className="flex flex-col justify-between space-y-1 pt-1">
+                          <FormItem className="flex flex-col space-y-2 pt-1">
                             <FormLabel className='leading-normal'>Estado</FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>
@@ -283,7 +390,7 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                                               state.name === field.value ? 'opacity-100' : 'opacity-0'
                                             )}
                                           />
-                                          {state.name === STATE.DRAFT ? 'Borrador (Solo tú lo verás)' : 'Pendiente'}
+                                          {state.name === STATE.DRAFT ? 'Borrador (Solo tú lo verás)' : 'Pendiente (Todos lo verán)'}
                                         </CommandItem>
                                       ))}
                                     </CommandGroup>
@@ -296,146 +403,12 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                         )}
                       />
                     </div>
-                    <FormField
-                      control={form.control}
-                      name="reason"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Razón *</FormLabel>
-                          <FormControl>
-                            <Textarea placeholder="Razón de la orden de compra..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </CardContent>
                 </Card>
               </div>
             </div>
 
             <div className="grid gap-4 lg:gap-6 h-fit">
-              <Card x-chunk="dashboard-07-chunk-0" className="w-full">
-                <CardHeader className='px-4 lg:px-6'>
-                  <CardTitle>Asignación</CardTitle>
-                </CardHeader>
-                <CardContent className='px-4 flex flex-col gap-4 lg:px-6 lg:gap-6'>
-                  <div className="grid gap-4 md:grid-cols-2 lg:gap-6 w-full relative">
-                    <FormField
-                      control={form.control}
-                      name="providerId"
-                      defaultValue={purchaseOrder?.provider?.id}
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col justify-between space-y-1 pt-1">
-                          <FormLabel className='leading-normal'>Proveedor *</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant="outline"
-                                  role="combobox"
-                                  className={cn('justify-between font-normal', !field.value && 'text-muted-foreground')}
-                                >
-                                  {field.value
-                                    ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
-                                      {providers?.find((provider: Provider) => provider.id === field.value)?.name}
-                                    </span>)
-                                    : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar proveedor</span>}
-                                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="p-0">
-                              <Command>
-                                <CommandInput placeholder="Seleccionar un producto..." />
-                                <CommandList>
-                                  <CommandEmpty>Proveedor no encontrado.</CommandEmpty>
-                                  <CommandGroup>
-                                    {providers?.map((provider: Provider) => (
-                                      <CommandItem
-                                        value={provider.name}
-                                        key={provider.id}
-                                        onSelect={() => {
-                                          form.setValue('providerId', provider.id)
-                                          form.clearErrors('providerId')
-                                          if (searchParams.get('id') !== provider.id) {
-                                            form.setValue('details', [])
-                                            formDetails.reset()
-                                          }
-                                          setSearchParams({ id: provider.id })
-                                        }}
-                                      >
-                                        <CheckCheckIcon
-                                          className={cn('mr-2 h-4 w-4', provider.id === field.value ? 'opacity-100' : 'opacity-0')}
-                                        />
-                                        {provider.name}
-                                      </CommandItem>
-                                    ))}
-                                  </CommandGroup>
-                                </CommandList>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="branchId"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col justify-between space-y-1 pt-1">
-                          <FormLabel className='leading-normal'>Sucursal *</FormLabel>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant="outline"
-                                  role="combobox"
-                                  className={cn('justify-between font-normal', !field.value && 'text-muted-foreground')}
-                                >
-                                  {field.value
-                                    ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
-                                      {branches?.find((branch: Branch) => branch.id === field.value)?.name}
-                                    </span>)
-                                    : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar sucursal</span>}
-                                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent className="p-0">
-                              <Command>
-                                <CommandInput placeholder="Seleccionar un producto..." />
-                                <CommandList>
-                                  <CommandEmpty>Sucursal no encontradoa.</CommandEmpty>
-                                  <CommandGroup>
-                                    {branches?.map((branch: Branch) => (
-                                      <CommandItem
-                                        value={branch.name}
-                                        key={branch.id}
-                                        onSelect={() => {
-                                          form.setValue('branchId', branch.id)
-                                          form.clearErrors('branchId')
-                                        }}
-                                      >
-                                        <CheckCheckIcon
-                                          className={cn('mr-2 h-4 w-4', branch.id === field.value ? 'opacity-100' : 'opacity-0')}
-                                        />
-                                        {branch.name}
-                                      </CommandItem>
-                                    ))}
-                                  </CommandGroup>
-                                </CommandList>
-                              </Command>
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
               <Card x-chunk="dashboard-07-chunk-0" className='flex flex-col overflow-hidden w-full relative'>
                 <CardHeader>
                   <CardTitle className='w-full flex items-center'>
@@ -445,7 +418,7 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                         <Button
                           onClick={(event) => { event.stopPropagation() }}
                           variant='outline'
-                          className='!mt-0'
+                          className='!mt-0 h-8'
                           disabled={form.watch('providerId') === '' || !searchParams.get('id')}
                         >
                           Agregar
@@ -634,7 +607,7 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
             <Button onClick={() => { navigate(PrivateRoutes.PRODUCT) }} type="button" variant="outline" size="sm">
               Descartar
             </Button>
-            <Button type="submit" size="sm">
+            <Button type="submit" size="sm" disabled={isMutatingCreate || isMutatingUpdate}>
               {buttonText}
             </Button>
           </div>

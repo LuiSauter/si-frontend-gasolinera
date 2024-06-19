@@ -1,42 +1,21 @@
-import { PrivateRoutes } from '@/models/routes.model'
-import { File, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
-// import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import {
-  Tabs,
-  TabsContent
-} from '@/components/ui/tabs'
 import { useNavigate } from 'react-router-dom'
+import { File, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
+
+import { PrivateRoutes } from '@/models/routes.model'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { useHeader } from '@/hooks'
 import { useGetAllPurchaseOrders } from '../../hooks/usePurchaseOrder'
 import Skeleton from '@/components/shared/skeleton'
 import Pagination from '@/components/shared/pagination'
 import { FormatDateMMMDYYYYHHMM } from '@/utils'
+import { Badge } from '@/components/ui/badge'
+import { STATE } from '../../constants/state.constants'
+import { useSelector } from 'react-redux'
+import { type RootState } from '@/redux/store'
 
 const PurchaseOrderPage = () => {
   useHeader([
@@ -46,6 +25,7 @@ const PurchaseOrderPage = () => {
   ])
   const { purchaseOrders, filterOptions, isLoading, newPage, prevPage, setOffset, countData } = useGetAllPurchaseOrders({ isGetAll: false })
   const navigate = useNavigate()
+  const user = useSelector((state: RootState) => state.user)
   //   const { branches, isLoading, error } = useGetAllBranches()
 
   //   let subscribe = true
@@ -110,6 +90,7 @@ const PurchaseOrderPage = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Código</TableHead>
                     <TableHead>Fecha y hora</TableHead>
                     <TableHead>Motivo</TableHead>
                     <TableHead>Proveedor</TableHead>
@@ -123,6 +104,7 @@ const PurchaseOrderPage = () => {
                     ? <Skeleton rows={filterOptions.limit} columns={6} />
                     : purchaseOrders?.map((purchaseOrder) => (
                       <TableRow key={purchaseOrder.id}>
+                        <TableCell>OC-{purchaseOrder.code}</TableCell>
                         <TableCell>{FormatDateMMMDYYYYHHMM(purchaseOrder.createdAt)}</TableCell>
                         <TableCell title={purchaseOrder.reason}>
                           {purchaseOrder.reason
@@ -132,7 +114,17 @@ const PurchaseOrderPage = () => {
                         </TableCell>
                         <TableCell>{purchaseOrder.provider.name}</TableCell>
                         <TableCell>{purchaseOrder.branch.name}</TableCell>
-                        <TableCell>{purchaseOrder.state}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              purchaseOrder?.state === STATE.FINALIZED
+                                ? 'default'
+                                : purchaseOrder?.state === STATE.EARRING
+                                  ? 'secondary'
+                                  : purchaseOrder?.state === STATE.DRAFT ? 'outline' : 'destructive'
+                            }
+                          >{purchaseOrder.state}</Badge>
+                        </TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -147,9 +139,10 @@ const PurchaseOrderPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Ver detalle</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PURCHASE_ORDER}/${purchaseOrder.id}`) }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PURCHASE_ORDER}/${purchaseOrder.id}/detalles`) }}>Ver detalle</DropdownMenuItem>
+                              {(user.id === purchaseOrder.user.id && ![STATE.CANCELLED, STATE.FINALIZED].includes(purchaseOrder.state)) && <DropdownMenuItem
+                                onClick={() => { navigate(`${PrivateRoutes.PURCHASE_ORDER}/${purchaseOrder.id}`) }}
+                              >Editar</DropdownMenuItem>}
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
@@ -174,7 +167,7 @@ const PurchaseOrderPage = () => {
           </CardFooter>
         </Card>
       </TabsContent>
-    </Tabs>
+    </Tabs >
   )
 }
 

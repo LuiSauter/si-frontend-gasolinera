@@ -125,8 +125,8 @@ const ProductosPage = (): JSX.Element => {
                               : '-'
                             }
                           </TableCell>
-                          <TableCell>{product.minimum_stock}</TableCell>
                           <TableCell>{product.stock}</TableCell>
+                          <TableCell>{product.minimum_stock}</TableCell>
                           <TableCell>Bs. {product.price_purchase}</TableCell>
                           <TableCell>{product.branch?.name}</TableCell>
                           <TableCell>
