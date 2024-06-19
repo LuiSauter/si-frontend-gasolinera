@@ -8,6 +8,7 @@ const ProviderDetallPage = lazy(() => import('@/modules/buy/pages/provider/compo
 const ProviderProductForm = lazy(() => import('@/modules/buy/pages/provider/components/provider-product-form'))
 const PurchaseOrderPage = lazy(() => import('@/modules/buy/pages/purchase-order'))
 const PurchaseOrderFormPage = lazy(() => import('@/modules/buy/pages/purchase-order/purchase-order-form'))
+const OrderDetailPage = lazy(() => import('@/modules/buy/pages/purchase-order/order-detail'))
 
 export const buyRoutes: Route[] = [
   {
@@ -52,7 +53,12 @@ export const buyRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.PURCHASE_ORDER_EDIT,
-    element: createElement(PurchaseOrderFormPage, { buttonText: 'Actualizar Orden de Compra', title: 'Actualizar Orden de Compra' }),
+    element: createElement(PurchaseOrderFormPage, { buttonText: 'Actualizar', title: 'Actualizar Orden de Compra' }),
     permissions: [PERMISSION.PURCHASE_ORDER]
+  },
+  {
+    path: PrivateRoutes.PURCHASE_ORDER_DETAIL,
+    element: createElement(OrderDetailPage),
+    permissions: [PERMISSION.PURCHASE_ORDER, PERMISSION.PURCHASE_ORDER_SHOW]
   }
 ]

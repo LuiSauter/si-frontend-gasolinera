@@ -42,6 +42,9 @@ export enum PrivateRoutes {
   OUPUT_PRODUCT = PrivateRoutes.PRODUCT + '/salida-productos',
   // Buys
   BUY = '/compras',
+  BUY_CREATE = PrivateRoutes.BUY + '/crear',
+  BUY_EDIT = PrivateRoutes.BUY + '/:id',
+  BUY_DETAILs = PrivateRoutes.BUY + '/:id/detalles',
   PROVIDER = PrivateRoutes.BUY + '/proveedores',
   PROVIDER_CREATE = PrivateRoutes.PROVIDER + '/crear',
   PROVIDER_EDIT = PrivateRoutes.PROVIDER + '/:id',
