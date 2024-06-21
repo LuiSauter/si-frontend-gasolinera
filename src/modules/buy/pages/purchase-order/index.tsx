@@ -1,21 +1,22 @@
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { File, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
 
 import { PrivateRoutes } from '@/models/routes.model'
+import { useHeader } from '@/hooks'
+import { useGetAllPurchaseOrders } from '../../hooks/usePurchaseOrder'
+import { FormatDateMMMDYYYYHHMM } from '@/utils'
+import { STATE } from '../../constants/state.constants'
+import { type RootState } from '@/redux/store'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
-import { useHeader } from '@/hooks'
-import { useGetAllPurchaseOrders } from '../../hooks/usePurchaseOrder'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import Skeleton from '@/components/shared/skeleton'
 import Pagination from '@/components/shared/pagination'
-import { FormatDateMMMDYYYYHHMM } from '@/utils'
 import { Badge } from '@/components/ui/badge'
-import { STATE } from '../../constants/state.constants'
-import { useSelector } from 'react-redux'
-import { type RootState } from '@/redux/store'
 
 const PurchaseOrderPage = () => {
   useHeader([
@@ -26,17 +27,6 @@ const PurchaseOrderPage = () => {
   const { purchaseOrders, filterOptions, isLoading, newPage, prevPage, setOffset, countData } = useGetAllPurchaseOrders({ isGetAll: false })
   const navigate = useNavigate()
   const user = useSelector((state: RootState) => state.user)
-  //   const { branches, isLoading, error } = useGetAllBranches()
-
-  //   let subscribe = true
-  //   useEffect(() => {
-  //     if (subscribe && error) {
-  //       toast.error(error.errorMessages[0])
-  //     }
-  //     return () => {
-  //       subscribe = false
-  //     }
-  //   }, [error])
 
   return (
     <Tabs defaultValue="week" className='grid gap-2 overflow-hidden w-full relative'>
@@ -167,7 +157,7 @@ const PurchaseOrderPage = () => {
           </CardFooter>
         </Card>
       </TabsContent>
-    </Tabs >
+    </Tabs>
   )
 }
 
