@@ -33,9 +33,7 @@ const Header = () => {
               <h1>Mi Gasolinera</h1>
             </div>
           </SheetHeader>
-          {/* <div className='h-full'> */}
           <Navigation />
-          {/* </div> */}
         </SheetContent>
       </Sheet>
       <div className="w-full flex-1">

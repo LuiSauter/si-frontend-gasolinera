@@ -119,6 +119,12 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Ordenes de compra',
         icon: createElement(FileText, { width: 20, height: 20 }),
         permissions: [PERMISSION.PURCHASE_ORDER, PERMISSION.PURCHASE_ORDER_SHOW]
+      },
+      {
+        path: PrivateRoutes.BUY,
+        label: 'Compras',
+        icon: createElement(FileText, { width: 20, height: 20 }),
+        permissions: [PERMISSION.BUY_NOTE, PERMISSION.BUY_NOTE_SHOW]
       }
     ]
   },

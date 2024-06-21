@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import Navigation from './navigation'
-import { ChevronLeftIcon, FuelIcon } from 'lucide-react'
+import { FuelIcon, PanelLeftCloseIcon, PanelLeftOpenIcon } from 'lucide-react'
 import { useSidebar } from '@/context/sidebarContext'
 
 const Aside = () => {
@@ -16,13 +16,13 @@ const Aside = () => {
           <h1>Mi Gasolinera</h1>
         </div>
         <Button
-          variant='outline'
+          variant='ghost'
           size='icon'
           onClick={toggleContract}
-          className='shrink-0'
+          className='shrink-0 h-8 w-8'
           title={isContract ? 'Expandir menú' : 'Contraer menú'}
         >
-          <ChevronLeftIcon width={20} height={20} className={`${isContract ? '-rotate-180' : ''} transition-transform ease-linear`} />
+          {isContract ? <PanelLeftOpenIcon strokeWidth={1.5} /> : <PanelLeftCloseIcon strokeWidth={1.5} />}
         </Button>
       </div>
       <Navigation />
