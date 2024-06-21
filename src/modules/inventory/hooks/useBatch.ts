@@ -4,7 +4,7 @@ import useSWR, { type KeyedMutator } from 'swr'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { filterStateDefault, useFilterData } from '@/hooks/useFilterData'
 
-import { type ApiResponse, type GetAllProps } from '@/models'
+import { Order, type ApiResponse, type GetAllProps } from '@/models'
 import { type ResponseError } from '@/utils/response-error.utils'
 import { type CreateBatch, type Batch } from '../models/batch.model'
 
@@ -40,7 +40,7 @@ const useGetAllBatchs = ({ isGetAll, productId }: UseGetAllBatchProps) => {
 
       filterOptions: filterStateDefault,
       search: () => { },
-      setFilterOptions: () => {},
+      setFilterOptions: () => { },
       setOffset: () => { },
       changeOrder: () => { },
       newPage: () => { },
@@ -48,12 +48,12 @@ const useGetAllBatchs = ({ isGetAll, productId }: UseGetAllBatchProps) => {
     }
   }
 
-  const { changeOrder, filterOptions, newPage, prevPage, queryParams, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
+  const { changeOrder, filterOptions, newPage, prevPage, queryParams, search, setFilterOptions, setOffset } = useFilterData({ ...filterStateDefault, order: Order.DESC })
   const query = isGetAll ? '' : queryParams
   const fetchURL = `${API_BASEURL + ENDPOINTS.BATCH}/${productId}?${query}`
   const { data, error, isLoading, mutate, isValidating } = useSWR<ApiResponse, ResponseError>(fetchURL, getAllBatchs)
   return {
-    batchs: data?.data as Batch[], countData: data?.countData ?? 0, error, isLoading, mutate, isValidating, search, setFilterOptions, setOffset, changeOrder, filterOptions, newPage, prevPage
+    batchs: data?.data as Batch[] ?? [], countData: data?.countData ?? 0, error, isLoading, mutate, isValidating, search, setFilterOptions, setOffset, changeOrder, filterOptions, newPage, prevPage
   }
 }
 

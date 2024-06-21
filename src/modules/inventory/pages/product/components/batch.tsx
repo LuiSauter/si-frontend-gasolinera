@@ -9,15 +9,17 @@ import { PrivateRoutes } from '@/models'
 import { useGetAllBatchs } from '@/modules/inventory/hooks/useBatch'
 import { type Batch } from '@/modules/inventory/models/batch.model'
 import { ListFilterIcon, PlusCircleIcon } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 interface BatchTableProps {
   productId: string
+  productName: string
 }
 
-function BatchTable({ productId }: BatchTableProps) {
+function BatchTable({ productId, productName }: BatchTableProps) {
+  const { id } = useParams()
   const navigate = useNavigate()
-  const { batchs, isLoading, filterOptions, newPage, prevPage, setOffset, countData } = useGetAllBatchs({ isGetAll: true, productId })
+  const { batchs, isLoading, filterOptions, newPage, prevPage, setOffset, countData } = useGetAllBatchs({ isGetAll: false, productId })
   return (
     <Card x-chunk="dashboard-06-chunk-0" className='w-full'>
       <CardHeader>
@@ -41,17 +43,11 @@ function BatchTable({ productId }: BatchTableProps) {
                 </DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            {/* <Button size="sm" variant="outline" className="h-8 gap-1">
-              <File className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Exportar
-              </span>
-            </Button> */}
-            <Button onClick={() => { navigate(PrivateRoutes.PRODUCT_ADD) }} size="sm" className="h-8 gap-1">
+            <Button onClick={() => {
+              navigate(`${PrivateRoutes.PRODUCT}/${id}/lotes/crear?product=${productName}`)
+              // setSearchParams({ product: productName })
+            }} size="sm" className="h-8 gap-1">
               <PlusCircleIcon className="h-3.5 w-3.5" />
-              {/* <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Agregar
-              </span> */}
             </Button>
           </div>
         </CardTitle>
@@ -64,7 +60,7 @@ function BatchTable({ productId }: BatchTableProps) {
                 <TableHead>Código</TableHead>
                 <TableHead>Detalle</TableHead>
                 <TableHead >Stock</TableHead>
-                <TableHead>Stock mínimo</TableHead>
+                <TableHead>Stock inicial</TableHead>
                 <TableHead>Fecha de exp.</TableHead>
                 <TableHead><span className='sr-only'></span></TableHead>
               </TableRow>
@@ -75,9 +71,9 @@ function BatchTable({ productId }: BatchTableProps) {
                 : batchs?.map((batch: Batch) => (
                   <TableRow key={batch.id}>
                     <TableCell>{batch.code}</TableCell>
-                    <TableCell className='whitespace-nowrap' title={batch.detail}>{batch.detail.length > 40 ? batch.detail.substring(0, 40) + '...' : batch.detail}</TableCell>
+                    <TableCell className='whitespace-nowrap' title={batch.detail}>{batch.detail ? batch.detail.length > 40 ? batch.detail.substring(0, 40) + '...' : batch.detail : '-'}</TableCell>
                     <TableCell>{batch.stock}</TableCell>
-                    <TableCell>{batch.minimum_stock}</TableCell>
+                    <TableCell>{batch.initial_stock}</TableCell>
                     <TableCell>{batch.expiration_date}</TableCell>
                     <TableCell>
                       <Badge variant={batch.is_active ? 'default' : 'destructive'}>

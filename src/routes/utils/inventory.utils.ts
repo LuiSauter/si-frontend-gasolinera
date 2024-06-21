@@ -6,6 +6,7 @@ import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 const ProductPage = lazy(() => import('@modules/inventory/pages/product'))
 const ProductFormPage = lazy(() => import('@modules/inventory/pages/product/product-form'))
 const ProductDetailsPage = lazy(() => import('@/modules/inventory/pages/product/details'))
+const BatchFormPage = lazy(() => import('@modules/inventory/pages/product/components/batch-form'))
 const FuelPage = lazy(() => import('@modules/inventory/pages/fuel'))
 const FuelForm = lazy(() => import('@modules/inventory/pages/fuel/components/fuel-form'))
 const CategoryPage = lazy(() => import('@modules/inventory/pages/category-group'))
@@ -33,6 +34,11 @@ export const inventoryRoutes: Route[] = [
     path: PrivateRoutes.PRODUCT_DETAILS,
     element: createElement(ProductDetailsPage),
     permissions: [PERMISSION.PRODUCT, PERMISSION.PRODUCT_SHOW]
+  },
+  {
+    path: PrivateRoutes.BATCH_CREATE,
+    element: createElement(BatchFormPage, { buttonText: 'Guardar Lote', title: 'Crear Lote' }),
+    permissions: [PERMISSION.PRODUCT]
   },
   {
     path: PrivateRoutes.FUEL,

@@ -57,7 +57,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
   const navigate = useNavigate()
   const { id } = useParams()
 
-  const { createProduct, updateProduct, error } = useCreateOrUpdateProduct()
+  const { createProduct, updateProduct, error, isCreating, isUpdating } = useCreateOrUpdateProduct()
   const { product } = useGetProduct(id)
 
   const { groups } = useGetAllGroups()
@@ -145,7 +145,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
               <Button type="button" onClick={() => { navigate(PrivateRoutes.PRODUCT) }} variant="outline" size="sm">
                 Descartar
               </Button>
-              <Button type="submit" size="sm">{buttonText}</Button>
+              <Button type="submit" size="sm" disabled={isCreating || isUpdating}>{buttonText}</Button>
             </div>
           </div>
           <div className="grid gap-4 lg:gap-6 lg:grid-cols-[1fr_250px] xl:grid-cols-[1fr_300px]">
@@ -467,7 +467,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
             <Button onClick={() => { navigate(PrivateRoutes.PRODUCT) }} type="button" variant="outline" size="sm">
               Descartar
             </Button>
-            <Button type="submit" size="sm">
+            <Button type="submit" size="sm" disabled={isCreating || isUpdating}>
               {buttonText}
             </Button>
           </div>
