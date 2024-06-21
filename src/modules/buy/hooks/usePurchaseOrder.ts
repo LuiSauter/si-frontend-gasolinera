@@ -1,7 +1,7 @@
 import useSWRMutation from 'swr/mutation'
 import { type ApiResponse, type GetAllProps } from '@/models'
 import { type ResponseError } from '@/utils/response-error.utils'
-import { type PurchaseOrder, type CreatePurchaseOrder } from '../models/purchase-order.model'
+import { type PurchaseOrder, type CreatePurchaseOrder, type UpdatePurchaseOrder } from '../models/purchase-order.model'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 import { createPurchaseOrder, deletePurchaseOrder, getAllPurchaseOrder, getPurchaseOrder, updatePurchaseOrder } from '../services/purchase-order.service'
@@ -58,14 +58,14 @@ const useGetAllPurchaseOrders = ({ isGetAll }: UseGetAllProps) => {
 }
 
 const useGetPurchaseOrder = (id?: string) => {
-  if (!id) return { PurchaseOrder: null, isLoading: false, error: null, isValidating: false }
+  if (!id) return { purchaseOrder: null, isLoading: false, error: undefined, isValidating: false }
   const { data, isLoading, error, isValidating, mutate } = useSWR<PurchaseOrder, ResponseError>(API_BASEURL + ENDPOINTS.PURCHASE_ORDER + `/${id}`, getPurchaseOrder)
 
   return { purchaseOrder: data ?? null, isLoading, error, isValidating, mutate }
 }
 
 const useUpdatePurchaseOrder = () => {
-  const { trigger, isMutating, error } = useSWRMutation<Promise<void>, ResponseError, string, CreatePurchaseOrder>(API_BASEURL + ENDPOINTS.PURCHASE_ORDER, updatePurchaseOrder)
+  const { trigger, isMutating, error } = useSWRMutation<Promise<void>, ResponseError, string, UpdatePurchaseOrder>(API_BASEURL + ENDPOINTS.PURCHASE_ORDER, updatePurchaseOrder)
   return { updatePurchaseOrder: trigger, isMutating, error }
 }
 
