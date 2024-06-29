@@ -4,11 +4,18 @@ import { API_BASEURL, ENDPOINTS } from '@/utils'
 import useSWRMutation from 'swr/mutation'
 import { createGroup, deletGroup, getAllGroups, getGroup, updateGroup } from '../services/group.service'
 import { type GroupUpdate, type CreateGroup, type Group } from '../models/group.model'
+import { type ApiResponse, type GetAllProps } from '@/models'
+import { filterStateDefault, useFilterData } from '@/hooks/useFilterData'
+interface UseGetAllProps extends GetAllProps { }
 
-const useGetAllGroup = () => {
-  const { data, isLoading, error, mutate } = useSWR<Group[], ResponseError>(API_BASEURL + ENDPOINTS.GROUP, getAllGroups)
+const useGetAllGroup = ({ isGetAll }: UseGetAllProps) => {
+  const { changeOrder, filterOptions, newPage, prevPage, queryParams, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
 
-  return { groups: data, isLoading, error, mutate }
+  const query = isGetAll ? '' : queryParams
+  const fetchURL = `${API_BASEURL + ENDPOINTS.GROUP}?${query}`
+  const { data, isLoading, error, mutate } = useSWR<ApiResponse, ResponseError>(fetchURL, getAllGroups)
+
+  return { groups: data?.data as Group[] ?? [], countData: data?.countData, isLoading, error, changeOrder, filterOptions, newPage, prevPage, mutate, search, setFilterOptions, setOffset }
 }
 
 const useCreateGroup = () => {

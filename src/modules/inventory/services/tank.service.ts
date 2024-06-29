@@ -14,6 +14,12 @@ const getAllTanks = async (url: string): Promise<ApiResponse> => {
   return { countData, data }
 }
 
+const getAllTanksByProduct = async (url: string, { arg }: { arg: string }): Promise<Tank[]> => {
+  const response = await fetchData(`${url}/${arg}`)
+  const data: Tank[] = response.data as Tank[]
+  return data
+}
+
 const getTank = async (url: string): Promise<Tank> => {
   const response = await fetchData(url)
   return response.data as Tank
@@ -34,4 +40,4 @@ const deleteTank = async (url: string, { arg }: { arg: string }): Promise<void> 
   await fetchData(`${url}/${arg}`, options)
 }
 
-export { createTank, getAllTanks, getTank, updateTank, deleteTank }
+export { createTank, getAllTanks, getAllTanksByProduct, getTank, updateTank, deleteTank }
