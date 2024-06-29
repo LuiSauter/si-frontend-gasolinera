@@ -1,19 +1,6 @@
 import { fetchData } from '@/utils'
 import { type UpdateProviderProduct, type CreateProviderProduct, type ProviderProduct } from '../models/providerProduct.model'
 
-// const getAllProductProvider = async (url: string): Promise<ProviderProduct[]> => {
-//   const options: RequestInit = {
-//     method: 'GET'
-//   }
-//   const response = await fetchData(url, options)
-//   return response.data
-// }
-// const deleteRole = async (url: string, { arg }: { arg: string }): Promise<void> => {
-//   const id = arg
-//   const options: RequestInit = { method: 'DELETE' }
-//   await fetchData(`${url}/${id}`, options)
-// }
-
 const deleteProviderProduct = async (url: string, { arg }: { arg: string }): Promise<void> => {
   const id = arg
   const options: RequestInit = { method: 'DELETE' }
@@ -46,8 +33,15 @@ const createProviderProduct = async (url: string, { arg }: { arg: CreateProvider
   const response = await fetchData(url, options)
   return response
 }
+
 const getAllProductProvider = async (url: string): Promise<ProviderProduct[]> => {
   const response = await fetchData(url)
   return response.data
 }
-export { getAllProductProvider, createProviderProduct, getProviderProduct, updateProviderProduct, deleteProviderProduct }
+
+const getAllProductProviderId = async (url: string, { arg }: { arg: string }): Promise<ProviderProduct[]> => {
+  const response = await fetchData(`${url}/${arg}`)
+  return response.data
+}
+
+export { getAllProductProvider, getAllProductProviderId, createProviderProduct, getProviderProduct, updateProviderProduct, deleteProviderProduct }

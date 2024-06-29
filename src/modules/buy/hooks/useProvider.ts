@@ -5,7 +5,9 @@ import useSWR from 'swr'
 import { type UpdateProvider, type CreateProvider, type Provider } from '../models/provider.model'
 import { createProvider, deleteProvider, getAllProvider, getProvider, updateProvider } from '../services/provider.service'
 import { filterStateDefault, useFilterData } from '@/hooks/useFilterData'
-import { type ApiResponse } from '@/models'
+import { type GetAllProps, type ApiResponse } from '@/models'
+
+interface UseGetAllProps extends GetAllProps { }
 
 const useCreateProvider = () => {
   const { trigger, isMutating, error } = useSWRMutation<Promise<void>, ResponseError, string, CreateProvider>(API_BASEURL + ENDPOINTS.PROVIDER, createProvider)
@@ -17,9 +19,12 @@ const useGetProvider = (id?: string) => {
   return { provider: data, isLoading, error, isValidating }
 }
 
-const useGetAllProvider = () => {
-  const { changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
-  const { data, error, isLoading, mutate } = useSWR<ApiResponse, ResponseError>(API_BASEURL + ENDPOINTS.PROVIDER, getAllProvider)
+const useGetAllProvider = ({ isGetAll }: UseGetAllProps) => {
+  const { changeOrder, filterOptions, queryParams, newPage, prevPage, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
+  const query = isGetAll ? '' : queryParams
+  const fetchURL = `${API_BASEURL + ENDPOINTS.PROVIDER}/all?${query}`
+
+  const { data, error, isLoading, mutate } = useSWR<ApiResponse, ResponseError>(fetchURL, getAllProvider)
   return { providers: data?.data, countData: data?.countData ?? 0, error, isLoading, mutate, changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset }
 }
 
