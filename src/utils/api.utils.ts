@@ -21,6 +21,7 @@ export const ENDPOINTS = {
   BATCH: '/api/batch',
   TANK: '/api/tank',
   // buys
+  BUY_NOTE: '/api/buy-note',
   PROVIDER: '/api/providers',
   PROVIDER_PRODUCT: '/api/provider-product/all',
   PROVIDER_PRODUCT_CREATE: '/api/provider-product',

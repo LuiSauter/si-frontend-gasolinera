@@ -1,6 +1,6 @@
 import { PrivateRoutes } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import { Box, Building2Icon, BuildingIcon, DollarSignIcon, FileText, FlameIcon, FuelIcon, KeyIcon, LayoutDashboardIcon, LogOut, PackageIcon, ScrollTextIcon, ShoppingCart, Tag, Truck, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
+import { Box, Building2Icon, BuildingIcon, DollarSignIcon, FileText, FlameIcon, FuelIcon, KeyIcon, LogOut, PackageIcon, ScrollTextIcon, ShoppingCart, Tag, Truck, UserCogIcon, UserIcon, UsersIcon } from 'lucide-react'
 import { createElement } from 'react'
 
 export interface MenuHeaderRoute {
@@ -83,14 +83,8 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         permissions: [PERMISSION.FUEL, PERMISSION.FUEL_SHOW]
       },
       {
-        path: PrivateRoutes.CATEGORY,
-        label: 'Categorías',
-        icon: createElement(LayoutDashboardIcon, { width: 20, height: 20 }),
-        permissions: [PERMISSION.CATEGORY, PERMISSION.CATEGORY_SHOW]
-      },
-      {
         path: PrivateRoutes.GROUP,
-        label: 'Grupos',
+        label: 'Grupos y categorias',
         icon: createElement(UsersIcon, { width: 20, height: 20 }),
         permissions: [PERMISSION.GROUP, PERMISSION.GROUP_SHOW]
       },
@@ -123,7 +117,7 @@ export const MenuSideBar: MenuHeaderRoute[] = [
       {
         path: PrivateRoutes.BUY,
         label: 'Compras',
-        icon: createElement(FileText, { width: 20, height: 20 }),
+        icon: createElement(ShoppingCart, { width: 20, height: 20 }),
         permissions: [PERMISSION.BUY_NOTE, PERMISSION.BUY_NOTE_SHOW]
       }
     ]
