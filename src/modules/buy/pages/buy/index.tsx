@@ -1,17 +1,31 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 // import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 // import Skeleton from '@/components/shared/skeleton'
 // import Pagination from '@/components/shared/pagination'
 // import { Badge } from '@/components/ui/badge'
-import { FileIcon, ListFilterIcon, PlusCircleIcon } from 'lucide-react'
+import { FileIcon, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
 import { PrivateRoutes } from '@/models'
 import { useNavigate } from 'react-router-dom'
+import { useGetAllBuyNotes } from '../../hooks/useBuyNote'
+import Pagination from '@/components/shared/pagination'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useSelector } from 'react-redux'
+import { type RootState } from '@/redux/store'
+import Skeleton from '@/components/shared/skeleton'
+import { useHeader } from '@/hooks'
 
 function BuyPage() {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Compras' }
+  ])
   const navigate = useNavigate()
+
+  const { buyNotes, isLoading, filterOptions, newPage, prevPage, setOffset, countData } = useGetAllBuyNotes({ isGetAll: false })
+  const user = useSelector((state: RootState) => state.user)
 
   return (
     <Tabs defaultValue="week" className='grid gap-2 overflow-hidden w-full relative'>
@@ -62,44 +76,29 @@ function BuyPage() {
           </CardHeader>
           <CardContent className='overflow-hidden relative w-full'>
             <div className='overflow-x-auto'>
-              {/* <Table>
+              <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Código</TableHead>
                     <TableHead>Fecha y hora</TableHead>
-                    <TableHead>Motivo</TableHead>
+                    {/admin/i.test(user.role.name) && <TableHead>Sucursal</TableHead>}
+                    <TableHead>Total</TableHead>
+                    <TableHead>Productos</TableHead>
                     <TableHead>Proveedor</TableHead>
-                    <TableHead>Sucursal</TableHead>
-                    <TableHead>Estado</TableHead>
                     <TableHead><div className='sr-only'></div></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {isLoading
                     ? <Skeleton rows={filterOptions.limit} columns={6} />
-                    : purchaseOrders?.map((purchaseOrder) => (
-                      <TableRow key={purchaseOrder.id}>
-                        <TableCell>OC-{purchaseOrder.code}</TableCell>
-                        <TableCell>{FormatDateMMMDYYYYHHMM(purchaseOrder.createdAt)}</TableCell>
-                        <TableCell title={purchaseOrder.reason}>
-                          {purchaseOrder.reason
-                            ? (purchaseOrder.reason.length > 40 ? purchaseOrder.reason.substring(0, 40) + '...' : purchaseOrder.reason)
-                            : '-'
-                          }
-                        </TableCell>
-                        <TableCell>{purchaseOrder.provider.name}</TableCell>
-                        <TableCell>{purchaseOrder.branch.name}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              purchaseOrder?.state === STATE.FINALIZED
-                                ? 'default'
-                                : purchaseOrder?.state === STATE.EARRING
-                                  ? 'secondary'
-                                  : purchaseOrder?.state === STATE.DRAFT ? 'outline' : 'destructive'
-                            }
-                          >{purchaseOrder.state}</Badge>
-                        </TableCell>
+                    : buyNotes?.map((buyNote) => (
+                      <TableRow key={buyNote.id}>
+                        <TableCell>{buyNote.code}</TableCell>
+                        <TableCell>{buyNote.date} {buyNote.time}</TableCell>
+                        {/admin/i.test(user.role.name) && <TableCell>{buyNote.branch.name}</TableCell>}
+                        <TableCell>Bs. {buyNote.totalAmount}</TableCell>
+                        <TableCell>{buyNote.buyDetails.length}</TableCell>
+                        <TableCell>{buyNote.provider.name}</TableCell>
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -114,23 +113,20 @@ function BuyPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PURCHASE_ORDER}/${purchaseOrder.id}/detalles`) }}>Ver detalle</DropdownMenuItem>
-                              {(user.id === purchaseOrder.user.id && ![STATE.CANCELLED, STATE.FINALIZED].includes(purchaseOrder.state)) && <DropdownMenuItem
-                                onClick={() => { navigate(`${PrivateRoutes.PURCHASE_ORDER}/${purchaseOrder.id}`) }}
-                              >Editar</DropdownMenuItem>}
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.BUY}/${buyNote.id}`) }}>Ver detalle</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
-              </Table> */}
+              </Table>
             </div>
           </CardContent>
-          {/* <CardFooter>
+          <CardFooter>
             <Pagination
               allItems={countData ?? 0}
-              currentItems={purchaseOrders?.length ?? 0}
+              currentItems={buyNotes?.length ?? 0}
               limit={filterOptions.limit}
               newPage={() => { newPage(countData ?? 0) }}
               offset={filterOptions.offset}
@@ -139,7 +135,7 @@ function BuyPage() {
               setLimit={() => { }}
               params={true}
             />
-          </CardFooter> */}
+          </CardFooter>
         </Card>
       </TabsContent>
     </Tabs>

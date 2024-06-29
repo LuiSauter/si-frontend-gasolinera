@@ -3,7 +3,10 @@ import { type Provider } from './provider.model'
 import { type User } from '@/modules/users/models/user.model'
 import { type Branch } from '@/modules/company/models/branch.model'
 import { type Tank } from '@/modules/inventory/models/tank.model'
-import { type CreateBatch, type Batch } from '@/modules/inventory/models/batch.model'
+import {
+  type CreateBatch,
+  type Batch
+} from '@/modules/inventory/models/batch.model'
 import { type PurchaseOrder } from './purchase-order.model'
 
 export interface BuyNote extends ApiBase {
@@ -39,4 +42,8 @@ export interface CreateBuyDetail {
   price: number
   newBatch?: CreateBatch
   tankId?: string
+}
+
+export interface UpdateBuyNote extends Partial<CreateBuy> {
+  id: string
 }
