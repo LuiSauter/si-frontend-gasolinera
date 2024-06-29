@@ -1,8 +1,8 @@
-import { CheckCheckIcon, ChevronLeftIcon, ChevronsUpDownIcon } from 'lucide-react'
+import { CheckCheckIcon, ChevronLeftIcon, ChevronsUpDownIcon, PlusCircleIcon } from 'lucide-react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -16,12 +16,17 @@ import { useHeader } from '@/hooks'
 
 import { type IFormProps, PrivateRoutes } from '@/models'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { useCreateOrUpdateProduct, useGetAllCategories, useGetAllGroups, useGetProduct } from '../../hooks/useProduct'
+import { useCreateOrUpdateProduct, useGetProduct } from '../../hooks/useProduct'
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
 import MultiSelect from './multiselect'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { useGetAllGroup } from '../../hooks/useGroup'
+import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import CategoriesForm from '../group/components/categories-form'
+import { useGetAllCategorys } from '../../hooks/useCategory'
+import { type Category } from '../../models/category.model'
 
 const formSchema = z.object({
   code: z
@@ -33,9 +38,11 @@ const formSchema = z.object({
     .min(3, 'El nombre debe tener al menos 3 caracteres')
     .max(200, 'El nombre debe tener máximo 200 caracteres'),
   minimum_stock: z.number({ required_error: 'El stock mínimo es requerido' })
-    .positive('El stock mínimo debe ser positivo'),
+    .positive('El stock mínimo debe ser positivo o mayor a 0'),
   branchId: z.string({ required_error: 'La sucursal es requerida' }).min(1, 'La sucursal es requerida'),
   categoryId: z.string({ required_error: 'La categoria es requerida' }).min(1, 'La categoría es requerida'),
+  price_sale: z.number({ required_error: 'El stock mínimo es requerido' })
+    .positive('El precio de venta debe ser mayor a 0'),
   // optional
   image_url: z.string().optional(),
   description: z
@@ -56,12 +63,15 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
 
   const navigate = useNavigate()
   const { id } = useParams()
+  const [openModal, setOpenModal] = useState(false)
 
   const { createProduct, updateProduct, error, isCreating, isUpdating } = useCreateOrUpdateProduct()
   const { product } = useGetProduct(id)
 
-  const { groups } = useGetAllGroups()
-  const { categories } = useGetAllCategories()
+  // const { groups, mutate: mutateGroups } = useGetAllGroups()
+  const { groups, mutate: mutateGroups } = useGetAllGroup({ isGetAll: true })
+  // const { categories } = useGetAllCategories()
+  const { categorys: categories, mutate } = useGetAllCategorys()
   const { branches } = useGetAllBranches()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -73,6 +83,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
       image_url: product?.image_url ?? '',
       branchId: product?.branch?.id ?? '',
       categoryId: product?.category?.id ?? '',
+      price_sale: product?.price_sale ?? 0,
       // optional
       description: product?.description ?? undefined,
       is_active: product?.is_active ?? true,
@@ -252,9 +263,8 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                         <FormControl>
                           {groups && groups?.length > 0 && field.value &&
                             <MultiSelect groups={groups} value={field.value} onChange={(value) => {
-                              // form.setValue('groupsId', [...form.watch('groupsId')!, value])
                               form.setValue('groupsId', value)
-                            }} />
+                            }} mutate={mutateGroups} />
                           }
                         </FormControl>
                         <FormMessage />
@@ -341,7 +351,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                                   {field.value
                                     ? <span className='text-ellipsis whitespace-nowrap overflow-hidden'>
                                       {categories?.find(
-                                        (category) => category.id === field.value
+                                        (category: Category) => category.id === field.value
                                       )?.name}
                                     </span>
                                     : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar categoría</span>}
@@ -355,7 +365,22 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                                 <CommandList>
                                   <CommandEmpty>Categoría no encontrada.</CommandEmpty>
                                   <CommandGroup>
-                                    {categories?.map((category) => (
+                                    <CommandItem className='px-0 py-0'>
+                                      <AlertDialog open={openModal} onOpenChange={(open) => { setOpenModal(open) }}>
+                                        <AlertDialogTrigger asChild>
+                                          <div className="flex gap-1 w-full py-1.5 pl-7 rounded-sm cursor-pointer items-center">
+                                            <PlusCircleIcon className="h-4 w-4" />
+                                            Agregar categoria
+                                          </div>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                          <CategoriesForm buttonText='Crear' title='Crear grupo' setOpenModal={setOpenModal} mutate={mutate} />
+                                        </AlertDialogContent>
+                                      </AlertDialog>
+                                    </CommandItem>
+                                  </CommandGroup>
+                                  <CommandGroup>
+                                    {categories?.map((category: Category) => (
                                       <CommandItem
                                         value={category.name}
                                         key={category.id}
@@ -452,6 +477,33 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                               placeholder="https://example.com/image.jpg"
                               {...field}
                               onChange={field.onChange}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
+                <CardHeader className='pb-2'>
+                  <CardTitle>Precio</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4">
+                    <FormField
+                      control={form.control}
+                      name="price_sale"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Precio de venta Bs. *</FormLabel>
+                          <FormControl>
+                            <Input
+                              type='number' {...field} onChange={e => { field.onChange(Number(e.target.value)) }}
+                              step="0.01"
+                              placeholder="0.00"
+
                             />
                           </FormControl>
                           <FormMessage />
