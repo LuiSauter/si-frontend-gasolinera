@@ -1,5 +1,5 @@
-import { useNavigate, useParams } from 'react-router-dom'
-import { ChevronLeftIcon, MoreVerticalIcon } from 'lucide-react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ChevronLeftIcon, FileTextIcon, MoreVerticalIcon } from 'lucide-react'
 
 import { PrivateRoutes } from '@/models'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,7 @@ import { toast } from 'sonner'
 import { useSelector } from 'react-redux'
 import { type RootState } from '@/redux/store'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { getFirstLetterOfEachWord } from '@/utils/string.utils'
 
 function OrderDetailsPage(): JSX.Element {
   const navigate = useNavigate()
@@ -54,7 +55,7 @@ function OrderDetailsPage(): JSX.Element {
             <span className="sr-only">Volver</span>
           </Button>
           <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-            Orden de compra OC-{purchaseOrder?.code ?? '0'}
+            Orden de compra {getFirstLetterOfEachWord(purchaseOrder?.branch.name).toUpperCase()}-OC-{purchaseOrder?.code ?? '0'}
           </h2>
           <div className="w-full sm:w-fit sm:ml-auto flex items-center justify-between gap-4">
             {/* <TabsList>
@@ -89,7 +90,7 @@ function OrderDetailsPage(): JSX.Element {
                 }
                 {purchaseOrder?.state === STATE.EARRING &&
                   <DropdownMenuItem
-                    onClick={() => { navigate(`${PrivateRoutes.BUY}/${purchaseOrder.buyNote?.id}`) }}
+                    onClick={() => { navigate(`${PrivateRoutes.BUY}/crear?id=${purchaseOrder.id}`) }}
                   >Comprar</DropdownMenuItem>}
                 {purchaseOrder?.state === STATE.FINALIZED &&
                   <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.BUY}/${purchaseOrder.buyNote?.id}`) }}>Ver Compra</DropdownMenuItem>}
@@ -109,8 +110,9 @@ function OrderDetailsPage(): JSX.Element {
               <CardHeader className="flex flex-row items-start bg-muted/50">
                 <div className="flex flex-col w-full">
                   {/* <ShoppingCart width={20} height={20} /> */}
-                  <CardTitle className="text-lg">
-                    Orden OC-{purchaseOrder?.code}
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <FileTextIcon className="h-5 w-5" />
+                    {getFirstLetterOfEachWord(purchaseOrder?.branch.name).toUpperCase()}-OC-{purchaseOrder?.code}
                   </CardTitle>
                   <CardDescription className='text-sm'>{purchaseOrder?.date} {purchaseOrder?.time}</CardDescription>
                 </div>
@@ -158,27 +160,41 @@ function OrderDetailsPage(): JSX.Element {
                     </li>
                   </ul>
                   <Separator className="my-2" />
-                  <div className="font-semibold">Sucursal</div>
+                  <div className="font-semibold">Proveedor</div>
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
                       <span className="text-light-text-secondary dark:text-dark-text-secondary">Nombre</span>
-                      <span>{purchaseOrder?.branch.name}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-light-text-secondary dark:text-dark-text-secondary">Dirección</span>
-                      <address className="grid gap-0.5 not-italic">
-                        <span>{purchaseOrder?.branch?.address}</span>
-                      </address>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-light-text-secondary dark:text-dark-text-secondary">Teléfono</span>
-                      <span>{purchaseOrder?.branch?.phone ?? 's/n'}</span>
+                      <span>{purchaseOrder?.provider.name}</span>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-light-text-secondary dark:text-dark-text-secondary">Email</span>
-                      <span>{purchaseOrder?.branch?.email ?? 's/n'}</span>
+                      <span>{purchaseOrder?.provider.email}</span>
                     </li>
                   </ul>
+                  {/admin/i.test(user.role.name) && <>
+                    <Separator className="my-2" />
+                    <div className="font-semibold">Sucursal</div>
+                    <ul className="grid gap-3">
+                      <li className="flex items-center justify-between">
+                        <span className="text-light-text-secondary dark:text-dark-text-secondary">Nombre</span>
+                        <span>{purchaseOrder?.branch.name}</span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-light-text-secondary dark:text-dark-text-secondary">Dirección</span>
+                        <address className="grid gap-0.5 not-italic">
+                          <span>{purchaseOrder?.branch?.address}</span>
+                        </address>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-light-text-secondary dark:text-dark-text-secondary">Teléfono</span>
+                        <span>{purchaseOrder?.branch?.phone ?? 's/n'}</span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-light-text-secondary dark:text-dark-text-secondary">Email</span>
+                        <span>{purchaseOrder?.branch?.email ?? 's/n'}</span>
+                      </li>
+                    </ul>
+                  </>}
                 </div>
               </CardContent>
               <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
@@ -190,16 +206,13 @@ function OrderDetailsPage(): JSX.Element {
           </div>
 
           <div className="flex flex-col gap-4 overflow-hidden lg:gap-6">
-            <TabsContent value="all" className='mt-0'>
-              {/* {product?.fuel ? <TankTable productId={id!} /> : <BatchTable productId={id!} />} */}
+            <TabsContent value="all" className='mt-0 space-y-4 lg:space-y-6'>
               <Card x-chunk="dashboard-07-chunk-0" className='flex flex-col overflow-hidden w-full relative'>
                 <CardHeader>
                   <CardTitle className='w-full flex items-center'>
                     Productos
                   </CardTitle>
                 </CardHeader>
-                {/* <div className="grid md:grid-cols-2 gap-4 lg:gap-6">
-                    </div> */}
                 <CardContent className='overflow-hidden relative w-full'>
                   <div className='overflow-x-auto'>
                     <Table>
@@ -222,10 +235,15 @@ function OrderDetailsPage(): JSX.Element {
                                 className="aspect-square rounded-md object-cover"
                                 src={detail.product?.image_url ? detail.product.image_url : 'https://media.istockphoto.com/id/1354776457/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?s=612x612&w=0&k=20&c=w3OW0wX3LyiFRuDHo9A32Q0IUMtD4yjXEvQlqyYk9O4='}
                               />
-                              {detail.product?.name}
+                              <Link
+                                to={`${PrivateRoutes.PRODUCT}/${detail.product?.id}/detalles`}
+                                className='hover:text-light-text-primary hover:dark:text-dark-text-primary hover:underline'
+                              >
+                                {detail.product?.name}
+                              </Link>
                             </TableCell>
                             <TableCell>{detail.amount}</TableCell>
-                            <TableCell>Bs. {detail.product?.price_purchase.toFixed(2)}</TableCell>
+                            <TableCell>Bs. {detail.lastPurchasePrice.toFixed(2)}</TableCell>
                             <TableCell className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {detail.subTotal.toFixed(2)}</TableCell>
                           </TableRow>
                         ))}

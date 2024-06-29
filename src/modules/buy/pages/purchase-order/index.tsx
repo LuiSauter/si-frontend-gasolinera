@@ -5,7 +5,6 @@ import { File, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-rea
 import { PrivateRoutes } from '@/models/routes.model'
 import { useHeader } from '@/hooks'
 import { useGetAllPurchaseOrders } from '../../hooks/usePurchaseOrder'
-import { FormatDateMMMDYYYYHHMM } from '@/utils'
 import { STATE } from '../../constants/state.constants'
 import { type RootState } from '@/redux/store'
 
@@ -17,6 +16,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import Skeleton from '@/components/shared/skeleton'
 import Pagination from '@/components/shared/pagination'
 import { Badge } from '@/components/ui/badge'
+import { type PurchaseOrder } from '../../models/purchase-order.model'
+import { getFirstLetterOfEachWord } from '@/utils/string.utils'
 
 const PurchaseOrderPage = () => {
   useHeader([
@@ -82,9 +83,10 @@ const PurchaseOrderPage = () => {
                   <TableRow>
                     <TableHead>Código</TableHead>
                     <TableHead>Fecha y hora</TableHead>
-                    <TableHead>Motivo</TableHead>
+                    {/* <TableHead>Motivo</TableHead> */}
+                    <TableHead>Total</TableHead>
                     <TableHead>Proveedor</TableHead>
-                    <TableHead>Sucursal</TableHead>
+                    {/admin/i.test(user.role.name) && <TableHead>Sucursal</TableHead>}
                     <TableHead>Estado</TableHead>
                     <TableHead><div className='sr-only'></div></TableHead>
                   </TableRow>
@@ -92,18 +94,19 @@ const PurchaseOrderPage = () => {
                 <TableBody>
                   {isLoading
                     ? <Skeleton rows={filterOptions.limit} columns={6} />
-                    : purchaseOrders?.map((purchaseOrder) => (
+                    : purchaseOrders?.map((purchaseOrder: PurchaseOrder) => (
                       <TableRow key={purchaseOrder.id}>
-                        <TableCell>OC-{purchaseOrder.code}</TableCell>
-                        <TableCell>{FormatDateMMMDYYYYHHMM(purchaseOrder.createdAt)}</TableCell>
+                        <TableCell>{getFirstLetterOfEachWord(purchaseOrder?.branch.name).toUpperCase()}-OC-{purchaseOrder.code}</TableCell>
+                        <TableCell>{purchaseOrder.date} {purchaseOrder.time}</TableCell>
                         <TableCell title={purchaseOrder.reason}>
                           {purchaseOrder.reason
-                            ? (purchaseOrder.reason.length > 40 ? purchaseOrder.reason.substring(0, 40) + '...' : purchaseOrder.reason)
+                            ? (purchaseOrder.reason.length > 36 ? purchaseOrder.reason.substring(0, 36) + '...' : purchaseOrder.reason)
                             : '-'
                           }
                         </TableCell>
+                        <TableCell>Bs. {purchaseOrder.total.toFixed(2)}</TableCell>
                         <TableCell>{purchaseOrder.provider.name}</TableCell>
-                        <TableCell>{purchaseOrder.branch.name}</TableCell>
+                        {/admin/i.test(user.role.name) && <TableCell>{purchaseOrder.branch.name}</TableCell>}
                         <TableCell>
                           <Badge
                             variant={
