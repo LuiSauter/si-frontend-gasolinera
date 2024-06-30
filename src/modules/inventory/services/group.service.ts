@@ -1,9 +1,10 @@
 import { fetchData } from '@/utils'
 import { type GroupUpdate, type CreateGroup, type Group } from '../models/group.model'
+import { type ApiResponse } from '@/models'
 
-const getAllGroups = async (url: string): Promise<Group[]> => {
+const getAllGroups = async (url: string): Promise<ApiResponse> => {
   const response = await fetchData(url)
-  return response.data
+  return response
 }
 
 const getGroup = async (url: string): Promise<Group> => {

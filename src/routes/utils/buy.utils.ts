@@ -9,6 +9,9 @@ const ProviderProductForm = lazy(() => import('@/modules/buy/pages/provider/comp
 const PurchaseOrderPage = lazy(() => import('@/modules/buy/pages/purchase-order'))
 const PurchaseOrderFormPage = lazy(() => import('@/modules/buy/pages/purchase-order/purchase-order-form'))
 const OrderDetailPage = lazy(() => import('@/modules/buy/pages/purchase-order/order-detail'))
+const BuyPage = lazy(() => import('@/modules/buy/pages/buy'))
+const BuyDetailsPage = lazy(() => import('@/modules/buy/pages/buy/buy-details'))
+const BuyFormPage = lazy(() => import('@/modules/buy/pages/buy/buy-form'))
 
 export const buyRoutes: Route[] = [
   {
@@ -60,5 +63,25 @@ export const buyRoutes: Route[] = [
     path: PrivateRoutes.PURCHASE_ORDER_DETAIL,
     element: createElement(OrderDetailPage),
     permissions: [PERMISSION.PURCHASE_ORDER, PERMISSION.PURCHASE_ORDER_SHOW]
+  },
+  {
+    path: PrivateRoutes.BUY,
+    element: createElement(BuyPage),
+    permissions: [PERMISSION.BUY_NOTE, PERMISSION.BUY_NOTE_SHOW]
+  },
+  {
+    path: PrivateRoutes.BUY_DETAILS,
+    element: createElement(BuyDetailsPage),
+    permissions: [PERMISSION.BUY_NOTE, PERMISSION.BUY_NOTE_SHOW]
+  },
+  {
+    path: PrivateRoutes.BUY_CREATE,
+    element: createElement(BuyFormPage, { buttonText: 'Guardar', title: 'Crear Nota de Compra' }),
+    permissions: [PERMISSION.BUY_NOTE]
+  },
+  {
+    path: PrivateRoutes.BUY_EDIT,
+    element: createElement(BuyFormPage, { buttonText: 'Actualizar', title: 'Actualizar Nota de Compra' }),
+    permissions: [PERMISSION.BUY_NOTE]
   }
 ]

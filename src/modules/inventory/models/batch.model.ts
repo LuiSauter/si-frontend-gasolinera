@@ -6,7 +6,6 @@ export interface Batch extends ApiBase {
   expiration_date: string
   detail: string
   stock: number
-  minimum_stock: number
   is_active: boolean
   initial_stock: number
   product: Product

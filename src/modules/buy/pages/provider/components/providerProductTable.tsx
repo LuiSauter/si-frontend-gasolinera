@@ -48,36 +48,25 @@ function ProviderProductTable() {
     <Card x-chunk="dashboard-06-chunk-0">
       <CardHeader>
         <CardTitle className='flex flex-row justify-between'>
-          <span>Productos del proveedor</span>
+          <span>Productos</span>
           <div className="ml-auto flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 gap-1">
                   <ListFilterIcon className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Filtrar
-                  </span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked>
-                  Active
-                </DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem checked>Active</DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Button size="sm" variant="outline" className="h-8 gap-1">
               <File className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Exportar
-              </span>
             </Button>
             <Button onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${id}/asignar`) }} size="sm" className="h-8 gap-1">
               <PlusCircleIcon className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                Agregar
-              </span>
             </Button>
           </div>
         </CardTitle>
@@ -91,9 +80,7 @@ function ProviderProductTable() {
               </TableHead>
               <TableHead>Nombre</TableHead>
               <TableHead>Descripción</TableHead>
-              <TableHead>Stock Min.</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Precio de compra</TableHead>
+              <TableHead>Precio</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
@@ -103,7 +90,7 @@ function ProviderProductTable() {
           <TableBody>
             {providerProducts?.map((productProvider: ProviderProduct) => (
               <TableRow key={productProvider.product.id}>
-                <TableCell className="hidden sm:table-cell">
+                <TableCell>
                   <img
                     alt="Product image"
                     className="aspect-square rounded-md object-cover"
@@ -113,12 +100,8 @@ function ProviderProductTable() {
                   />
                 </TableCell>
                 <TableCell className="font-medium">{productProvider.product.name}</TableCell>
-                <TableCell>{productProvider.product.description}</TableCell>
-                <TableCell>{productProvider.product.minimum_stock}</TableCell>
-                <TableCell>{productProvider.product.stock}</TableCell>
-                <TableCell>
-                  Bs. {productProvider.product.price_purchase}
-                </TableCell>
+                <TableCell>{productProvider.details}</TableCell>
+                <TableCell>Bs. {productProvider.last_price}</TableCell>
                 <TableCell>
                   <Badge variant={productProvider.product.is_active ? 'default' : 'outline'}>
                     {productProvider.product.is_active ? 'Activo' : 'Inactivo'}

@@ -2,7 +2,7 @@
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { type ResponseError } from '@/utils/response-error.utils'
 import useSWR from 'swr'
-import { createProviderProduct, deleteProviderProduct, getAllProductProvider, getProviderProduct, updateProviderProduct } from '../services/providerProduct.service'
+import { createProviderProduct, deleteProviderProduct, getAllProductProvider, getAllProductProviderId, getProviderProduct, updateProviderProduct } from '../services/providerProduct.service'
 import { type UpdateProviderProduct, type CreateProviderProduct, type ProviderProduct } from '../models/providerProduct.model'
 import useSWRMutation from 'swr/mutation'
 import { useMemo } from 'react'
@@ -52,4 +52,9 @@ const useGetAllProductsProviders = (id?: string) => {
   return value
 }
 
-export { useGetAllProductsProviders, useCreateProviderProduct, useGetProviderProduct, useUpdateProviderProduct, useDeleteProviderProduct }
+const useGetAllMutationProductsProviders = () => {
+  const { trigger, error, isMutating, data } = useSWRMutation<ProviderProduct[], ResponseError, string, string>(API_BASEURL + ENDPOINTS.PROVIDER_PRODUCT, getAllProductProviderId)
+  return { getProviderProduct: trigger, error, isMutating, providerProducts: data }
+}
+
+export { useGetAllProductsProviders, useGetAllMutationProductsProviders, useCreateProviderProduct, useGetProviderProduct, useUpdateProviderProduct, useDeleteProviderProduct }

@@ -24,6 +24,7 @@ export interface PurchaseOrder extends ApiBase {
 interface PurchaseOrderDetail extends ApiBase {
   amount: number
   subTotal: number
+  lastPurchasePrice: number
   product?: Product
 }
 
@@ -38,6 +39,6 @@ export interface UpdatePurchaseOrder extends Partial<CreatePurchaseOrder> {
 
 }
 
-interface CreatePurchaseOrderDetail extends Partial<Omit<PurchaseOrderDetail, 'subTotal'>> {
+interface CreatePurchaseOrderDetail extends Partial<Omit<PurchaseOrderDetail, 'subTotal' | 'lastPurchasePrice'>> {
   productId: string
 }

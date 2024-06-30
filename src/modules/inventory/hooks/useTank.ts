@@ -3,7 +3,7 @@ import useSWR, { type KeyedMutator } from 'swr'
 import useSWRMutation from 'swr/mutation'
 import { type Tank, type CreateTank } from '../models/tank.model'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
-import { createTank, deleteTank, getAllTanks, getTank, updateTank } from '../services/tank.service'
+import { createTank, deleteTank, getAllTanks, getAllTanksByProduct, getTank, updateTank } from '../services/tank.service'
 import { type GetAllProps, type ApiResponse } from '@/models'
 import { useAuthorization } from '@/hooks/useAuthorization'
 import { useEffect } from 'react'
@@ -59,6 +59,11 @@ const useGetAllTanksByProduct = ({ isGetAll, productId }: UseGetAllBatchProps) =
   return { tanks: data?.data as Tank[], countData: data?.countData, error, isLoading, mutate, changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset }
 }
 
+const useGetMutationTanks = () => {
+  const { error, isMutating, trigger, data } = useSWRMutation<Tank[], ResponseError, string, string>(`${API_BASEURL + ENDPOINTS.TANK}/product`, getAllTanksByProduct)
+  return { getTanksByProduct: trigger, isMutating, error, tanks: data }
+}
+
 const useGetTank = (id?: string) => {
   if (!id) return { Tank: null, isLoading: false, error: null, isValidating: false }
   const { data, isLoading, error, isValidating, mutate } = useSWR<Tank, ResponseError>(API_BASEURL + ENDPOINTS.TANK + `/${id}`, getTank)
@@ -76,4 +81,4 @@ const useDeleteTank = () => {
   return { deleteTank: trigger, isMutating, error }
 }
 
-export { useCreateTank, useGetAllTanksByProduct, useGetTank, useUpdateTank, useDeleteTank }
+export { useCreateTank, useGetAllTanksByProduct, useGetMutationTanks, useGetTank, useUpdateTank, useDeleteTank }

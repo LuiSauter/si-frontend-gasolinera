@@ -41,11 +41,11 @@ import Pagination from '@/components/shared/pagination'
 const ProviderPage = (): JSX.Element => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Compras', path: PrivateRoutes.PROVIDER },
+    { label: 'Compras', path: PrivateRoutes.BUY },
     { label: 'Proveedores' }
   ])
   const navigate = useNavigate()
-  const { providers, countData, isLoading, filterOptions, newPage, prevPage, setOffset } = useGetAllProvider()
+  const { providers, countData, isLoading, filterOptions, newPage, prevPage, setOffset } = useGetAllProvider({ isGetAll: false })
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const { deleteProvider } = useDeleteProvider()

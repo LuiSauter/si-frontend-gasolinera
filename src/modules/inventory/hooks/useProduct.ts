@@ -2,9 +2,9 @@ import { type GetAllProps, type ApiResponse } from '@/models'
 import useSWR, { type KeyedMutator } from 'swr'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { type ResponseError } from '@/utils/response-error.utils'
-import { createProduct, deleteProduct, getAllCategories, getAllGroups, getAllProducts, getProduct, updateProduct } from '../services/product.service'
+import { createProduct, deleteProduct, getAllGroups, getAllProducts, getProduct, updateProduct } from '../services/product.service'
 import useSWRMutation from 'swr/mutation'
-import { type Category, type Group, type CreateProduct, type Product } from '../models/product.model'
+import { type Group, type CreateProduct, type Product } from '../models/product.model'
 import { useAuthorization } from '@/hooks/useAuthorization'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
@@ -63,14 +63,9 @@ const useCreateProduct = () => {
   return { createProduct: trigger, isMutating, error }
 }
 
-const useGetAllCategories = () => {
-  const { data, isLoading, error } = useSWR<Category[], ResponseError>(API_BASEURL + ENDPOINTS.CATEGORY, getAllCategories)
-  return { categories: data, isLoading, error }
-}
-
 const useGetAllGroups = () => {
-  const { data, isLoading, error } = useSWR<Group[], ResponseError>(API_BASEURL + ENDPOINTS.GROUP, getAllGroups)
-  return { groups: data ?? [], isLoading, error }
+  const { data, isLoading, error, mutate } = useSWR<Group[], ResponseError>(API_BASEURL + ENDPOINTS.GROUP, getAllGroups)
+  return { groups: data ?? [], isLoading, error, mutate }
 }
 
 const useUpdateProduct = () => {
@@ -96,4 +91,4 @@ const useDeleteProduct = () => {
   return { deleteProduct: trigger, isMutating, error }
 }
 
-export { useGetAllProducts, useDeleteProduct, useCreateOrUpdateProduct, useGetProduct, useGetAllCategories, useGetAllGroups }
+export { useGetAllProducts, useDeleteProduct, useCreateOrUpdateProduct, useGetProduct, useGetAllGroups }
