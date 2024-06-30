@@ -21,7 +21,7 @@ function BuyDetails(): JSX.Element {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
     { label: 'Compras', path: PrivateRoutes.BUY },
-    { label: `Detalle de la compra #${buyNote?.code}` }
+    { label: 'Detalle de la compra' }
   ])
 
   return (
@@ -83,7 +83,7 @@ function BuyDetails(): JSX.Element {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-light-text-secondary dark:text-dark-text-secondary">Total</span>
-                      <span className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {buyNote?.totalAmount.toFixed(2)}</span>
+                      <span className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {(buyNote?.totalAmount ?? 0).toFixed(2)}</span>
                     </li>
                   </ul>
                   <Separator className="my-2" />
@@ -171,8 +171,8 @@ function BuyDetails(): JSX.Element {
                               </Link>
                             </TableCell>
                             <TableCell>{detail.amount}</TableCell>
-                            <TableCell>Bs. {detail.price.toFixed(2)}</TableCell>
-                            <TableCell className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {detail.subTotal.toFixed(2)}</TableCell>
+                            <TableCell>Bs. {(detail.price ?? 0).toFixed(2)}</TableCell>
+                            <TableCell className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {(detail.subTotal ?? 0).toFixed(2)}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>

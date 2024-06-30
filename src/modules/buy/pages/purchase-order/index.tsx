@@ -104,7 +104,7 @@ const PurchaseOrderPage = () => {
                             : '-'
                           }
                         </TableCell>
-                        <TableCell>Bs. {purchaseOrder.total.toFixed(2)}</TableCell>
+                        <TableCell>Bs. {(purchaseOrder.total ?? 0).toFixed(2)}</TableCell>
                         <TableCell>{purchaseOrder.provider.name}</TableCell>
                         {/admin/i.test(user.role.name) && <TableCell>{purchaseOrder.branch.name}</TableCell>}
                         <TableCell>

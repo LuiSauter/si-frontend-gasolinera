@@ -144,7 +144,7 @@ function OrderDetailsPage(): JSX.Element {
                     <Separator className="my-2" />
                     <li className="flex items-center justify-between">
                       <span className="text-light-text-secondary dark:text-dark-text-secondary">Total</span>
-                      <span className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {purchaseOrder?.total.toFixed(2)}</span>
+                      <span className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {(purchaseOrder?.total ?? 0).toFixed(2)}</span>
                     </li>
                   </ul>
                   <Separator className="my-2" />
@@ -243,8 +243,8 @@ function OrderDetailsPage(): JSX.Element {
                               </Link>
                             </TableCell>
                             <TableCell>{detail.amount}</TableCell>
-                            <TableCell>Bs. {detail.lastPurchasePrice.toFixed(2)}</TableCell>
-                            <TableCell className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {detail.subTotal.toFixed(2)}</TableCell>
+                            <TableCell>Bs. {(detail.lastPurchasePrice ?? 0).toFixed(2)}</TableCell>
+                            <TableCell className='text-light-text-primary dark:text-dark-text-primary font-semibold'>Bs. {(detail.subTotal ?? 0).toFixed(2)}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
