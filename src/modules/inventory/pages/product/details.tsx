@@ -152,7 +152,7 @@ function DetailsPage(): JSX.Element {
 
           <div className="flex flex-col gap-4 overflow-hidden lg:gap-6">
             <TabsContent value="all" className='mt-0'>
-              {product?.fuel ? <TankTable productId={id!} /> : <BatchTable productId={id!} />}
+              {product?.fuel ? <TankTable productId={id!} /> : <BatchTable productId={id!} productName={product?.name ?? ''} />}
             </TabsContent>
           </div>
         </div>

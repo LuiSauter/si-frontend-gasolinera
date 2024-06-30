@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { useGetProvider } from '@/modules/buy/hooks/useProvider'
 import ProviderProductTable from './providerProductTable'
 import { useHeader } from '@/hooks'
+import { Badge } from '@/components/ui/badge'
 
 function ProviderDetailsPage(): JSX.Element {
   useHeader([
@@ -31,7 +32,7 @@ function ProviderDetailsPage(): JSX.Element {
             onClick={() => { navigate(-1) }}
             variant="outline"
             size="icon"
-            className="h-10 w-10"
+            className="h-8 w-8"
           >
             <ChevronLeftIcon className="h-5 w-5" />
             <span className="sr-only">Volver</span>
@@ -115,7 +116,9 @@ function ProviderDetailsPage(): JSX.Element {
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">Estado</span>
-                      <span>{provider?.isActive ? 'Activado' : 'Inactivo'}</span>
+                      <Badge variant={provider?.isActive ? 'default' : 'outline'}>
+                        {provider?.isActive ? 'Activo' : 'Inactivo'}
+                      </Badge>
                     </li>
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">Dirección</span>

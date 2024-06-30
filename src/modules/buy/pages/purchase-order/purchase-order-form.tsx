@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
 import { Textarea } from '@/components/ui/textarea'
@@ -13,20 +13,17 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useHeader } from '@/hooks'
 
 import { type IFormProps, PrivateRoutes } from '@/models'
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-// import { useCreateOrUpdateProduct, useGetAllCategories, useGetAllGroups, useGetProduct } from '../../hooks/useProduct'
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
-// import MultiSelect from './multiselect'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { useCreatePurchaseOrder, useGetPurchaseOrder, useUpdatePurchaseOrder } from '../../hooks/usePurchaseOrder'
+import { useCreatePurchaseOrder, useGetMutationPurchaseOrder, useUpdatePurchaseOrder } from '../../hooks/usePurchaseOrder'
 import { useGetAllProvider } from '../../hooks/useProvider'
 import { STATE } from '../../constants/state.constants'
 import { type Provider } from '../../models/provider.model'
 import { type Branch } from '@/modules/company/models/branch.model'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useGetAllProductsProviders } from '../../hooks/useProviderProduct'
+import { useGetAllMutationProductsProviders } from '../../hooks/useProviderProduct'
 import { type ProviderProduct } from '../../models/providerProduct.model'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { useEffect, useState } from 'react'
@@ -35,7 +32,7 @@ import { toast } from 'sonner'
 import { type CreatePurchaseOrder } from '../../models/purchase-order.model'
 
 const formSchema = z.object({
-  reason: z.string({ required_error: 'La razón es requerida' }).min(1, 'La razón es requerida'),
+  reason: z.string({ required_error: 'La razón es requerida' }).min(5, 'La razón es requerida'),
   state: z.string({ required_error: 'El estado es requerido' }).min(1, 'El estado es requerido'),
   branchId: z.string({ required_error: 'La sucursal es requerida' }).min(1, 'La sucursal es requerida'),
   providerId: z.string({ required_error: 'El proveedor es requerido' }).min(1, 'El proveedor es requerido'),
@@ -64,17 +61,17 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
     { label: buttonText }
   ])
 
-  const [providerParam, setProviderParam] = useState('')
   const [selectProduct, setSelectProduct] = useState<Record<string, string | number> | null>(null)
   const navigate = useNavigate()
   const { id } = useParams()
-  const { purchaseOrder, error: errorGetPurchase } = useGetPurchaseOrder(id)
+  // const { purchaseOrder, error: errorGetPurchase } = useGetPurchaseOrder(id)
+  const { purchaseOrder, error: errorGetPurchase, getPurchaseOrder } = useGetMutationPurchaseOrder()
   const { branches, error: errorBranchs } = useGetAllBranches()
-  const { providers, error: errorProvider } = useGetAllProvider()
+  const { providers, error: errorProvider } = useGetAllProvider({ isGetAll: true })
   const { createPurchaseOrder, isMutating: isMutatingCreate } = useCreatePurchaseOrder()
   const { updatePurchaseOrder, isMutating: isMutatingUpdate } = useUpdatePurchaseOrder()
 
-  const { providerProducts } = useGetAllProductsProviders(providerParam)
+  const { providerProducts, getProviderProduct } = useGetAllMutationProductsProviders()
 
   const [searchParams, setSearchParams] = useSearchParams()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -155,23 +152,37 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
     formDetails.reset()
   }
 
+  let subscribeGetAllProductsProviders = true
   useEffect(() => {
-    if (searchParams.get('id') !== providerParam) {
-      setProviderParam(searchParams.get('id') ?? '')
-      form.setValue('providerId', searchParams.get('id') ?? '')
+    if (subscribeGetAllProductsProviders && searchParams.get('id') !== null) {
+      const id = String(searchParams.get('id'))
+      void getProviderProduct(id)
+      form.setValue('providerId', String(searchParams.get('id')) ?? '')
+    }
+    return () => {
+      subscribeGetAllProductsProviders = false
     }
   }, [searchParams.get('id')])
 
   let subscribePurchaseOrder = true
   useEffect(() => {
     if (subscribePurchaseOrder && purchaseOrder) {
-      setProviderParam(purchaseOrder.provider.id)
       setSearchParams({ id: purchaseOrder.provider.id })
     }
     return () => {
       subscribePurchaseOrder = false
     }
   }, [purchaseOrder])
+
+  let subscribeGetPurchase = true
+  useEffect(() => {
+    if (subscribeGetPurchase && id) {
+      void getPurchaseOrder(id)
+    }
+    return () => {
+      subscribeGetPurchase = false
+    }
+  }, [id])
 
   let subscribe = true
   useEffect(() => {
@@ -521,10 +532,10 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                             </div>
                             <div>
                               <AlertDialogDescription>
-                                Precio de compra: {providerProducts?.find((product) => product.product.id === formDetails.watch('productId'))?.product?.price_purchase ?? 0} bs.
+                                Precio de compra: {providerProducts?.find((product) => product.product.id === formDetails.watch('productId'))?.last_price ?? 0} bs.
                               </AlertDialogDescription>
                               <AlertDialogDescription>
-                                SubTotal: {(providerProducts?.find((product) => product.product.id === formDetails.watch('productId'))?.product?.price_purchase ?? 0) * formDetails.watch('amount')} Bs.
+                                SubTotal: {(providerProducts?.find((product) => product.product.id === formDetails.watch('productId'))?.last_price ?? 0) * formDetails.watch('amount')} Bs.
                               </AlertDialogDescription>
                             </div>
                             <AlertDialogFooter>
@@ -569,7 +580,7 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                               {detail.amount}
                             </TableCell>
                             <TableCell>
-                              Bs. {(providerProducts?.find((product) => product.product.id === detail.productId)?.product?.price_purchase ?? 0) * detail.amount}
+                              Bs. {((providerProducts?.find((product) => product.product.id === detail.productId)?.last_price ?? 0) * detail.amount).toFixed(2)}
                             </TableCell>
                             <TableCell>
                               <DropdownMenu>
@@ -600,6 +611,13 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                     )}
                   </div>
                 </CardContent>
+                <CardFooter>
+                  Total: Bs.{' '}
+                  {providerProducts?.reduce((acc, product) => {
+                    const detail = form.watch('details').find((detail) => detail.productId === product.product.id)
+                    return acc + (detail?.amount ?? 0) * product.last_price
+                  }, 0).toFixed(2)}
+                </CardFooter>
               </Card>
             </div>
           </div>

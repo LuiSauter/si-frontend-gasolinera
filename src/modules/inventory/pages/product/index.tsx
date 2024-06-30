@@ -22,6 +22,8 @@ import { toast } from 'sonner'
 import { useHeader } from '@/hooks'
 import Skeleton from '@/components/shared/skeleton'
 import Pagination from '@/components/shared/pagination'
+import { useSelector } from 'react-redux'
+import { type RootState } from '@/redux/store'
 
 const ProductosPage = (): JSX.Element => {
   useHeader([
@@ -29,6 +31,7 @@ const ProductosPage = (): JSX.Element => {
     { label: 'Productos' }
   ])
   const navigate = useNavigate()
+  const user = useSelector((state: RootState) => state.user)
   const { products, isLoading, countData, filterOptions, newPage, prevPage, setOffset } = useGetAllProducts({ isGetAll: false })
 
   const { deleteProduct } = useDeleteProduct()
@@ -99,7 +102,8 @@ const ProductosPage = (): JSX.Element => {
                       <TableHead>Stock</TableHead>
                       <TableHead>Stock Min.</TableHead>
                       <TableHead>Precio de compra</TableHead>
-                      <TableHead>Sucursal</TableHead>
+                      <TableHead>Precio de venta</TableHead>
+                      {/admin/i.test(user.role.name) && <TableHead>Sucursal</TableHead>}
                       <TableHead>Estado</TableHead>
                       <TableHead><span className='sr-only'>Actions</span></TableHead>
                     </TableRow>
@@ -121,14 +125,15 @@ const ProductosPage = (): JSX.Element => {
                           <TableCell>{product.name}</TableCell>
                           <TableCell title={product?.description ?? '-'}>
                             {product?.description
-                              ? (product?.description.length > 40 ? product?.description.substring(0, 40) + '...' : product?.description)
+                              ? (product?.description.length > 25 ? product?.description.substring(0, 25) + '...' : product?.description)
                               : '-'
                             }
                           </TableCell>
                           <TableCell>{product.stock}</TableCell>
                           <TableCell>{product.minimum_stock}</TableCell>
-                          <TableCell>Bs. {product.price_purchase}</TableCell>
-                          <TableCell>{product.branch?.name}</TableCell>
+                          <TableCell>Bs. {product.price_purchase.toFixed(2)}</TableCell>
+                          <TableCell>Bs. {product.price_sale.toFixed(2)}</TableCell>
+                          {/admin/i.test(user.role.name) && <TableCell>{product.branch?.name}</TableCell>}
                           <TableCell>
                             <Badge variant={product.is_active ? 'default' : 'outline'}>
                               {product.is_active ? 'Activo' : 'Inactivo'}

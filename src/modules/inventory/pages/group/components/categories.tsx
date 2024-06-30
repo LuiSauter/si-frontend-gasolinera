@@ -1,55 +1,36 @@
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { ChevronLeftIcon, File, ListFilterIcon, MoreHorizontal, Pencil, PlusCircleIcon, Trash } from 'lucide-react'
+import { MoreHorizontal, Pencil, PlusCircleIcon, Trash } from 'lucide-react'
 
 import { PrivateRoutes } from '@/models/routes.model'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { type Category } from '../../models/category.model'
 import { useHeader } from '@/hooks'
 import Loading from '@/components/shared/loading'
-import { useDeleteCategory, useGetAllCategorys } from '../../hooks/useCategory'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger
-} from '@/components/ui/alert-dialog'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { useState } from 'react'
 import Pagination from '@/components/shared/pagination'
+import { type Category } from '@/modules/inventory/models/product.model'
+import { useDeleteCategory, useGetAllCategorys } from '@/modules/inventory/hooks/useCategory'
+import CategoriesForm from './categories-form'
 
-const CategoryPage = () => {
+const CategoryList = () => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Inventario', path: PrivateRoutes.CATEGORY },
+    { label: 'Inventario', path: PrivateRoutes.PRODUCT },
     { label: 'Categorias' }
   ])
-  const navigate = useNavigate()
-  const { categorys, isLoading, countData, filterOptions, newPage, prevPage, setOffset } = useGetAllCategorys()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
+  const navigate = useNavigate()
+  const { categorys, isLoading, countData, filterOptions, newPage, prevPage, setOffset, mutate } = useGetAllCategorys()
   const { deleteCategory } = useDeleteCategory()
   const deletePermanentlyCategory = (id: string) => {
     toast.promise(deleteCategory(id), {
       loading: 'Cargando...',
       success: () => {
-        setTimeout(() => {
-          navigate(PrivateRoutes.CATEGORY, { replace: true })
-        }, 1000)
         return 'Categoría eliminada exitosamente'
       },
       error(error) {
@@ -59,56 +40,29 @@ const CategoryPage = () => {
     setIsDialogOpen(false)
   }
 
+  const handleEdit = (params: string) => {
+    navigate(params)
+    setOpenModal(true)
+  }
+
   return (
     <section className='grid gap-4 overflow-hidden w-full relative'>
-      <div className="inline-flex items-center flex-wrap gap-2">
-        <Button
-          type="button"
-          onClick={() => { navigate(-1) }}
-          variant="outline"
-          size="icon"
-          className="h-8 w-8"
-        >
-          <ChevronLeftIcon className="h-4 w-4" />
-          <span className="sr-only">Volver</span>
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild className='ml-auto'>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 gap-1 text-sm"
-            >
-              <ListFilterIcon className="h-3.5 w-3.5" />
-              <span className="sr-only sm:not-sr-only">Filtrar</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuCheckboxItem checked>
-              Todos
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <Button
-          size="sm"
-          variant="outline"
-          className="h-7 gap-1 text-sm"
-        >
-          <File className="h-3.5 w-3.5" />
-          <span className="sr-only sm:not-sr-only">Exportar</span>
-        </Button>
-        <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.CATEGORY_CREAR) }}>
-          <PlusCircleIcon className="h-3.5 w-3.5" />
-          <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-            Agregar Categoria
-          </span>
-        </Button>
-      </div>
       <Card x-chunk="dashboard-06-chunk-0" className='flex flex-col overflow-hidden w-full relative'>
         <CardHeader>
-          <CardTitle>Todas las categorías</CardTitle>
+          <CardTitle className='flex justify-between'>
+            Categorias
+            <AlertDialog open={openModal} onOpenChange={(open) => { setOpenModal(open) }}>
+              <AlertDialogTrigger asChild>
+                <Button type='button' size="sm" className="h-8 gap-1">
+                  <PlusCircleIcon className="h-3.5 w-3.5" />
+                  Agregar
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <CategoriesForm buttonText='Crear' title='Crear categoria' setOpenModal={setOpenModal} mutate={mutate} />
+              </AlertDialogContent>
+            </AlertDialog>
+          </CardTitle>
         </CardHeader>
         <CardContent className='overflow-hidden relative w-full'>
           <div className='overflow-x-auto'>
@@ -126,7 +80,7 @@ const CategoryPage = () => {
                   <TableRow key={category.id}>
                     <TableCell>
                       <img
-                        src={category.image_url} alt=""
+                        src={category.image_url} alt={category.name}
                         className="w-16 h-16 object-cover rounded-lg"
                       />
                     </TableCell>
@@ -146,7 +100,9 @@ const CategoryPage = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                          <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.CATEGORY}/${category.id}`) }}>
+                          <DropdownMenuItem onClick={() => {
+                            handleEdit(`?nombre=${category.name}&descripcion=${category.description}&imagen=${category.image_url}&id=${category.id}`)
+                          }}>
                             <Pencil className="mr-2 h-4 w-4" />
                             Editar
                           </DropdownMenuItem>
@@ -213,4 +169,4 @@ const CategoryPage = () => {
   )
 }
 
-export default CategoryPage
+export default CategoryList

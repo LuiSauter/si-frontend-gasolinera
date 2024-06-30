@@ -1,21 +1,28 @@
 import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react'
-import { X } from 'lucide-react'
+import { PlusCircleIcon, X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { type Group } from '@/modules/inventory/models/group.model'
+import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import GroupForm from '../group/components/group-form'
+import { type KeyedMutator } from 'swr'
+import { type ApiResponse } from '@/models'
+import { Button } from '@/components/ui/button'
 
 interface MultiselectProps {
   value: string[]
   onChange: (value: string[]) => void
   groups: Group[]
+  mutate: KeyedMutator<ApiResponse>
 }
 
-function MultiSelect({ value, onChange, groups }: MultiselectProps): JSX.Element {
+function MultiSelect({ value, onChange, groups, mutate }: MultiselectProps): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState<Group[]>(groups.filter((group) => value.includes(group.id)))
   const [inputValue, setInputValue] = useState('')
+  const [openModal, setOpenModal] = useState(false)
 
   useEffect(() => {
     setSelected(groups.filter((group) => value.includes(group.id)))
@@ -88,8 +95,18 @@ function MultiSelect({ value, onChange, groups }: MultiselectProps): JSX.Element
           onBlur={() => { setOpen(false) }}
           onFocus={() => { setOpen(true) }}
           placeholder="Seleccionar grupos..."
-          className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground h-10"
+          className="flex outline-none placeholder:text-muted-foreground h-10"
         />
+        <AlertDialog open={openModal} onOpenChange={(open) => { setOpenModal(open) }}>
+          <AlertDialogTrigger asChild>
+            <Button className="gap-1 flex items-center ml-auto mr-1 h-8 w-8" size='icon' variant='ghost'>
+              <PlusCircleIcon className="h-4 w-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <GroupForm buttonText='Crear' title='Crear grupo' setOpenModal={setOpenModal} mutate={mutate} />
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <div className="relative">
         <CommandList>

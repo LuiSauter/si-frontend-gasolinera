@@ -1,5 +1,5 @@
 import { fetchData } from '@/utils'
-import { type Category, type CreateProduct, type Group, type Product } from '../models/product.model'
+import { type CreateProduct, type Group, type Product } from '../models/product.model'
 import { type ApiResponse } from '@/models'
 
 const getAllProducts = async (url: string): Promise<ApiResponse> => {
@@ -35,9 +35,9 @@ const deleteProduct = async (url: string, { arg }: { arg: string }): Promise<voi
   await fetchData(`${url}/${arg}`, options)
 }
 
-const getAllCategories = async (url: string): Promise<Category[]> => {
+const getAllCategories = async (url: string): Promise<ApiResponse> => {
   const response = await fetchData(url)
-  return response.data
+  return response
 }
 
 const getAllGroups = async (url: string): Promise<Group[]> => {

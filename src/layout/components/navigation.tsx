@@ -59,19 +59,20 @@ function Navigation() {
                       handleActivateMenu(item.label)
                       isContract && toggleContract()
                     }}
+                    title={item.label}
                   >
                     <div
                       className={`${selectedMenu.includes(item.path!)
                         ? 'text-light-text-primary dark:text-dark-text-primary'
                         : 'text-light-text-secondary dark:text-dark-text-secondary'}
                       ${isContract && selectedMenu.includes(item.path!) ? 'hover:bg-light-border dark:bg-dark-border' : ''}
-                      h-10 flex items-center justify-between gap-3 rounded-md pl-4 pr-2 py-2 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal overflow-hidden text-ellipsis`}
+                      h-10 flex items-center justify-between gap-3 rounded-md pl-4 pr-2 py-2 transition-all w-full hover:bg-light-border hover:dark:bg-dark-border text-base font-normal`}
                     >
-                      <div className='flex items-center gap-3 whitespace-nowrap'>
+                      <div className='flex items-center gap-3 w-full overflow-hidden [&>svg]:shrink-0'>
                         {item.icon}
-                        <span className={isContract ? 'hidden' : ''}>{item.label}</span>
+                        <span className={`${isContract ? 'hidden' : ''} overflow-hidden text-ellipsis whitespace-nowrap`}>{item.label}</span>
                       </div>
-                      <ChevronRightIcon className={`${isContract ? 'hidden' : ''} group-aria-expanded:rotate-90 transition-transform`} />
+                      <ChevronRightIcon className={`${isContract ? 'hidden' : ''} group-aria-expanded:rotate-90 transition-transform shrink-0`} />
                     </div>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
@@ -85,7 +86,7 @@ function Navigation() {
                               className={`${selectedMenu === child.path ? 'bg-light-bg-secondary dark:bg-dark-border text-light-text-primary dark:text-dark-text-primary font-semibold' : 'text-light-text-secondary dark:text-dark-text-secondary'} h-10 flex items-center gap-3 rounded-lg px-3 py-2 mt-1 transition-all hover:bg-light-border hover:dark:bg-dark-border text-base font-normal w-full`}
                             >
                               {child.icon}
-                              <span className={isContract ? 'hidden' : ''}>{child.label}</span>
+                              <span className={`${isContract ? 'hidden' : ''} overflow-hidden text-ellipsis whitespace-nowrap`}>{child.label}</span>
                             </Link>
                           )
                         } else {

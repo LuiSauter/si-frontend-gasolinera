@@ -19,6 +19,11 @@ const getPurchaseOrder = async (url: string): Promise<PurchaseOrder> => {
   return response.data as PurchaseOrder
 }
 
+const getPurchaseOrderId = async (url: string, { arg }: { arg: string }): Promise<PurchaseOrder> => {
+  const response = await fetchData(`${url}/${arg}`)
+  return response.data as PurchaseOrder
+}
+
 const updatePurchaseOrder = async (url: string, { arg }: { arg: UpdatePurchaseOrder }): Promise<void> => {
   const { id, ...updatePurchaseOrder } = arg
 
@@ -34,4 +39,4 @@ const deletePurchaseOrder = async (url: string, { arg }: { arg: string }): Promi
   await fetchData(`${url}/${arg}`, options)
 }
 
-export { createPurchaseOrder, getAllPurchaseOrder, getPurchaseOrder, updatePurchaseOrder, deletePurchaseOrder }
+export { createPurchaseOrder, getAllPurchaseOrder, getPurchaseOrder, getPurchaseOrderId, updatePurchaseOrder, deletePurchaseOrder }

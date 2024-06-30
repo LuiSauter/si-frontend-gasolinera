@@ -1,15 +1,13 @@
 import { createElement, lazy } from 'react'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
-import GroupForm from '@/modules/inventory/pages/group/components/group-form'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 
 const ProductPage = lazy(() => import('@modules/inventory/pages/product'))
 const ProductFormPage = lazy(() => import('@modules/inventory/pages/product/product-form'))
 const ProductDetailsPage = lazy(() => import('@/modules/inventory/pages/product/details'))
+const BatchFormPage = lazy(() => import('@modules/inventory/pages/product/components/batch-form'))
 const FuelPage = lazy(() => import('@modules/inventory/pages/fuel'))
 const FuelForm = lazy(() => import('@modules/inventory/pages/fuel/components/fuel-form'))
-const CategoryPage = lazy(() => import('@modules/inventory/pages/category-group'))
-const CategoryForm = lazy(() => import('@/modules/inventory/pages/category-group/components/category-group-form'))
 const GroupPage = lazy(() => import('@/modules/inventory/pages/group'))
 const OuputProductsPage = lazy(() => import('@/modules/inventory/pages/output-product'))
 
@@ -35,6 +33,11 @@ export const inventoryRoutes: Route[] = [
     permissions: [PERMISSION.PRODUCT, PERMISSION.PRODUCT_SHOW]
   },
   {
+    path: PrivateRoutes.BATCH_CREATE,
+    element: createElement(BatchFormPage, { buttonText: 'Guardar Lote', title: 'Crear Lote' }),
+    permissions: [PERMISSION.PRODUCT]
+  },
+  {
     path: PrivateRoutes.FUEL,
     element: createElement(FuelPage),
     permissions: [PERMISSION.FUEL, PERMISSION.FUEL_SHOW]
@@ -50,34 +53,9 @@ export const inventoryRoutes: Route[] = [
     permissions: [PERMISSION.FUEL]
   },
   {
-    path: PrivateRoutes.CATEGORY,
-    element: createElement(CategoryPage),
-    permissions: [PERMISSION.CATEGORY, PERMISSION.CATEGORY_SHOW]
-  },
-  {
-    path: PrivateRoutes.CATEGORY_CREAR,
-    element: createElement(CategoryForm, { buttonText: 'Guardar Categoría', title: 'Crear Categoría' }),
-    permissions: [PERMISSION.CATEGORY]
-  },
-  {
-    path: PrivateRoutes.CATEGORY_EDIT,
-    element: createElement(CategoryForm, { buttonText: 'Actualizar Categoría', title: 'Editar Categoría' }),
-    permissions: [PERMISSION.CATEGORY]
-  },
-  {
     path: PrivateRoutes.GROUP,
     element: createElement(GroupPage),
     permissions: [PERMISSION.GROUP, PERMISSION.GROUP_SHOW]
-  },
-  {
-    path: PrivateRoutes.GROUP_CREAR,
-    element: createElement(GroupForm, { buttonText: 'Guardar Grupo', title: 'Crear Grupo' }),
-    permissions: [PERMISSION.GROUP]
-  },
-  {
-    path: PrivateRoutes.GROUP_EDIT,
-    element: createElement(GroupForm, { buttonText: 'Actualizar Grupo', title: 'Editar Grupo' }),
-    permissions: [PERMISSION.GROUP]
   },
   {
     path: PrivateRoutes.OUPUT_PRODUCT,

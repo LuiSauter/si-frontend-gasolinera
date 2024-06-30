@@ -8,40 +8,41 @@ import { toast } from 'sonner'
 
 import { z } from 'zod'
 import { type Dispatch, type SetStateAction } from 'react'
-import { useCreateGroup, useUpdateGroup } from '@/modules/inventory/hooks/useGroup'
+import { useCreateCategory, useUpdateCategory } from '@/modules/inventory/hooks/useCategory'
 import { Textarea } from '@/components/ui/textarea'
 import { type ApiResponse, type IFormProps } from '@/models'
 import { type KeyedMutator } from 'swr'
-import { AlertDialogFooter, AlertDialogCancel, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import { AlertDialogCancel, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
-  description: z.string().min(2).max(50)
+  description: z.string().min(2).max(50),
+  image_url: z.string()
 })
 
-interface IGroupForm extends IFormProps {
+interface ICategoryForm extends IFormProps {
   setOpenModal?: Dispatch<SetStateAction<boolean>>
   mutate: KeyedMutator<ApiResponse>
 }
 
-const GroupForm = ({ buttonText, title, mutate, setOpenModal }: IGroupForm) => {
-  const { createGroup, isMutating } = useCreateGroup()
-  const { updateGroup, isMutating: isMutatingUpdate } = useUpdateGroup()
+const CategoriesForm = ({ buttonText, title, mutate, setOpenModal }: ICategoryForm) => {
   const [searchParams, setSearchParams] = useSearchParams()
-
+  const { createCategory, isMutating } = useCreateCategory()
+  const { updateCategory, isMutating: isMutatingUpdate } = useUpdateCategory()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    values: {
+    defaultValues: {
       name: searchParams.get('nombre') ?? '',
-      description: searchParams.get('descripcion') ?? ''
+      description: searchParams.get('descripcion') ?? '',
+      image_url: searchParams.get('imagen') ?? ''
     }
   })
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     toast.promise(
-      searchParams.get('id') && searchParams.get('nombre') && searchParams.get('descripcion')
-        ? updateGroup({ id: searchParams.get('id')!, name: data.name, description: data.description })
-        : createGroup({ name: data.name, description: data.description }),
+      searchParams.get('id') && searchParams.get('nombre') && searchParams.get('descripcion') && searchParams.get('imagen')
+        ? updateCategory({ id: searchParams.get('id')!, name: data.name, description: data.description, image_url: data.image_url })
+        : createCategory({ name: data.name, description: data.description, image_url: data.image_url }),
       {
         loading: 'Cargando...',
         success: () => {
@@ -52,13 +53,14 @@ const GroupForm = ({ buttonText, title, mutate, setOpenModal }: IGroupForm) => {
             searchParams.delete('id')
             searchParams.delete('nombre')
             searchParams.delete('descripcion')
+            searchParams.delete('imagen')
             setSearchParams(searchParams)
-            setOpenModal && setOpenModal(false)
+            setOpenModal?.(false)
           }, 500)
-          return `Grupo ${searchParams.get('id') ? 'actualizado' : 'creado'} exitosamente.`
+          return `Categoría ${searchParams.get('id') ? 'actualizada' : 'creada'} correctamente.`
         },
         error(error) {
-          return error?.errorMessages[0] ?? 'Error al crear el grupo'
+          return error?.errorMessages[0] ?? 'Error al crear el categoría'
         }
       })
   }
@@ -68,10 +70,10 @@ const GroupForm = ({ buttonText, title, mutate, setOpenModal }: IGroupForm) => {
       <section className="grid flex-1 items-start gap-4 lg:gap-6">
         <Form {...form}>
           <form onSubmit={() => { }} className="mx-auto w-full flex flex-col gap-4 lg:gap-6">
-            <div className="flex flex-col gap-4 lg:gap-6 justify-center" >
-              <AlertDialogHeader>
-                <AlertDialogTitle>{title}</AlertDialogTitle>
-              </AlertDialogHeader>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{title}</AlertDialogTitle>
+            </AlertDialogHeader>
+            <div className="flex flex-col gap-4 lg:gap-6" >
               <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
                 <FormField
                   control={form.control}
@@ -87,8 +89,6 @@ const GroupForm = ({ buttonText, title, mutate, setOpenModal }: IGroupForm) => {
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
                 <FormField
                   control={form.control}
                   name="description"
@@ -97,13 +97,27 @@ const GroupForm = ({ buttonText, title, mutate, setOpenModal }: IGroupForm) => {
                     <FormItem>
                       <FormLabel>Descripcion</FormLabel>
                       <FormControl>
-                        <Textarea placeholder="Taller mec..." {...field} />
+                        <Textarea placeholder="El usuario pordrá..." {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="image_url"
+                defaultValue=""
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Url Imagen</FormLabel>
+                    <FormControl>
+                      <Input placeholder="categoria1.jpg..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             <AlertDialogFooter className="flex items-center justify-center gap-2">
               <AlertDialogCancel asChild>
@@ -111,6 +125,7 @@ const GroupForm = ({ buttonText, title, mutate, setOpenModal }: IGroupForm) => {
                   searchParams.delete('id')
                   searchParams.delete('nombre')
                   searchParams.delete('descripcion')
+                  searchParams.delete('imagen')
                   setSearchParams(searchParams)
                 }}>
                   Cancelar
@@ -130,4 +145,4 @@ const GroupForm = ({ buttonText, title, mutate, setOpenModal }: IGroupForm) => {
   )
 }
 
-export default GroupForm
+export default CategoriesForm
