@@ -41,14 +41,6 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      address: '',
-      phone: '',
-      email: '',
-      nit: '',
-      detail: ''
-    },
     values: {
       name: provider?.name ?? '',
       address: provider?.address ?? '',
@@ -206,19 +198,20 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
                         </FormItem>
                       )}
                     />
-                    <FormField
-                    control={form.control}
-                    name="image_url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Url de la imagen</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://example.com/image.jpg" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      <FormField
+                      control={form.control}
+                      name="image_url"
+                      defaultValue=""
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Url de la imagen</FormLabel>
+                          <FormControl>
+                            <Input placeholder=" https..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                   <FormField
                     control={form.control}

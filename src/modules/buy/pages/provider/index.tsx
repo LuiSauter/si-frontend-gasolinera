@@ -35,6 +35,7 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { useState } from 'react'
+import Pagination from '@/components/shared/pagination'
 
 const ProviderPage = (): JSX.Element => {
   useHeader([
@@ -43,7 +44,7 @@ const ProviderPage = (): JSX.Element => {
     { label: 'Proveedores' }
   ])
   const navigate = useNavigate()
-  const { providers, isLoading } = useGetAllProvider()
+  const { providers, countData, isLoading, filterOptions, newPage, prevPage, setOffset } = useGetAllProvider({ isGetAll: false })
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const { deleteProvider } = useDeleteProvider()
@@ -221,11 +222,18 @@ const ProviderPage = (): JSX.Element => {
               </Table>
               {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
             </CardContent>
-            <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Mostrando <strong>1-3</strong> de <strong>3</strong>{' '}
-                productos
-              </div>
+            <CardFooter className='w-full'>
+              <Pagination
+                allItems={countData ?? 0}
+                currentItems={providers?.length ?? 0}
+                limit={filterOptions.limit}
+                newPage={() => { newPage(countData ?? 0) }}
+                offset={filterOptions.offset}
+                prevPage={prevPage}
+                setOffset={setOffset}
+                setLimit={() => { }}
+                params={true}
+              />
             </CardFooter>
           </Card>
         </TabsContent>
