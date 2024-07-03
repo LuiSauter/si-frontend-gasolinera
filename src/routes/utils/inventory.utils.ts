@@ -2,8 +2,6 @@ import { createElement, lazy } from 'react'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
 import GroupForm from '@/modules/inventory/pages/group/components/group-form'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-import OuputProductsPage from '@/modules/inventory/pages/output-product'
-
 const ProductPage = lazy(() => import('@modules/inventory/pages/product'))
 const ProductFormPage = lazy(() => import('@modules/inventory/pages/product/product-form'))
 const ProductDetailsPage = lazy(() => import('@/modules/inventory/pages/product/details'))
@@ -12,6 +10,8 @@ const FuelForm = lazy(() => import('@modules/inventory/pages/fuel/components/fue
 const CategoryPage = lazy(() => import('@modules/inventory/pages/category-group'))
 const CategoryForm = lazy(() => import('@/modules/inventory/pages/category-group/components/category-group-form'))
 const GroupPage = lazy(() => import('@/modules/inventory/pages/group'))
+const OuputProductsPage = lazy(() => import('@/modules/inventory/pages/output-product'))
+const OuputDetailsPage = lazy(() => import('@/modules/inventory/pages/output-product/components/output-detail'))
 
 export const inventoryRoutes: Route[] = [
   {
@@ -56,12 +56,12 @@ export const inventoryRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.CATEGORY_CREAR,
-    element: createElement(CategoryForm),
+    element: createElement(CategoryForm, { buttonText: 'Guardar Categoría', title: 'Crear Categoría' }),
     permissions: [PERMISSION.CATEGORY]
   },
   {
     path: PrivateRoutes.CATEGORY_EDIT,
-    element: createElement(CategoryForm),
+    element: createElement(CategoryForm, { buttonText: 'Actualizar Categoría', title: 'Editar Categoría' }),
     permissions: [PERMISSION.CATEGORY]
   },
   {
@@ -71,17 +71,22 @@ export const inventoryRoutes: Route[] = [
   },
   {
     path: PrivateRoutes.GROUP_CREAR,
-    element: createElement(GroupForm),
+    element: createElement(GroupForm, { buttonText: 'Guardar Grupo', title: 'Crear Grupo' }),
     permissions: [PERMISSION.GROUP]
   },
   {
     path: PrivateRoutes.GROUP_EDIT,
-    element: createElement(GroupForm),
+    element: createElement(GroupForm, { buttonText: 'Actualizar Grupo', title: 'Editar Grupo' }),
     permissions: [PERMISSION.GROUP]
   },
   {
     path: PrivateRoutes.OUPUT_PRODUCT,
     element: createElement(OuputProductsPage),
-    permissions: [PERMISSION.CATEGORY]
+    permissions: [PERMISSION.PRODUCT_OUTPUT, PERMISSION.PRODUCT_OUTPUT_SHOW]
+  },
+  {
+    path: PrivateRoutes.OUPUT_DETAIL,
+    element: createElement(OuputDetailsPage),
+    permissions: [PERMISSION.PRODUCT_OUTPUT, PERMISSION.PRODUCT_OUTPUT_SHOW]
   }
 ]

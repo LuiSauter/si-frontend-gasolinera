@@ -48,7 +48,7 @@ function BinnaclePage(): JSX.Element {
 
   useEffect(() => {
     void getLogByMothAndYear({
-      month: MONTH.MAY,
+      month: MONTH.JUNE,
       year: '2024',
       password: '12345678'
     })

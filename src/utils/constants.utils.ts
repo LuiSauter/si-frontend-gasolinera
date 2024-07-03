@@ -5,7 +5,8 @@ export enum ROLE {
 
 export enum GENDER {
   MASCULINO = 'masculino',
-  FEMENINO = 'femenino'
+  FEMENINO = 'femenino',
+  OTRO = 'otro',
 }
 
 export const STORAGE_MENU_SELECTED = 'menu-selected'

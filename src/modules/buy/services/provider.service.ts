@@ -1,5 +1,6 @@
 import { fetchData } from '@/utils'
-import { type Provider, type CreateProvider, type UpdateProvider } from '../models/provider.model'
+import { type UpdateProvider, type CreateProvider, type Provider } from '../models/provider.model'
+import { type ApiResponse } from '@/models'
 
 const createProvider = async (url: string, { arg }: { arg: CreateProvider }): Promise<void> => {
   const options: RequestInit = {
@@ -30,12 +31,11 @@ const updateProvider = async (url: string, { arg }: { arg: UpdateProvider }): Pr
   }
   await fetchData(`${url}/${arg.id}`, options)
 }
-const getAllProvider = async (url: string): Promise<Provider[]> => {
-  const options: RequestInit = {
-    method: 'GET'
-  }
-  const response = await fetchData(url, options)
-  return response.data
+const getAllProvider = async (url: string): Promise<ApiResponse> => {
+  const response = await fetchData(url)
+  const countData = response.countData
+  const data: Provider[] = response.data as Provider[]
+  return { countData, data }
 }
 
 const deleteProvider = async (url: string, { arg }: { arg: string }): Promise<void> => {

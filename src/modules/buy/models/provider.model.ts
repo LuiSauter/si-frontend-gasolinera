@@ -8,6 +8,7 @@ export interface Provider extends ApiBase {
   nit: string
   detail: string
   isActive: boolean
+  image_url: string
 }
 export interface CreateProvider {
   name: string
@@ -16,6 +17,7 @@ export interface CreateProvider {
   address: string
   nit: string
   detail: string
+  image_url: string
 }
 
 export interface UpdateProvider extends CreateProvider {

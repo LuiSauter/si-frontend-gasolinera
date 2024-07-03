@@ -1,4 +1,4 @@
-import { File, ListFilter, MoreHorizontal, PlusCircle } from 'lucide-react'
+import { File, Info, ListFilter, MoreHorizontal, Pencil, PlusCircle, Power, PowerOff } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { useNavigate } from 'react-router-dom'
 import { PrivateRoutes } from '@/models'
 // import { useDeleteProduct, useGetAllProducts } from '../../hooks/useProduct'
@@ -21,21 +21,34 @@ import { PrivateRoutes } from '@/models'
 import { toast } from 'sonner'
 import Loading from '@/components/shared/loading'
 import { useHeader } from '@/hooks'
-// import { useDeleteProvider, useGetAllProvider } from '../../hooks/useProvider'
-import { type Provider } from '../../models/provider.model'
 import { useDeleteProvider, useGetAllProvider } from '../../hooks/useProvider'
+import { type Provider } from '../../models/provider.model'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger
+} from '@/components/ui/alert-dialog'
+import { useState } from 'react'
 
 const ProviderPage = (): JSX.Element => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Compras', path: PrivateRoutes.PROVIDER },
     { label: 'Proveedores' }
   ])
   const navigate = useNavigate()
   const { providers, isLoading } = useGetAllProvider()
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const { deleteProvider } = useDeleteProvider()
 
-  const deletePermanentlyRole = (id: string) => {
+  const deletePermanentlyProvider = (id: string) => {
     toast.promise(deleteProvider(id), {
       loading: 'Cargando...',
       success: () => {
@@ -46,16 +59,17 @@ const ProviderPage = (): JSX.Element => {
       },
       error: 'Error al realizar esta acción'
     })
+    setIsDialogOpen(false)
   }
 
   return (
     <main className="grid flex-1 items-start gap-4 lg:gap-6">
       <Tabs defaultValue="all">
         <div className="flex items-center">
-          <TabsList>
+          {/* <TabsList>
             <TabsTrigger value="all">Proveedores</TabsTrigger>
             <TabsTrigger value="active">Otro producto</TabsTrigger>
-          </TabsList>
+          </TabsList> */}
           <div className="ml-auto flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -145,11 +159,58 @@ const ProviderPage = (): JSX.Element => {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Ver</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDER}/${provider.id}`) }}>Editar</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => { deletePermanentlyRole(provider.id) }}>
-                              {provider.isActive ? 'Desactivar' : 'Activar'}
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDERPRODUCT}/${provider.id}/detalles`) }}>
+                              <Info className="mr-2 h-4 w-4" />
+                              Detalles
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.PROVIDER}/${provider.id}`) }}>
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Editar
+                            </DropdownMenuItem>
+                            <DropdownMenuItem >
+                              <AlertDialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                    <AlertDialogTrigger asChild>
+                                      <div
+                                        style={{
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          width: '100%',
+                                          justifyContent: 'space-between'
+                                        }}
+                                        onClick={(event) => { event.stopPropagation() }}
+                                      >
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                          {provider.isActive
+                                            ? (
+                                            <>
+                                                <PowerOff className="mr-2 h-4 w-4" />
+                                                Desactivar
+                                            </>
+                                              )
+                                            : (
+                                            <>
+                                                <Power className="mr-2 h-4 w-4" />
+                                                Activar
+                                            </>
+                                              )
+                                          }
+                                        </div>
+                                      </div>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Estas seguro de que quieres desactivar este proveedor?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Esta acción no se puede deshacer. Esto desactivara permanentemente este proveedor.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => { deletePermanentlyProvider(provider.id) }}>Continue</AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                              </AlertDialog>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

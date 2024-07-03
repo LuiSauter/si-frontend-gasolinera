@@ -1,4 +1,4 @@
-import { CircleUser, Menu } from 'lucide-react'
+import { CircleUser, LogOut, Menu, Settings, User } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
@@ -8,6 +8,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbS
 import Navigation from './navigation'
 import { useAuth, useHeader } from '@/hooks'
 import { PrivateRoutes } from '@/models'
+import { Notificaciones } from './notificaciones'
 
 const Header = () => {
   const { breadcrumb } = useHeader()
@@ -43,7 +44,7 @@ const Header = () => {
           <BreadcrumbList>
             {breadcrumb.map((item, index) => (
               item.path
-                ? (<div className='flex items-center gap-2' key={index}>
+                ? (<div className='flex items-center sm:gap-2' key={index}>
                   <BreadcrumbItem>
 
                     <Link to={item.path}>{item.label}</Link>
@@ -55,6 +56,7 @@ const Header = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+      <Notificaciones></Notificaciones>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">
@@ -65,10 +67,19 @@ const Header = () => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className='cursor-pointer'>Perfil</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.SETTINGS) }} className='cursor-pointer'>Configuración</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.PROFILE) }} className='cursor-pointer'>
+            <User className="mr-2 h-4 w-4" />
+            Perfil
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => { navigate(PrivateRoutes.SETTINGS) }} className='cursor-pointer'>
+            <Settings className="mr-2 h-4 w-4" />
+            Configuración
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={signOut} className='cursor-pointer'>Cerrar sesión</DropdownMenuItem>
+          <DropdownMenuItem onClick={signOut} className='cursor-pointer'>
+            <LogOut className="mr-2 h-4 w-4" />
+            Cerrar sesión
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

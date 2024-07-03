@@ -2,12 +2,12 @@ import { type KeyboardEvent, useCallback, useEffect, useRef, useState } from 're
 import { X } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
-import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { type Group } from '@/modules/inventory/models/group.model'
 
 interface MultiselectProps {
   value: string[]
-  onChange: (e: any) => void
+  onChange: (value: string[]) => void
   groups: Group[]
 }
 
@@ -22,8 +22,10 @@ function MultiSelect({ value, onChange, groups }: MultiselectProps): JSX.Element
   }, [value])
 
   const handleUnselect = useCallback((group: Group) => {
+    const newValue = selected.filter((s) => s.id !== group.id).map(g => g.id)
+    onChange(newValue)
     setSelected((prev) => prev.filter((s) => s.id !== group.id))
-  }, [])
+  }, [selected])
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     const input = inputRef.current
@@ -54,11 +56,11 @@ function MultiSelect({ value, onChange, groups }: MultiselectProps): JSX.Element
       onKeyDown={handleKeyDown}
       className="overflow-visible bg-transparent"
     >
-      <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-        <div className="flex flex-wrap gap-1">
+      <div className="group rounded-md border border-input px-0 py-0 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 flex flex-wrap items-center">
+        <div className="py-2 space-y-1">
           {selected.map((group) => {
             return (
-              <Badge key={group.id} variant="secondary">
+              <Badge key={group.id} variant="secondary" className='h-fit ml-2'>
                 {group.name}
                 <button
                   className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -78,43 +80,47 @@ function MultiSelect({ value, onChange, groups }: MultiselectProps): JSX.Element
               </Badge>
             )
           })}
-          <CommandInput
-            ref={inputRef}
-            value={inputValue}
-            onValueChange={setInputValue}
-            onBlur={() => { setOpen(false) }}
-            onFocus={() => { setOpen(true) }}
-            placeholder="Seleccionar grupos..."
-            className="ml-2 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
-          />
         </div>
+        <CommandInput
+          ref={inputRef}
+          value={inputValue}
+          onValueChange={setInputValue}
+          onBlur={() => { setOpen(false) }}
+          onFocus={() => { setOpen(true) }}
+          placeholder="Seleccionar grupos..."
+          className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground h-10"
+        />
       </div>
       <div className="relative">
         <CommandList>
           {open && selectables.length > 0
             ? (
-              <div className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in bg-light-bg-secondary dark:bg-dark-bg-primary my-2">
-                <CommandGroup className="h-full overflow-auto">
-                  {selectables.map((group) => {
-                    return (
-                      <CommandItem
-                        key={group.id}
-                        onMouseDown={(e) => {
-                          e.preventDefault()
-                          e.stopPropagation()
-                        }}
-                        onSelect={() => {
-                          setInputValue('')
-                          setSelected((prev) => [...prev, group])
-                        }}
-                        className={'cursor-pointer'}
-                      >
-                        {group.name}
-                      </CommandItem>
-                    )
-                  })}
-                </CommandGroup>
-              </div>)
+              <>
+                <div className="absolute w-full z-10 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in bg-light-bg-secondary dark:bg-dark-bg-primary my-2">
+                  <CommandEmpty>Grupo no encontrado</CommandEmpty>
+                  <CommandGroup className="h-full overflow-auto">
+                    {selectables.map((group) => {
+                      return (
+                        <CommandItem
+                          key={group.id}
+                          onMouseDown={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                          }}
+                          onSelect={() => {
+                            setInputValue('')
+                            onChange([...selected.map(g => g.id), group.id])
+                            setSelected((prev) => [...prev, group])
+                          }}
+                          className={'cursor-pointer'}
+                        >
+                          {group.name}
+                        </CommandItem>
+                      )
+                    })}
+                  </CommandGroup>
+                </div>
+              </>)
             : null}
         </CommandList>
       </div>

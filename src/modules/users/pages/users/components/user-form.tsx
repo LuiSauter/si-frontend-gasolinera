@@ -1,159 +1,121 @@
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PrivateRoutes } from '@/models/routes.model'
 import { useCreateUser, useGetUser, useUpdateUser } from '@/modules/users/hooks/useUser'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ChevronLeftIcon } from 'lucide-react'
+import { CheckCheckIcon, ChevronLeftIcon, ChevronsUpDownIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 import { z } from 'zod'
 import { useGetAllRole } from '@/modules/auth/hooks/useRole'
-import { type Role } from '@/modules/auth/models/role.model'
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
-import { type Branch } from '@/modules/company/models/branch.model'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { toast } from 'sonner'
+import { useHeader } from '@/hooks'
+import { type IFormProps } from '@/models'
+import { Textarea } from '@/components/ui/textarea'
+import { GENDER } from '@/utils'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { cn } from '@/lib/utils'
 
 const formSchema = z.object({
-  ci: z.string().min(2).max(50),
-  name: z.string().min(2).max(50),
-  email: z.string().email('Ingrese un correo valido'),
-  phone: z.string().min(2).max(10),
-  password: z.string().min(2).max(50),
-  rol: z.string(),
-  gender: z.string(),
-  address: z.string().min(2).max(50),
-  branch: z.string()
+  ci: z.number({ required_error: 'El carnet de identidad es requerido' })
+    .int('El carnet de identidad debe ser un número entero')
+    .positive('El carnet de identidad debe ser un número positivo')
+    .min(1, 'El código es requerido'),
+  name: z.string({ required_error: 'El nombre es requerido' })
+    .min(3, 'El nombre debe tener al menos 3 caracteres')
+    .max(100, 'El nombre debe tener menos de 100 caracteres'),
+  email: z.string({ required_error: 'El correo es requerido' })
+    .email('Ingrese un correo valido')
+    .max(100, 'El correo debe tener menos de 100 caracteres'),
+  password: z.string({ required_error: 'La contraseña es requerida' })
+    .min(6, 'La contraseña debe tener al menos 6 caracteres')
+    .max(20, 'La contraseña debe tener menos de 20 caracteres'),
+  gender: z.enum([GENDER.FEMENINO, GENDER.MASCULINO, GENDER.OTRO], { message: 'El genero es requerido' }),
+  address: z.string({ required_error: 'La dirección es requerida' })
+    .min(1, 'La dirección es requerida')
+    .max(50, 'La dirección debe tener menos de 50 caracteres'),
+  role: z.string().min(1, 'El rol es requerido'),
+  // optional
+  phone: z.string().optional(),
+  branch: z.string().optional()
 })
 
-const UserFormPage = () => {
+const UserFormPage = ({ buttonText, title }: IFormProps) => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Usuario', path: PrivateRoutes.USER },
+    { label: title }
+  ])
   const { id } = useParams()
   const navigate = useNavigate()
-  const { createUser, isMutating, error } = useCreateUser()
+  const { createUser, isMutating } = useCreateUser()
   const { updateUser } = useUpdateUser()
-  const { allRoles } = useGetAllRole()
-  const { branches } = useGetAllBranches()
-  const { user } = useGetUser(id)
+  const { allRoles, error: errorRole } = useGetAllRole()
+  const { branches, error: errorBranches } = useGetAllBranches()
+  const { user, error: errorUser } = useGetUser(id)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      address: '',
-      email: '',
-      name: '',
-      phone: '',
-      password: '',
-      gender: '',
-      rol: '',
-      branch: '',
-      ci: ''
+    values: {
+      address: user?.address ?? '',
+      ci: user?.ci ?? 0,
+      email: user?.email ?? '',
+      name: user?.name ?? '',
+      password: user?.password ?? '',
+      role: user?.role.id ?? '',
+      gender: user?.gender ?? GENDER.OTRO,
+      phone: user?.phone ?? undefined,
+      branch: user?.branch ? user?.branch.id : undefined
     }
   })
 
-  const [selectedValueRol, setSelectedValueRol] = useState('')
-  const handleValueChangeRol = (value: string) => {
-    setSelectedValueRol(value)
-    console.log('Selected Value:', value)
-  }
-
-  const [selectedValueSucursal, setSelectedValueSucursal] = useState('')
-  const handleValueChangeSucursal = (value: string) => {
-    setSelectedValueSucursal(value)
-    console.log('Selected Value:', value)
-  }
-
-  const [selectedValueGender, setSelectedValueGender] = useState('')
-  const handleValueChangeGender = (value: string) => {
-    setSelectedValueGender(value)
-    console.log('Selected Value:', value)
-  }
-
-  useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user.name ?? '',
-        ci: (user.ci ?? 0).toString(),
-        address: user.address ?? '',
-        phone: user.phone ?? '',
-        email: user.email ?? '',
-        rol: user.role.id ?? '',
-        branch: user.branch.id ?? '',
-        password: user.password ?? '', // Ensure password is blank
-        gender: user.gender ?? ''
-      })
-    }
-  }, [user, form])
-
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    data.rol = selectedValueRol ?? ''
-    data.branch = selectedValueSucursal ?? ''
-    data.gender = selectedValueGender ?? ''
-    const ciNumber = parseInt(data.ci, 10)
-
+    if (!/admin/i.test(allRoles?.find((role) => role.id === data.role)?.name ?? '') && !data.branch) {
+      return toast.error('La sucursal es requerida para el rol seleccionado')
+    }
     if (id) {
-      toast.promise(updateUser({
-        id,
-        name: data.name,
-        email: data.email,
-        address: data.address,
-        ci: ciNumber,
-        role: data.rol,
-        gender: data.gender,
-        phone: data.phone,
-        password: data.password,
-        branch: data.branch
-      }), {
+      toast.promise(updateUser({ id, ...data }), {
         loading: 'Actualizando sucursal...',
         success: () => {
           setTimeout(() => { navigate(PrivateRoutes.USER, { replace: true }) }, 1000)
           return 'Sucursal actualizada exitosamente'
         },
-        error: 'Error al actualizar la sucursal'
+        error(error) {
+          return error.errorMessages[0] ?? 'Error al actualizar la sucursal'
+        }
       })
     } else {
-      toast.promise(createUser({
-        name: data.name,
-        email: data.email,
-        address: data.address,
-        ci: ciNumber,
-        role: data.rol,
-        gender: data.gender,
-        phone: data.phone,
-        password: data.password,
-        branch: data.branch
-      }), {
+      toast.promise(createUser(data), {
         loading: 'Creando usuario...',
         success: () => {
           setTimeout(() => { navigate(PrivateRoutes.USER, { replace: true }) }, 1000)
           return 'usuario creado exitosamente'
         },
-        error: 'Error al crear el usuario'
+        error(error) {
+          return error.errorMessages[0] ?? 'Error al crear el usuario'
+        }
       })
     }
   }
 
   let subscribe = true
   useEffect(() => {
-    if (subscribe && error) {
-      toast.error(error.errorMessages[0])
-      // subscribe = false
+    if (subscribe && (errorBranches ?? errorRole ?? errorUser)) {
+      const error = errorBranches ?? errorRole ?? errorUser
+      toast.error(error?.errorMessages[0])
     }
     return () => {
       subscribe = false
     }
-  }, [error])
+  }, [errorBranches, errorRole, errorUser])
 
   return (
     <>
@@ -167,38 +129,32 @@ const UserFormPage = () => {
                   <span className="sr-only">Volver</span>
                 </Button>
                 <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                  {id ? 'Lista usuarios' : 'Crear Usuario'}
+                  {title}
                 </h2>
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
                   <Button type='button' onClick={() => { navigate(PrivateRoutes.USER) }} variant="outline" size="sm">
                     Descartar
                   </Button>
-                  <Button type='submit' size="sm" >{id ? 'Actualizar' : 'Guardar'}</Button>
+                  <Button type='submit' size="sm" >{buttonText}</Button>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
+            <div className="grid lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_350px] gap-4 lg:gap-6">
               <Card x-chunk="dashboard-07-chunk-0" className='w-full' >
                 <CardHeader>
-                  <CardTitle>{id ? 'Actualizar usuario' : 'Crear nuevo usuario'}</CardTitle>
-                  <CardDescription>
-                    {id ? 'Complete los datos para actualizar su usuario' : 'Complete los datos para crear un nuevo usuario'}
-                  </CardDescription>
-                  {error && <CardDescription className='text-danger dark:text-danger'>
-                    {error?.errorMessages[0]}
-                  </CardDescription>}
+                  <CardTitle>Datos personales</CardTitle>
                 </CardHeader>
                 <CardContent className='grid gap-4 lg:gap-6'>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                  <div className="grid gap-4 lg:gap-6 md:grid-cols-2">
                     <FormField
                       control={form.control}
-                      name="ci"
-                      defaultValue=""
+                      name="name"
+                      defaultValue={user?.name}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>CI</FormLabel>
+                          <FormLabel>Nombre</FormLabel>
                           <FormControl>
-                            <Input placeholder="10360074.." {...field} />
+                            <Input placeholder="Ingresa el nombre del usuario" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -206,29 +162,34 @@ const UserFormPage = () => {
                     />
                     <FormField
                       control={form.control}
-                      name="name"
-                      defaultValue=""
+                      name="ci"
+                      defaultValue={user?.ci}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Nombre</FormLabel>
+                          <FormLabel>Carnet de Identidad</FormLabel>
                           <FormControl>
-                            <Input placeholder="Sucursal 4to anillo..." {...field} />
+                            <Input
+                              {...field}
+                              type='number'
+                              placeholder="10360074..."
+                              onChange={(e) => { field.onChange(Number(e.target.value)) }}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                  <div className="grid gap-4 lg:gap-6 md:grid-cols-2">
                     <FormField
                       control={form.control}
-                      name="password"
-                      defaultValue=""
+                      name="email"
+                      defaultValue={user?.email}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Contraseña</FormLabel>
+                          <FormLabel>Correo electronico</FormLabel>
                           <FormControl>
-                            <Input placeholder="************" type='password' {...field} />
+                            <Input placeholder="user@example.com" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -237,7 +198,7 @@ const UserFormPage = () => {
                     <FormField
                       control={form.control}
                       name="phone"
-                      defaultValue=""
+                      defaultValue={user?.phone ?? ''}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Teléfono</FormLabel>
@@ -249,62 +210,100 @@ const UserFormPage = () => {
                       )}
                     />
                   </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    defaultValue={user?.password}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contraseña</FormLabel>
+                        <FormControl>
+                          <Input placeholder="************" type='password' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    defaultValue={user?.address}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Direccion</FormLabel>
+                        <FormControl>
+                          <Textarea placeholder="Av. Mapaizo..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+              <Card x-chunk="dashboard-07-chunk-0" className='w-full h-fit'>
+                <CardHeader>
+                  <CardTitle>Asignacion</CardTitle>
+                </CardHeader>
+                <CardContent className='grid gap-4 lg:gap-6'>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-6 w-full">
                     <FormField
                       control={form.control}
-                      name="email"
-                      defaultValue=""
+                      name="role"
+                      defaultValue={user?.role.id}
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Correo electronico</FormLabel>
-                          <FormControl>
-                            <Input placeholder="sucursal@example.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="address"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Direccion</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Av. Mapaizo..." {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                  </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="rol"
-                      defaultValue=""
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Rol</FormLabel>
-                          <FormControl>
-                            <Select value={selectedValueRol} onValueChange={handleValueChangeRol}>
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Seleccione el rol" {...field}>
-                                </SelectValue>
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Roles</SelectLabel>
-                                  {allRoles?.map((role: Role) => (
-                                    <SelectItem key={role.id} value={role.id}>{role.name}</SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            {/* <Input placeholder="Selecciona un rol" {...field} /> */}
-                          </FormControl>
+                        <FormItem className="flex flex-col justify-between space-y-1 pt-1">
+                          <FormLabel className='leading-normal'>Rol *</FormLabel>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant="outline"
+                                  role="combobox"
+                                  className={cn(
+                                    'justify-between font-normal',
+                                    !field.value && 'text-muted-foreground'
+                                  )}
+                                >
+                                  {field.value
+                                    ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
+                                      {allRoles?.find(
+                                        (role) => role.id === field.value
+                                      )?.name}
+                                    </span>)
+                                    : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar rol</span>}
+                                  <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="p-0">
+                              <Command>
+                                <CommandInput placeholder="Seleccionar un producto..." />
+                                <CommandList>
+                                  <CommandEmpty>Rol no encontrado.</CommandEmpty>
+                                  <CommandGroup>
+                                    {allRoles?.map((role) => (
+                                      <CommandItem
+                                        value={role.name}
+                                        key={role.id}
+                                        onSelect={() => {
+                                          form.setValue('role', role.id)
+                                          form.clearErrors('role')
+                                        }}
+                                      >
+                                        <CheckCheckIcon
+                                          className={cn(
+                                            'mr-2 h-4 w-4',
+                                            role.id === field.value ? 'opacity-100' : 'opacity-0'
+                                          )}
+                                        />
+                                        {role.name}
+                                      </CommandItem>
+                                    ))}
+                                  </CommandGroup>
+                                </CommandList>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -312,195 +311,111 @@ const UserFormPage = () => {
                     <FormField
                       control={form.control}
                       name="gender"
-                      defaultValue=""
-                      render={() => (
-                        <FormItem>
-                          <FormLabel>Genero</FormLabel>
-                          <FormControl>
-                            <Select value={selectedValueGender} onValueChange={handleValueChangeGender}>
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Seleccione el genero" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Generos</SelectLabel>
-                                  <SelectItem value="masculino">masculino</SelectItem>
-                                  <SelectItem value="femenino">femenino</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                    <FormField
-                      control={form.control}
-                      name="branch"
-                      defaultValue=""
-                      render={() => (
-                        <FormItem>
-                          <FormLabel>Sucursal</FormLabel>
-                          <FormControl>
-                            <Select value={selectedValueSucursal} onValueChange={handleValueChangeSucursal}>
-                              <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Seleccione la sucursal">
-
-                                </SelectValue>
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectGroup>
-                                  <SelectLabel>Sucursales</SelectLabel>
-                                  {branches?.map((branch: Branch) => (
-                                    <SelectItem key={branch.id} value={branch.id}>{branch.name}</SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            {/* <Input placeholder="Sucursal 1" {...field} /> */}
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    {/* <FormField
-                      control={form.control}
-                      name="gender"
-                      defaultValue=""
+                      defaultValue={user?.gender}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Teléfono</FormLabel>
+                          <FormLabel>Género</FormLabel>
                           <FormControl>
-                            <Input placeholder="masculino" {...field} />
+                            <Select
+                              onValueChange={(value) => {
+                                field.onChange(value)
+                              }}
+                              value={field.value}
+                              name={field.name}
+                              disabled={field.disabled}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger aria-label="Selecciona el género">
+                                  <SelectValue placeholder="Seleccione el género" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {/* <SelectLabel>Generos</SelectLabel> */}
+                                <SelectItem value={GENDER.FEMENINO}>Femenino</SelectItem>
+                                <SelectItem value={GENDER.MASCULINO}>Masculino</SelectItem>
+                                <SelectItem value={GENDER.OTRO}>Otro</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
-                    /> */}
+                    />
+                    <div className='grid md:col-span-2 lg:col-span-1'>
+                      <FormField
+                        control={form.control}
+                        name="branch"
+                        defaultValue={user?.branch ? user?.branch.id : undefined}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col justify-between space-y-1 pt-1">
+                            <FormLabel className='leading-normal'>Sucursal *</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className={cn(
+                                      'justify-between font-normal',
+                                      !field.value && 'text-muted-foreground'
+                                    )}
+                                  >
+                                    {field.value
+                                      ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
+                                        {branches?.find(
+                                          (branch) => branch.id === field.value
+                                        )?.name}
+                                      </span>)
+                                      : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar sucursal</span>}
+                                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent className="p-0">
+                                <Command>
+                                  <CommandInput placeholder="Seleccionar sucursal" />
+                                  <CommandList>
+                                    <CommandEmpty>Sucursal no encontrada</CommandEmpty>
+                                    <CommandGroup>
+                                      {branches?.map((branch) => (
+                                        <CommandItem
+                                          value={branch.name}
+                                          key={branch.id}
+                                          onSelect={() => { form.setValue('branch', branch.id) }}
+                                        >
+                                          <CheckCheckIcon
+                                            className={cn(
+                                              'mr-2 h-4 w-4',
+                                              branch.id === field.value ? 'opacity-100' : 'opacity-0'
+                                            )}
+                                          />
+                                          {branch.name}
+                                        </CommandItem>
+                                      ))}
+                                    </CommandGroup>
+                                  </CommandList>
+                                </Command>
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
-              {/* {id && <Card className='h-full justify-evenly flex flex-col w-full min-w-80 lg:w-96'>
-                <CardHeader>
-                  <CardTitle>Suspender Sucursal</CardTitle>
-                  <CardDescription>
-                    Suspender la sucursal seleccionada de la empresa
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid gap-4 lg:gap-6">
-                    <Button
-                      type='button'
-                      variant="outline"
-                      size="sm"
-                    >
-                      Suspender
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>} */}
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button type='button' variant="outline" size="sm" >
-                Discard
+              <Button type='button' variant="outline" size="sm" onClick={() => { navigate(PrivateRoutes.USER) }}>
+                Descartar
               </Button>
-              <Button type='submit' size="sm" disabled={isMutating}>Save Product</Button>
+              <Button type='submit' size="sm" disabled={isMutating}>{buttonText}</Button>
             </div>
           </form>
         </Form>
       </section>
-      {/* <CardHeader className="px-7">
-        <CardTitle>{id ? 'Actualizar usuario' : 'Crear nuevo usuario'}</CardTitle>
-        <CardDescription>
-          {id ? 'Complete los datos para actualizar su usuario' : 'Complete los datos para crear un nuevo usuario'}
-        </CardDescription>
-      </CardHeader>
-      <div className='max-w-screen-md mx-auto'>
-        <Card x-chunk="dashboard-05-chunk-3">
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full min-w-[700px]">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <>
-                      <div className='grid gap-4 lg:grid-cols-2'>
-                        <FormItem>
-                          <FormLabel>Nombre Completo</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Juan" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem>
-                          <FormLabel>Género</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Seleciona un género" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      </div>
-                      <div className='grid gap-4 lg:grid-cols-2'>
-                        <FormItem>
-                          <FormLabel>Carnet de identidad</FormLabel>
-                          <FormControl>
-                            <Input placeholder="9807687" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem>
-                          <FormLabel>Teléfono</FormLabel>
-                          <FormControl>
-                            <Input placeholder="78010833" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      </div>
-                      <div className='grid gap-4 lg:grid-cols-2'>
-                        <FormItem>
-                          <FormLabel>Domicilio</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Calle falsa #123" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem>
-                          <FormLabel>Rol</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Selecciona un rol" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      </div>
-                      <div className='grid gap-4 lg:grid-cols-2'>
-                        <FormItem>
-                          <FormLabel>Correo electronico</FormLabel>
-                          <FormControl>
-                            <Input placeholder="ejemplo@gmail.com" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                        <FormItem>
-                          <FormLabel>Contraseña</FormLabel>
-                          <FormControl>
-                            <Input placeholder="**********" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      </div>
-                    </>
-                  )}
-                />
-                <Button type="submit">{id ? 'Actualizar' : 'Crear usuario'}</Button>
-              </form>
-
-            </Form>
-          </CardContent>
-        </Card>
-      </div> */}
     </>
   )
 }

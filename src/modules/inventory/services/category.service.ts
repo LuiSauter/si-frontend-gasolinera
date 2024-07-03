@@ -1,14 +1,15 @@
 import { fetchData } from '@/utils'
 import { type CreateCategory, type Category, type CategoryUpdate } from '../models/category.model'
+import { type ApiResponse } from '@/models'
 
-const getAllCategorys = async (url: string): Promise<Category[]> => {
-  const response = await fetchData(url)
-  return response.data
+const getAllCategorys = async (url: string): Promise<ApiResponse> => {
+  const response: ApiResponse = await fetchData(url)
+  return { data: response.data, countData: response.countData }
 }
 
 const getCategory = async (url: string): Promise<Category> => {
   const response = await fetchData(url)
-  return response
+  return response.data
 }
 
 const createCategory = async (url: string, { arg }: { arg: CreateCategory }): Promise<void> => {

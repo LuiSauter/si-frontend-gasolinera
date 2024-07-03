@@ -10,6 +10,8 @@ export enum PrivateRoutes {
   SETTINGS = '/configuracion',
   // users
   USER = '/usuarios',
+  PROFILE = PrivateRoutes.USER + '/perfil',
+  PROFILE_UPDATE = PrivateRoutes.PROFILE + '/editar',
   USER_CREAR = PrivateRoutes.USER + '/crear',
   USER_EDIT = PrivateRoutes.USER + '/:id',
   ROLES = PrivateRoutes.USER + '/roles',
@@ -37,11 +39,34 @@ export enum PrivateRoutes {
   GROUP = PrivateRoutes.PRODUCT + '/grupos',
   GROUP_CREAR = PrivateRoutes.GROUP + '/crear',
   GROUP_EDIT = PrivateRoutes.GROUP + '/:id',
-  OUPUT_PRODUCT = PrivateRoutes.COMPANY + '/salida-de-productos',
-  // buy
-  PROVIDER = '/proveedores',
+  OUPUT_PRODUCT = PrivateRoutes.PRODUCT + '/salida-productos',
+  OUPUT_PRODUCT_CREAR = PrivateRoutes.OUPUT_PRODUCT + '/crear',
+  OUPUT_PRODUCT_EDIT = PrivateRoutes.OUPUT_PRODUCT + '/:id',
+  OUPUT_DETAIL = PrivateRoutes.OUPUT_PRODUCT + '/:id' + '/detalles',
+  // Buys
+  BUY = '/compras',
+  BUY_CREATE = PrivateRoutes.BUY + '/crear',
+  BUY_EDIT = PrivateRoutes.BUY + '/:id',
+  BUY_DETAILs = PrivateRoutes.BUY + '/:id/detalles',
+  PROVIDER = PrivateRoutes.BUY + '/proveedores',
   PROVIDER_CREATE = PrivateRoutes.PROVIDER + '/crear',
-  PROVIDER_EDIT = PrivateRoutes.PROVIDER + '/:id'
+  PROVIDER_EDIT = PrivateRoutes.PROVIDER + '/:id',
+  PROVIDERPRODUCT = PrivateRoutes.PROVIDER + '/proveedores&productos',
+  PROVIDER_DETAILS = PrivateRoutes.PROVIDERPRODUCT + '/:id/detalles',
+  PROVIDER_PRODUCT_CREATE = PrivateRoutes.PROVIDERPRODUCT + '/:idProvider/asignar',
+  PROVIDER_PRODUCT_EDIT = PrivateRoutes.PROVIDERPRODUCT + '/:idProvider/editar/:id',
+  PURCHASE_ORDER = PrivateRoutes.BUY + '/ordenes-de-compras',
+  PURCHASE_ORDER_CREATE = PrivateRoutes.PURCHASE_ORDER + '/crear',
+  PURCHASE_ORDER_EDIT = PrivateRoutes.PURCHASE_ORDER + '/:id',
+  PURCHASE_ORDER_DETAIL = PrivateRoutes.PURCHASE_ORDER + '/:id' + '/detalles',
+  // Sales
+  DiSPENSER = '/dispensador',
+  DISPENSER_DETAILS = PrivateRoutes.DiSPENSER + '/:id' + '/detalles',
+  DiSPENSER_CREATE = PrivateRoutes.DiSPENSER + '/crear',
+  DISPENSER_EDIT = PrivateRoutes.DiSPENSER + '/:id',
+  DISCOUNT = PrivateRoutes.DiSPENSER + '/descuentos',
+  DISCOUNT_CREATE = PrivateRoutes.DISCOUNT + '/crear',
+  DISCOUNT_EDIT = PrivateRoutes.DISCOUNT + '/:id',
 }
 
 export interface Route {

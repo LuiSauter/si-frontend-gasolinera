@@ -2,8 +2,10 @@ import useSWRMutation from 'swr/mutation'
 import { API_BASEURL, ENDPOINTS } from '@/utils'
 import { type ResponseError } from '@/utils/response-error.utils'
 import useSWR from 'swr'
-import { createProvider, deleteProvider, getAllProvider, getProvider, updateProvider } from '../services/provider.service'
 import { type UpdateProvider, type CreateProvider, type Provider } from '../models/provider.model'
+import { createProvider, deleteProvider, getAllProvider, getProvider, updateProvider } from '../services/provider.service'
+import { filterStateDefault, useFilterData } from '@/hooks/useFilterData'
+import { type ApiResponse } from '@/models'
 
 const useCreateProvider = () => {
   const { trigger, isMutating, error } = useSWRMutation<Promise<void>, ResponseError, string, CreateProvider>(API_BASEURL + ENDPOINTS.PROVIDER, createProvider)
@@ -16,8 +18,9 @@ const useGetProvider = (id?: string) => {
 }
 
 const useGetAllProvider = () => {
-  const { data, error, isLoading } = useSWR<Provider[], ResponseError>(API_BASEURL + ENDPOINTS.PROVIDER, getAllProvider)
-  return { providers: data, error, isLoading }
+  const { changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
+  const { data, error, isLoading, mutate } = useSWR<ApiResponse, ResponseError>(API_BASEURL + ENDPOINTS.PROVIDER_ALL, getAllProvider)
+  return { providers: data?.data, countData: data?.countData ?? 0, error, isLoading, mutate, changeOrder, filterOptions, newPage, prevPage, search, setFilterOptions, setOffset }
 }
 
 const useUpdateProvider = () => {

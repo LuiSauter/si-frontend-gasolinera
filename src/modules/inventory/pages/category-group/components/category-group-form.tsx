@@ -13,6 +13,8 @@ import { z } from 'zod'
 import { useEffect } from 'react'
 import { useCreateCategory, useGetCategory, useUpdateCategory } from '@/modules/inventory/hooks/useCategory'
 import { Textarea } from '@/components/ui/textarea'
+import { type IFormProps } from '@/models'
+import { useHeader } from '@/hooks'
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -20,7 +22,13 @@ const formSchema = z.object({
   image_url: z.string()
 })
 
-const CategoryForm = () => {
+const CategoryForm = ({ buttonText, title }: IFormProps) => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'Inventario', path: PrivateRoutes.CATEGORY },
+    { label: 'Categorias', path: PrivateRoutes.CATEGORY },
+    { label: title }
+  ])
   const { id } = useParams()
   const navigate = useNavigate()
   const { createCategory, isMutating, error } = useCreateCategory()
@@ -89,92 +97,88 @@ const CategoryForm = () => {
 
   return (
     <>
-      <section className="grid flex-1 items-start gap-4 lg:gap-6">
+      <section className="grid flex-1 items-start gap-4 lg:gap-6 w-full">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="mx-auto w-full flex flex-col gap-4 lg:gap-6">
-            <div>
-              <div className="flex items-center gap-4">
-                <Button type='button' onClick={() => { navigate(PrivateRoutes.CATEGORY) }} variant="outline" size="icon" className="h-7 w-7">
-                  <ChevronLeftIcon className="h-4 w-4" />
-                  <span className="sr-only">Volver</span>
+            <div className="flex items-center gap-4">
+              <Button type='button' onClick={() => { navigate(PrivateRoutes.CATEGORY) }} variant="outline" size="icon" className="h-7 w-7">
+                <ChevronLeftIcon className="h-4 w-4" />
+                <span className="sr-only">Volver</span>
+              </Button>
+              <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+                {title}
+              </h2>
+              <div className="hidden items-center gap-2 md:ml-auto md:flex">
+                <Button type='button' onClick={() => { navigate(PrivateRoutes.CATEGORY) }} variant="outline" size="sm">
+                  Descartar
                 </Button>
-                <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                  {id ? 'Editar Categoria' : 'Crear Categoria'}
-                </h2>
-                <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                  <Button type='button' onClick={() => { navigate(PrivateRoutes.CATEGORY) }} variant="outline" size="sm">
-                    Descartar
-                  </Button>
-                  <Button type='submit' size="sm" disabled={isMutating}>{id ? 'Actualizar' : 'Guardar'}</Button>
-                </div>
+                <Button type='submit' size="sm" disabled={isMutating}>{buttonText}</Button>
               </div>
             </div>
             <div className="flex flex-row lg:flex-col gap-4 lg:gap-6 justify-center" >
-              <div className="flex flex-row lg:flex-col gap-4 lg:gap-6 justify-center">
-                <Card x-chunk="dashboard-07-chunk-0" className='' >
-                  <CardHeader>
-                    <CardTitle>{id ? 'Actualizar categoria' : 'Crear nuevo categoria'}</CardTitle>
-                    <CardDescription>
-                      {id ? 'Complete los datos para actualizar su categoria' : 'Complete los datos para crear un nueva categoria'}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className='grid gap-4'>
-                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
-                      <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
-                        <FormField
-                          control={form.control}
-                          name="name"
-                          defaultValue=""
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Nombre</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Tienda..." {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="image_url"
-                          defaultValue=""
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Url Imagen</FormLabel>
-                              <FormControl>
-                                <Input placeholder="categoria1.jpg..." {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
+              <Card x-chunk="dashboard-07-chunk-0" className='w-full' >
+                <CardHeader>
+                  <CardTitle>{id ? 'Actualizar categoria' : 'Crear nuevo categoria'}</CardTitle>
+                  <CardDescription>
+                    {id ? 'Complete los datos para actualizar su categoria' : 'Complete los datos para crear un nueva categoria'}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='grid gap-4 w-full'>
+                  <div className="grid gap-4 lg:gap-6 lg:grid-cols-2">
+                    <div className="grid gap-4 lg:gap-6 lg:grid-cols-1">
                       <FormField
                         control={form.control}
-                        name="description"
+                        name="name"
                         defaultValue=""
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Descripcion</FormLabel>
+                            <FormLabel>Nombre</FormLabel>
                             <FormControl>
-                              <Textarea placeholder="El usuario pordrá..." {...field} />
+                              <Input placeholder="Tienda..." {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="image_url"
+                        defaultValue=""
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Url Imagen</FormLabel>
+                            <FormControl>
+                              <Input placeholder="categoria1.jpg..." {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
                         )}
                       />
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
+
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      defaultValue=""
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Descripcion</FormLabel>
+                          <FormControl>
+                            <Textarea placeholder="El usuario pordrá..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
               <Button onClick={() => { navigate(PrivateRoutes.CATEGORY) }} type='button' variant="outline" size="sm" >
                 Cancelar
               </Button>
-              <Button type='submit' size="sm" disabled={isMutating}>{id ? 'Actualizar' : 'Guardar'}</Button>
+              <Button type='submit' size="sm" disabled={isMutating}>{buttonText}</Button>
             </div>
           </form>
         </Form>

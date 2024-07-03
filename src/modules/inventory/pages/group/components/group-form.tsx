@@ -13,13 +13,22 @@ import { z } from 'zod'
 import { useEffect } from 'react'
 import { useCreateGroup, useGetGroup, useUpdateGroup } from '@/modules/inventory/hooks/useGroup'
 import { Textarea } from '@/components/ui/textarea'
+import { useHeader } from '@/hooks'
+import { type IFormProps } from '@/models'
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
   description: z.string().min(2).max(50)
 })
 
-const GroupForm = () => {
+const GroupForm = ({ buttonText, title }: IFormProps) => {
+  useHeader([
+    { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
+    { label: 'inventario', path: PrivateRoutes.GROUP },
+    { label: 'grupos', path: PrivateRoutes.GROUP },
+    { label: title }
+  ])
+
   const { id } = useParams()
   const navigate = useNavigate()
   const { createGroup, isMutating, error } = useCreateGroup()
@@ -27,20 +36,20 @@ const GroupForm = () => {
   const { group } = useGetGroup(id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      description: '',
-      name: ''
+    values: {
+      name: group?.name ?? '',
+      description: group?.description ?? ''
     }
   })
 
-  useEffect(() => {
-    if (group) {
-      form.reset({
-        name: group.name ?? '',
-        description: group.description ?? ''
-      })
-    }
-  }, [group, form])
+  // useEffect(() => {
+  //   if (group) {
+  //     form.reset({
+  //       name: group.name ?? '',
+  //       description: group.description ?? ''
+  //     })
+  //   }
+  // }, [group, form])
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     if (id) {
@@ -94,13 +103,13 @@ const GroupForm = () => {
                   <span className="sr-only">Volver</span>
                 </Button>
                 <h2 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                  {id ? 'Lista Grupos' : 'Crear Grupo'}
+                  {title}
                 </h2>
                 <div className="hidden items-center gap-2 md:ml-auto md:flex">
                   <Button type='button' onClick={() => { navigate(PrivateRoutes.GROUP) }} variant="outline" size="sm">
                     Descartar
                   </Button>
-                  <Button type='submit' size="sm" >{id ? 'Actualizar' : 'Guardar'}</Button>
+                  <Button type='submit' size="sm" >{buttonText}</Button>
                 </div>
               </div>
             </div>

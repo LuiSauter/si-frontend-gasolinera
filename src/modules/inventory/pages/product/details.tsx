@@ -10,6 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { FormatDateMMMDYYYY } from '@/utils'
 import BatchTable from './components/batch'
 import { Separator } from '@/components/ui/separator'
+import TankTable from './components/tank'
 
 function DetailsPage(): JSX.Element {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ function DetailsPage(): JSX.Element {
             onClick={() => { navigate(-1) }}
             variant="outline"
             size="icon"
-            className="h-10 w-10"
+            className="h-8 w-8"
           >
             <ChevronLeftIcon className="h-5 w-5" />
             <span className="sr-only">Volver</span>
@@ -36,13 +37,13 @@ function DetailsPage(): JSX.Element {
           </h2>
           <div className="w-full sm:w-fit sm:ml-auto flex items-center justify-between gap-4">
             <TabsList>
-              <TabsTrigger value="all">Lotes</TabsTrigger>
+              <TabsTrigger value="all">{product?.fuel ? 'Tanques' : 'Lotes'}</TabsTrigger>
               <TabsTrigger value="product-output">Salidas</TabsTrigger>
               <TabsTrigger value="buys">Compras</TabsTrigger>
             </TabsList>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="outline" className="h-10 w-10">
+                <Button size="icon" variant="outline" className="h-8 w-8">
                   <MoreVerticalIcon className="h-5 w-5" />
                   <span className="sr-only">Más</span>
                 </Button>
@@ -55,7 +56,7 @@ function DetailsPage(): JSX.Element {
             </DropdownMenu>
           </div>
         </div>
-        <div className="grid gap-4 lg:gap-6 lg:grid-cols-[300px_1fr] xl:grid-cols-[320px_1fr]">
+        <div className="grid gap-4 lg:gap-6 md:grid-cols-[300px_1fr] xl:grid-cols-[320px_1fr]">
           <div className="flex flex-col gap-4 lg:gap-6">
 
             <Card className="overflow-hidden">
@@ -149,28 +150,12 @@ function DetailsPage(): JSX.Element {
             </Card>
           </div>
 
-          <div className="grid auto-rows-max items-start gap-4 lg:gap-6">
-            {/* <Tabs defaultValue="all"> */}
-            {/* <div className="flex items-center flex-wrap gap-2">
-              <TabsList>
-                <TabsTrigger value="all">Lotes</TabsTrigger>
-                <TabsTrigger value="product-output">Salidas</TabsTrigger>
-                <TabsTrigger value="buys">Compras</TabsTrigger>
-              </TabsList>
-            </div> */}
+          <div className="flex flex-col gap-4 overflow-hidden lg:gap-6">
             <TabsContent value="all" className='mt-0'>
-              <BatchTable />
+              {product?.fuel ? <TankTable productId={id!} /> : <BatchTable productId={id!} />}
             </TabsContent>
-            {/* </Tabs> */}
           </div>
         </div>
-        {/* <div className="flex items-center justify-center gap-2 md:hidden">
-        <Button onClick={() => { navigate(PrivateRoutes.PRODUCT) }} type="button" variant="outline" size="sm">
-          Descartar
-        </Button>
-        <Button type="submit" size="sm">
-        </Button>
-      </div> */}
       </section>
     </Tabs>
   )
