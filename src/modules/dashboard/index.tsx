@@ -1,6 +1,5 @@
 import { useHeader } from '@/hooks'
 import React from 'react'
-import { PruebaPage } from './components/newPrueba'
 
 const DashboardPage = (): React.ReactNode => {
   useHeader([
@@ -8,8 +7,7 @@ const DashboardPage = (): React.ReactNode => {
   ])
   return (
     <>
-      {/* <h2>DashboardPage</h2> */}
-      <PruebaPage></PruebaPage>
+      <h2>DashboardPage</h2>
     </>
   )
 }
