@@ -70,7 +70,7 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
   const { id } = useParams()
   const { purchaseOrder, error: errorGetPurchase } = useGetPurchaseOrder(id)
   const { branches, error: errorBranchs } = useGetAllBranches()
-  const { providers, error: errorProvider } = useGetAllProvider()
+  const { providers, error: errorProvider } = useGetAllProvider({ isGetAll: false })
   const { createPurchaseOrder, isMutating: isMutatingCreate } = useCreatePurchaseOrder()
   const { updatePurchaseOrder, isMutating: isMutatingUpdate } = useUpdatePurchaseOrder()
 
