@@ -10,7 +10,6 @@ export interface Product extends ApiBase {
   description: string
   price_sale: number
   price_purchase: number
-  price_sale: number
   image_url: string
   is_active: boolean
   branch?: Branch
