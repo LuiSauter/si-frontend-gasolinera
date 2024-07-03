@@ -1,7 +1,6 @@
 import { createElement, lazy } from 'react'
 import { PrivateRoutes, type Route } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
-
 const ProductPage = lazy(() => import('@modules/inventory/pages/product'))
 const ProductFormPage = lazy(() => import('@modules/inventory/pages/product/product-form'))
 const ProductDetailsPage = lazy(() => import('@/modules/inventory/pages/product/details'))
@@ -10,6 +9,7 @@ const FuelPage = lazy(() => import('@modules/inventory/pages/fuel'))
 const FuelForm = lazy(() => import('@modules/inventory/pages/fuel/components/fuel-form'))
 const GroupPage = lazy(() => import('@/modules/inventory/pages/group'))
 const OuputProductsPage = lazy(() => import('@/modules/inventory/pages/output-product'))
+const OuputDetailsPage = lazy(() => import('@/modules/inventory/pages/output-product/components/output-detail'))
 
 export const inventoryRoutes: Route[] = [
   {
@@ -60,6 +60,11 @@ export const inventoryRoutes: Route[] = [
   {
     path: PrivateRoutes.OUPUT_PRODUCT,
     element: createElement(OuputProductsPage),
+    permissions: [PERMISSION.PRODUCT_OUTPUT, PERMISSION.PRODUCT_OUTPUT_SHOW]
+  },
+  {
+    path: PrivateRoutes.OUPUT_DETAIL,
+    element: createElement(OuputDetailsPage),
     permissions: [PERMISSION.PRODUCT_OUTPUT, PERMISSION.PRODUCT_OUTPUT_SHOW]
   }
 ]

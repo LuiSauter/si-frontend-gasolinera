@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
@@ -33,7 +34,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useHeader } from '@/hooks'
 import Loading from '@/components/shared/loading'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 import {
@@ -48,6 +49,9 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { useDeleteDiscount, useGetAllDiscounts } from '../../hooks/useDiscount'
+// import { type RootState } from '@/redux/store'
+// import { useSelector } from 'react-redux'
+import Pagination from '@/components/shared/pagination'
 
 const DiscountPage = () => {
   useHeader([
@@ -55,19 +59,21 @@ const DiscountPage = () => {
     { label: 'Ventas', path: PrivateRoutes.DiSPENSER },
     { label: 'Descuentos' }
   ])
+  const { discounts, filterOptions, isLoading, newPage, prevPage, setOffset, countData, mutate } = useGetAllDiscounts({ isGetAll: false })
+  // const user = useSelector((state: RootState) => state.user)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const navigate = useNavigate()
-  const { discounts, isLoading, error, mutate } = useGetAllDiscounts()
+  // const { discounts, isLoading, error, mutate } =
   const { deleteDiscount } = useDeleteDiscount()
-  let subscribe = true
-  useEffect(() => {
-    if (subscribe && error) {
-      toast.error(error.errorMessages[0])
-    }
-    return () => {
-      subscribe = false
-    }
-  }, [error])
+  // let subscribe = true
+  // useEffect(() => {
+  //   if (subscribe && error) {
+  //     toast.error(error.errorMessages[0])
+  //   }
+  //   return () => {
+  //     subscribe = false
+  //   }
+  // }, [error])
 
   const deletePermanentlyDiscount = (id: string) => {
     toast.promise(deleteDiscount(id), {
@@ -83,7 +89,6 @@ const DiscountPage = () => {
     })
     setIsDialogOpen(false)
   }
-
   return (
     <main className="grid flex-1 items-start gap-4 lg:gap-6">
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
@@ -138,7 +143,7 @@ const DiscountPage = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Nombre</TableHead>
-                      <TableHead className='hidden md:table-cell'>Monto</TableHead>
+                      <TableHead className='hidden md:table-cell'>Fecha de expiración</TableHead>
                       <TableHead className='hidden sm:table-cell'>%Descuento</TableHead>
                       <TableHead className='hidden lg:table-cell'>Sucursal</TableHead>
                       <TableHead><div className='sr-only'></div></TableHead>
@@ -149,7 +154,7 @@ const DiscountPage = () => {
                     {discounts?.map((discount) => (
                       <TableRow key={discount.id}>
                         <TableCell>{discount.name}</TableCell>
-                        <TableCell className='hidden md:table-cell'>{discount.amount}</TableCell>
+                        <TableCell className='hidden md:table-cell'>{discount.final_date}</TableCell>
                         <TableCell className='hidden sm:table-cell'>{`${discount.percentage} %`}</TableCell>
                         <TableCell className='hidden lg:table-cell'>{discount.branch.name}</TableCell>
                         <TableCell>
@@ -212,6 +217,19 @@ const DiscountPage = () => {
                 </Table>
                 {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
               </CardContent>
+              <CardFooter>
+                <Pagination
+                  allItems={countData ?? 0}
+                  currentItems={discounts?.length ?? 0}
+                  limit={filterOptions.limit}
+                  newPage={() => { newPage(countData ?? 0) }}
+                  offset={filterOptions.offset}
+                  prevPage={prevPage}
+                  setOffset={setOffset}
+                  setLimit={() => { }}
+                  params={true}
+                />
+              </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>

@@ -8,6 +8,7 @@ export interface Product extends ApiBase {
   stock: number
   minimum_stock: number
   description: string
+  price_sale: number
   price_purchase: number
   price_sale: number
   image_url: string

@@ -22,7 +22,8 @@ const formSchema = z.object({
   phone: z.string().min(3, 'El telefono debe tener al menos 5 digitos'),
   email: z.string().email('Ingrese un correo valido'),
   nit: z.string().min(3, 'El nit debe tener al menos 3 digitos'),
-  detail: z.string().min(3, 'El detalle debe tener al menos 3 caracteres')
+  detail: z.string().min(3, 'El detalle debe tener al menos 3 caracteres'),
+  image_url: z.string().min(3, 'El detalle debe tener al menos 3 caracteres')
 })
 
 const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
@@ -40,21 +41,14 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: '',
-      address: '',
-      phone: '',
-      email: '',
-      nit: '',
-      detail: ''
-    },
     values: {
       name: provider?.name ?? '',
       address: provider?.address ?? '',
       phone: provider?.phone ?? '',
       email: provider?.email ?? '',
       nit: provider?.nit ?? '',
-      detail: provider?.detail ?? ''
+      detail: provider?.detail ?? '',
+      image_url: provider?.image_url ?? ''
     }
   })
 
@@ -70,6 +64,7 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
       })
     } else {
       toast.promise(createProvider({
+        image_url: data.image_url,
         address: data.address,
         email: data.email,
         name: data.name,
@@ -172,6 +167,7 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
                         </FormItem>
                       )}
                     />
+
                     <FormField
                       control={form.control}
                       name="nit"
@@ -187,24 +183,39 @@ const ProviderFormPage = ({ buttonText, title }: IFormProps): JSX.Element => {
                       )}
                     />
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    defaultValue=""
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Dirección</FormLabel>
-                        <FormControl>
-                          <Input placeholder=" Av. Bolivar, 4to anillo..." {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid gap-4 lg:gap-6 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      defaultValue=""
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Dirección</FormLabel>
+                          <FormControl>
+                            <Input placeholder=" Av. Bolivar, 4to anillo..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                      <FormField
+                      control={form.control}
+                      name="image_url"
+                      defaultValue=""
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Url de la imagen</FormLabel>
+                          <FormControl>
+                            <Input placeholder=" https..." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormField
                     control={form.control}
                     name="detail"
-                    defaultValue=""
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Detalle</FormLabel>

@@ -3,6 +3,7 @@ import { PrivateRoutes, type Route } from '@/models/routes.model'
 import { PERMISSION } from '@/modules/auth/utils/permissions.constants'
 
 const DispenserPage = lazy(() => import('@/modules/sales/pages/dispenser'))
+const DispenserDetail = lazy(() => import('@/modules/sales/pages/dispenser/components/detailsProvider'))
 const DispenserForm = lazy(() => import('@/modules/sales/pages/dispenser/components/dispenser-form'))
 const DiscountPage = lazy(() => import('@/modules/sales/pages/discount'))
 const DiscountForm = lazy(() => import('@/modules/sales/pages/discount/components/discount-form'))
@@ -22,6 +23,11 @@ export const salesRoutes: Route[] = [
     path: PrivateRoutes.DISPENSER_EDIT,
     element: createElement(DispenserForm, { buttonText: 'Editar Dispensador', title: 'Actualizar Dispensador' }),
     permissions: [PERMISSION.DISPENSER]
+  },
+  {
+    path: PrivateRoutes.DISPENSER_DETAILS,
+    element: createElement(DispenserDetail),
+    permissions: [PERMISSION.DISPENSER, PERMISSION.DISPENSER_SHOW]
   },
   {
     path: PrivateRoutes.DISCOUNT,

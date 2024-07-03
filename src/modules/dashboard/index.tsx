@@ -6,7 +6,9 @@ const DashboardPage = (): React.ReactNode => {
     { label: 'Dashboard' }
   ])
   return (
-    <h2>DashboardPage</h2>
+    <>
+      <h2>DashboardPage</h2>
+    </>
   )
 }
 

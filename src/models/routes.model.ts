@@ -39,6 +39,9 @@ export enum PrivateRoutes {
   CATEGORY_EDIT = PrivateRoutes.CATEGORY + '/:id',
   GROUP = PrivateRoutes.PRODUCT + '/grupos-y-categorias',
   OUPUT_PRODUCT = PrivateRoutes.PRODUCT + '/salida-productos',
+  OUPUT_PRODUCT_CREAR = PrivateRoutes.OUPUT_PRODUCT + '/crear',
+  OUPUT_PRODUCT_EDIT = PrivateRoutes.OUPUT_PRODUCT + '/:id',
+  OUPUT_DETAIL = PrivateRoutes.OUPUT_PRODUCT + '/:id' + '/detalles',
   // Buys
   BUY = '/compras',
   BUY_CREATE = PrivateRoutes.BUY + '/crear',
@@ -57,6 +60,7 @@ export enum PrivateRoutes {
   PURCHASE_ORDER_DETAIL = PrivateRoutes.PURCHASE_ORDER + '/:id' + '/detalles',
   // Sales
   DiSPENSER = '/dispensador',
+  DISPENSER_DETAILS = PrivateRoutes.DiSPENSER + '/:id' + '/detalles',
   DiSPENSER_CREATE = PrivateRoutes.DiSPENSER + '/crear',
   DISPENSER_EDIT = PrivateRoutes.DiSPENSER + '/:id',
   DISCOUNT = PrivateRoutes.DiSPENSER + '/descuentos',

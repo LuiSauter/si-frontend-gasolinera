@@ -32,11 +32,10 @@ const updateProvider = async (url: string, { arg }: { arg: UpdateProvider }): Pr
   await fetchData(`${url}/${arg.id}`, options)
 }
 const getAllProvider = async (url: string): Promise<ApiResponse> => {
-  const options: RequestInit = {
-    method: 'GET'
-  }
-  const response = await fetchData(url, options)
-  return { data: response.data, countData: response.countData }
+  const response = await fetchData(url)
+  const countData = response.countData
+  const data: Provider[] = response.data as Provider[]
+  return { countData, data }
 }
 
 const deleteProvider = async (url: string, { arg }: { arg: string }): Promise<void> => {

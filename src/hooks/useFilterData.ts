@@ -12,7 +12,6 @@ export const filterStateDefault: FilterOptions = {
 export const useFilterData = (filterState: FilterOptions) => {
   const [filterOptions, setFilterOptions] = useState(filterState)
   const queryParams = generateQueryParams(filterOptions)
-
   const search = (attr: string, value: string) => {
     const updatedFilterOptions = { ...filterStateDefault, attr, value }
     setFilterOptions(updatedFilterOptions)

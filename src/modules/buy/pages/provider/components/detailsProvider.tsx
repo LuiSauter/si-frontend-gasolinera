@@ -22,7 +22,6 @@ function ProviderDetailsPage(): JSX.Element {
   const navigate = useNavigate()
   const { id } = useParams()
   const { provider } = useGetProvider(id)
-
   return (
     <Tabs defaultValue="all">
       <section className="grid flex-1 items-start gap-4 lg:gap-6">
@@ -66,13 +65,13 @@ function ProviderDetailsPage(): JSX.Element {
             <Card className="overflow-hidden">
               <CardHeader className="flex flex-row items-start bg-muted/50">
                 <div className="flex flex-col gap-2">
-                  {/* <img
+                  <img
                     alt={provider?.name}
                     className="aspect-square rounded-md object-cover shrink-0 lg:h-28 lg:w-28"
-                    src={provider?.image_url}
+                    src={provider?.image_url ? provider?.image_url : 'https://media.istockphoto.com/id/1354776457/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?s=612x612&w=0&k=20&c=w3OW0wX3LyiFRuDHo9A32Q0IUMtD4yjXEvQlqyYk9O4='}
                     height="70"
                     width="70"
-                  /> */}
+                  />
                   <CardTitle className="text-lg">
                     {provider?.name}
                   </CardTitle>

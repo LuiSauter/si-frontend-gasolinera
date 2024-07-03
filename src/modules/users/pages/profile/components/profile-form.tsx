@@ -36,30 +36,29 @@ const ProfileForm = ({ buttonText, title }: IFormProps) => {
   const navigate = useNavigate()
   const { error } = useCreateUser()
   const { updateUser } = useUpdateUser()
-  const { role } = useGetRole(user.role.id)
-  const { branch } = useGetBranch(user.branch.id)
+  const { role } = useGetRole(user?.role?.id)
+  const { branch } = useGetBranch(user?.branch?.id)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      name: user.name ?? '',
-      ci: (user.ci ?? 0).toString(),
-      address: user.address ?? '',
-      phone: user.phone ?? '',
-      email: user.email ?? '',
+      name: user?.name ?? '',
+      ci: (user?.ci ?? 0).toString(),
+      address: user?.address ?? '',
+      phone: user?.phone ?? '',
+      email: user?.email ?? '',
       role: role?.name ?? '',
       branch: branch?.name ?? '',
-      password: user.password ?? '', // Ensure password is blank
-      gender: user.gender ?? ''
+      password: user?.password ?? '', // Ensure password is blank
+      gender: user?.gender ?? ''
     }
   })
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    data.role = user.role.id ?? ''
-    data.branch = user.branch.id ?? ''
-    data.gender = user.gender ?? ''
+    data.role = user?.role.id ?? ''
+    data.branch = user?.branch.id ?? ''
+    data.gender = user?.gender ?? ''
     const ciNumber = parseInt(data.ci, 10)
-    const id = user.id
-    console.log(data)
+    const id = user?.id
     toast.promise(updateUser({
       id,
       name: data.name,
