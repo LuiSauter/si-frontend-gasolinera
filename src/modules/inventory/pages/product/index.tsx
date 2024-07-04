@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, File, ListFilter, MoreHorizontal, PlusCircle } from 'lucide-react'
+import { ChevronLeftIcon, File, ListFilter, MoreHorizontal, PlusCircle, Search } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -24,6 +24,9 @@ import Skeleton from '@/components/shared/skeleton'
 import Pagination from '@/components/shared/pagination'
 import { useSelector } from 'react-redux'
 import { type RootState } from '@/redux/store'
+import { Input } from '@/components/ui/input'
+import useDebounce from '@/hooks/useDebounce'
+import { useEffect, useState } from 'react'
 
 const ProductosPage = (): JSX.Element => {
   useHeader([
@@ -32,7 +35,9 @@ const ProductosPage = (): JSX.Element => {
   ])
   const navigate = useNavigate()
   const user = useSelector((state: RootState) => state.user)
-  const { products, isLoading, countData, filterOptions, newPage, prevPage, setOffset } = useGetAllProducts({ isGetAll: false })
+  const { products, isLoading, countData, filterOptions, newPage, prevPage, setOffset, search } = useGetAllProducts({ isGetAll: false })
+  const [searchProduct, setSearchProduct] = useState('')
+  const debounceSearchProduct = useDebounce(searchProduct, 1000)
 
   const { deleteProduct } = useDeleteProduct()
 
@@ -49,10 +54,14 @@ const ProductosPage = (): JSX.Element => {
     })
   }
 
+  useEffect(() => {
+    search('name', debounceSearchProduct)
+  }, [debounceSearchProduct])
+
   return (
     <>
       <Tabs defaultValue="all" className='grid gap-2 overflow-hidden w-full relative'>
-        <div className="inline-flex items-center flex-wrap gap-2">
+        <div className="inline-flex items-center flex-wrap gap-2 z-10">
           <Button
             type="button"
             onClick={() => { navigate(-1) }}
@@ -67,8 +76,19 @@ const ProductosPage = (): JSX.Element => {
             <TabsTrigger value="all">Todos</TabsTrigger>
             <TabsTrigger value="active">Activos</TabsTrigger>
           </TabsList>
+          <form className='ml-auto py-1'>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Buscar"
+                className="w-full appearance-none bg-background pl-8 shadow-none outline-none h-8 ring-0 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-offset-0 xl:min-w-80"
+                onChange={(e) => { setSearchProduct(e.target.value) }}
+              />
+            </div>
+          </form>
           <DropdownMenu>
-            <DropdownMenuTrigger asChild className='ml-auto'>
+            <DropdownMenuTrigger asChild className=''>
               <Button variant="outline" size="sm" className="h-8 gap-1"><ListFilter className="h-3.5 w-3.5" /></Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -80,7 +100,7 @@ const ProductosPage = (): JSX.Element => {
           <Button size="sm" variant="outline" className="h-8 gap-1"><File className="h-3.5 w-3.5" /></Button>
           <Button onClick={() => { navigate(PrivateRoutes.PRODUCT_ADD) }} size="sm" className="h-8 gap-1">
             <PlusCircle className="h-3.5 w-3.5" />
-            <span className="sr-only lg:not-sr-only sm:whitespace-nowrap">Agregar</span>
+            <span className="sr-only xl:not-sr-only sm:whitespace-nowrap">Agregar</span>
           </Button>
         </div>
         <TabsContent value="all" className='relative overflow-hidden'>
