@@ -27,6 +27,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogTrigger } from '@/component
 import CategoriesForm from '../group/components/categories-form'
 import { useGetAllCategorys } from '../../hooks/useCategory'
 import { type Category } from '../../models/category.model'
+import { type Branch } from '@/modules/company/models/branch.model'
 
 const formSchema = z.object({
   code: z
@@ -72,7 +73,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
   const { groups, mutate: mutateGroups } = useGetAllGroup({ isGetAll: true })
   // const { categories } = useGetAllCategories()
   const { categorys: categories, mutate } = useGetAllCategorys()
-  const { branches } = useGetAllBranches()
+  const { branches } = useGetAllBranches({ isGetAll: false })
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -292,7 +293,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                                   {field.value
                                     ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
                                       {branches?.find(
-                                        (branch) => branch.id === field.value
+                                        (branch: Branch) => branch.id === field.value
                                       )?.name}
                                     </span>)
                                     : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar sucursal</span>}
@@ -306,7 +307,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                                 <CommandList>
                                   <CommandEmpty>Sucursal no encontrada</CommandEmpty>
                                   <CommandGroup>
-                                    {branches?.map((branch) => (
+                                    {branches?.map((branch: Branch) => (
                                       <CommandItem
                                         value={branch.name}
                                         key={branch.id}

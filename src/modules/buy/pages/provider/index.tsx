@@ -1,4 +1,4 @@
-import { File, Info, ListFilter, MoreHorizontal, Pencil, PlusCircle, Power, PowerOff } from 'lucide-react'
+import { ChevronLeftIcon, File, Info, ListFilter, MoreHorizontal, Pencil, PlusCircle, Power, PowerOff, Search } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -34,8 +34,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Pagination from '@/components/shared/pagination'
+import useDebounce from '@/hooks/useDebounce'
+import { Input } from '@/components/ui/input'
 
 const ProviderPage = (): JSX.Element => {
   useHeader([
@@ -44,9 +46,10 @@ const ProviderPage = (): JSX.Element => {
     { label: 'Proveedores' }
   ])
   const navigate = useNavigate()
-  const { providers, countData, isLoading, filterOptions, newPage, prevPage, setOffset } = useGetAllProvider({ isGetAll: false })
+  const { providers, countData, isLoading, filterOptions, newPage, prevPage, setOffset, search } = useGetAllProvider({ isGetAll: false })
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-
+  const [searchProduct, setSearchProduct] = useState('')
+  const debounceSearchProduct = useDebounce(searchProduct, 1000)
   const { deleteProvider } = useDeleteProvider()
 
   const deletePermanentlyProvider = (id: string) => {
@@ -62,16 +65,37 @@ const ProviderPage = (): JSX.Element => {
     })
     setIsDialogOpen(false)
   }
+  useEffect(() => {
+    search('name', debounceSearchProduct)
+  }, [debounceSearchProduct])
 
   return (
     <main className="grid flex-1 items-start gap-4 lg:gap-6">
       <Tabs defaultValue="all">
         <div className="flex items-center">
-          {/* <TabsList>
-            <TabsTrigger value="all">Proveedores</TabsTrigger>
-            <TabsTrigger value="active">Otro producto</TabsTrigger>
-          </TabsList> */}
+          <Button
+            type="button"
+            onClick={() => { navigate(-1) }}
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+            <span className="sr-only">Volver</span>
+          </Button>
+          <form className='py-1'>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Buscar"
+                className="w-full appearance-none bg-background pl-8 shadow-none outline-none h-8 ring-0 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-offset-0 xl:min-w-80"
+                onChange={(e) => { setSearchProduct(e.target.value) }}
+              />
+            </div>
+          </form>
           <div className="ml-auto flex items-center gap-2">
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 gap-1">
