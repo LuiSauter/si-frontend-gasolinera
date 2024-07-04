@@ -25,6 +25,7 @@ export enum PrivateRoutes {
   BRANCH = PrivateRoutes.COMPANY + '/sucursales',
   BRANCH_CREATE = PrivateRoutes.BRANCH + '/crear',
   BINACLE = PrivateRoutes.COMPANY + '/bitacora',
+  REPORTS = PrivateRoutes.COMPANY + '/reportes',
   // inventory
   PRODUCT = '/productos',
   PRODUCT_ADD = PrivateRoutes.PRODUCT + '/crear',

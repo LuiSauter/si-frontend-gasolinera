@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import { ChevronLeftIcon, File, ListFilterIcon, MoreHorizontal, PlusCircleIcon } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { ChevronLeftIcon, File, ListFilterIcon, MoreHorizontal, PlusCircleIcon, Search } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { PrivateRoutes } from '@/models/routes.model'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -19,6 +19,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useHeader } from '@/hooks'
 import { useGetAllBranches } from '../../hooks/useBranch'
 import Loading from '@/components/shared/loading'
+import { type Branch } from '../../models/branch.model'
+import Pagination from '@/components/shared/pagination'
+import useDebounce from '@/hooks/useDebounce'
+import { Input } from '@/components/ui/input'
 
 const BranchesPage = () => {
   useHeader([
@@ -27,8 +31,9 @@ const BranchesPage = () => {
     { label: 'Sucursales' }
   ])
   const navigate = useNavigate()
-  const { branches, isLoading, error } = useGetAllBranches()
-
+  const { branches, countData, isLoading, filterOptions, newPage, prevPage, setOffset, search, error } = useGetAllBranches({ isGetAll: false })
+  const [searchProduct, setSearchProduct] = useState('')
+  const debounceSearchProduct = useDebounce(searchProduct, 1000)
   let subscribe = true
   useEffect(() => {
     if (subscribe && error) {
@@ -38,7 +43,9 @@ const BranchesPage = () => {
       subscribe = false
     }
   }, [error])
-
+  useEffect(() => {
+    search('name', debounceSearchProduct)
+  }, [debounceSearchProduct])
   return (
     <section className='grid gap-4 overflow-hidden w-full relative'>
       <div className="inline-flex items-center flex-wrap gap-2">
@@ -52,6 +59,17 @@ const BranchesPage = () => {
           <ChevronLeftIcon className="h-4 w-4" />
           <span className="sr-only">Volver</span>
         </Button>
+        <form className='py-1'>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Buscar"
+                className="w-full appearance-none bg-background pl-8 shadow-none outline-none h-8 ring-0 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-offset-0 xl:min-w-80"
+                onChange={(e) => { setSearchProduct(e.target.value) }}
+              />
+            </div>
+          </form>
         <DropdownMenu>
           <DropdownMenuTrigger asChild className='ml-auto'>
             <Button
@@ -105,7 +123,7 @@ const BranchesPage = () => {
               </TableHeader>
               <TableBody>
                 {branches?.length === 0 && <div>No hay sucursales</div>}
-                {branches?.map((branch) => (
+                {branches?.map((branch: Branch) => (
                   <TableRow key={branch.id}>
                     <TableCell>{branch.name}</TableCell>
                     <TableCell>{branch.address}</TableCell>
@@ -134,6 +152,19 @@ const BranchesPage = () => {
           </div>
           {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>}
         </CardContent>
+        <CardFooter className='w-full'>
+              <Pagination
+                allItems={countData ?? 0}
+                currentItems={branches?.length ?? 0}
+                limit={filterOptions.limit}
+                newPage={() => { newPage(countData ?? 0) }}
+                offset={filterOptions.offset}
+                prevPage={prevPage}
+                setOffset={setOffset}
+                setLimit={() => { }}
+                params={true}
+              />
+            </CardFooter>
       </Card>
     </section>
   )

@@ -35,7 +35,8 @@ export const ENDPOINTS = {
   DISCOUNT: '/api/discount',
   DISCOUNT_ALL: '/api/discount/all',
   DISCOUNT_ONE: '/api/discount/one',
-  SALES: '/api/sale-note'
+  SALES: '/api/sale-note',
+  REPORTS: '/api/report'
 
 }
 
