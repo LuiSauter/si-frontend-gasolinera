@@ -59,7 +59,12 @@ export enum PrivateRoutes {
   PURCHASE_ORDER_EDIT = PrivateRoutes.PURCHASE_ORDER + '/:id',
   PURCHASE_ORDER_DETAIL = PrivateRoutes.PURCHASE_ORDER + '/:id' + '/detalles',
   // Sales
-  DiSPENSER = '/dispensador',
+  SALES = '/ventas',
+  SALES_DETAILS = PrivateRoutes.SALES + '/:id' + '/detalles',
+  SALES_CREATE = PrivateRoutes.SALES + '/crear',
+  SALES_CREATE_FUEL = PrivateRoutes.SALES + '/combustible/:id',
+  SALES_CREATE_NOT_FUEL = PrivateRoutes.SALES + '/producto',
+  DiSPENSER = PrivateRoutes.SALES + '/dispensador',
   DISPENSER_DETAILS = PrivateRoutes.DiSPENSER + '/:id' + '/detalles',
   DiSPENSER_CREATE = PrivateRoutes.DiSPENSER + '/crear',
   DISPENSER_EDIT = PrivateRoutes.DiSPENSER + '/:id',

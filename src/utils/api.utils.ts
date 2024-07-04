@@ -31,10 +31,11 @@ export const ENDPOINTS = {
   PURCHASE_ORDER: '/api/purchase-order',
   // sales
   DISPENSER: '/api/dispenser',
-  HOSE_DISPENSER: '/api/hose/all',
+  HOSE_DISPENSER: '/api/hose',
   DISCOUNT: '/api/discount',
   DISCOUNT_ALL: '/api/discount/all',
-  DISCOUNT_ONE: '/api/discount/one'
+  DISCOUNT_ONE: '/api/discount/one',
+  SALES: '/api/sale-note'
 
 }
 

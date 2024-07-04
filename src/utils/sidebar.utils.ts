@@ -139,6 +139,12 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Descuentos',
         icon: createElement(Tag, { width: 20, height: 20 }),
         permissions: [PERMISSION.DISCOUNT, PERMISSION.DISCOUNT_SHOW]
+      },
+      {
+        path: PrivateRoutes.SALES,
+        label: 'Ventas',
+        icon: createElement(ShoppingCart, { width: 20, height: 20 }),
+        permissions: [PERMISSION.SALE_NOTE, PERMISSION.SALE_NOTE_SHOW]
       }
     ]
   }
