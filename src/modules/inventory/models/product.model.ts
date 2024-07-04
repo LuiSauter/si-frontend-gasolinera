@@ -16,6 +16,7 @@ export interface Product extends ApiBase {
   category?: Category
   groups?: ProductGroup[]
   fuel?: Fuel
+  product_discount: number
 }
 
 export interface CreateProduct extends Partial<Product> {
