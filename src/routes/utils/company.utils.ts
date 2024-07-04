@@ -6,6 +6,7 @@ const CompanyPage = lazy(() => import('@/modules/company/pages/company'))
 const BranchesPage = lazy(() => import('@/modules/company/pages/branches'))
 const BranchesFormPage = lazy(() => import('@/modules/company/pages/branches/components/branches-form'))
 const BinaclePage = lazy(() => import('@modules/company/pages/binnacle'))
+const ReportsPage = lazy(() => import('@modules/reports/pages'))
 
 export const companyRoutes: Route[] = [
   {
@@ -27,5 +28,10 @@ export const companyRoutes: Route[] = [
     path: PrivateRoutes.BINACLE,
     element: createElement(BinaclePage),
     permissions: [PERMISSION.BINNACLE]
+  },
+  {
+    path: PrivateRoutes.REPORTS,
+    element: createElement(ReportsPage),
+    permissions: []
   }
 ]

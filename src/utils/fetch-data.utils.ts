@@ -56,7 +56,7 @@ export const generateQueryParamsGeneric = (queryOption: QueryOptions): string =>
 
   for (const key in queryOption) {
     if (queryOption[key] !== undefined) {
-      queryParams.append(key, queryOption[key]!.toString())
+      queryParams.append(key, queryOption[key].toString())
     }
   }
 
