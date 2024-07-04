@@ -1,5 +1,5 @@
 export enum TypeReport {
-  PRODUCT = 'product',
+  BITACORA = 'binnacle',
   SALES = 'sales',
   BUY = 'buy',
   PRODUCT_ENTRY = 'product-entry',

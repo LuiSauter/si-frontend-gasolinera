@@ -29,6 +29,12 @@ const formSchemaSales = z.object({
   typeDocument: z.string().min(1, 'El tipo de documento es requerido')
 })
 
+const formSchemaBita = z.object({
+  end_date: z.string().min(1, 'La fecha final es requerida'),
+  start_date: z.string().min(1, 'La fecha inicial es requerido'),
+  typeDocument: z.string().min(1, 'El tipo de documento es requerido')
+})
+
 const ReportsFormPage = () => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
@@ -38,6 +44,7 @@ const ReportsFormPage = () => {
   const navigate = useNavigate()
   const linkRef = useRef<HTMLAnchorElement | null>(null)
   const linkRefSales = useRef<HTMLAnchorElement | null>(null)
+  const linkRefBita = useRef<HTMLAnchorElement | null>(null)
   const { generateReport, isMutating, data } = useGenerateReport()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,6 +57,14 @@ const ReportsFormPage = () => {
 
   const formSales = useForm<z.infer<typeof formSchemaSales>>({
     resolver: zodResolver(formSchemaSales),
+    defaultValues: {
+      end_date: '',
+      start_date: ''
+    }
+  })
+
+  const formBitacora = useForm<z.infer<typeof formSchemaBita>>({
+    resolver: zodResolver(formSchemaBita),
     defaultValues: {
       end_date: '',
       start_date: ''
@@ -98,6 +113,30 @@ const ReportsFormPage = () => {
         startDate: data.start_date
       },
       typeReport: TypeReport.SALES
+    }), {
+      loading: 'Generando Reporte...',
+      success: () => {
+        if (linkRef) {
+          setTimeout(() => {
+            linkRefBita.current?.click()
+          }, 2000)
+        }
+        return 'Reporte generado automaticamente'
+      },
+      error(error) {
+        return error.errorMessages[0] ?? 'Error al crear el usuario'
+      }
+    })
+  }
+
+  const onSubmitBitacora = (data: z.infer<typeof formSchemaSales>) => {
+    toast.promise(generateReport({
+      typeDocument: data.typeDocument as TypeDocument,
+      parameters: {
+        endDate: data.end_date,
+        startDate: data.start_date
+      },
+      typeReport: TypeReport.BITACORA
     }), {
       loading: 'Generando Reporte...',
       success: () => {
@@ -224,7 +263,7 @@ const ReportsFormPage = () => {
               </Card>
               <Card x-chunk="dashboard-07-chunk-0" className='w-full' >
                 <CardHeader className='flex flex-row justify-between'>
-                  <CardTitle>Descargar reporte de compra</CardTitle>
+                  <CardTitle>Reporte</CardTitle>
                 </CardHeader>
                 <CardContent className='grid gap-4 lg:gap-6'>
                   {data && (
@@ -245,7 +284,7 @@ const ReportsFormPage = () => {
             <div className="grid lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_350px] gap-4 lg:gap-6">
               <Card x-chunk="dashboard-07-chunk-0" className='w-full' >
                 <CardHeader className='flex flex-row justify-between'>
-                  <CardTitle>Reportes de Compras</CardTitle>
+                  <CardTitle>Reportes de ventas</CardTitle>
                   <Button disabled={isMutating} type='submit' size="sm" className='h-8'>Generar</Button>
                 </CardHeader>
                 <CardContent className='grid gap-4 lg:gap-6'>
@@ -326,6 +365,102 @@ const ReportsFormPage = () => {
                     <>
                       <Button type='submit' size="sm" className='h-8'>Descargar</Button>
                       <a ref={linkRefSales} href={URL.createObjectURL(data.dataBlob)} download={data.fileName} className='hidden'>
+                        <button>Descargar Reporte</button>
+                      </a>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </form>
+        </Form>
+
+        <Form {...formBitacora}>
+          <form onSubmit={formBitacora.handleSubmit(onSubmitBitacora)} className="mx-auto w-full flex flex-col gap-4 lg:gap-6">
+            <div className="grid lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_350px] gap-4 lg:gap-6">
+              <Card x-chunk="dashboard-07-chunk-0" className='w-full' >
+                <CardHeader className='flex flex-row justify-between'>
+                  <CardTitle>Reportes de ventas</CardTitle>
+                  <Button disabled={isMutating} type='submit' size="sm" className='h-8'>Generar</Button>
+                </CardHeader>
+                <CardContent className='grid gap-4 lg:gap-6'>
+                  <div className="grid gap-4 lg:gap-6 md:grid-cols-2">
+                    <FormField
+                      control={formBitacora.control}
+                      name="start_date"
+                      defaultValue=''
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Fecha inicial *</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type='text'
+                              placeholder="DD/MM/YYYY"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={formBitacora.control}
+                      name="end_date"
+                      defaultValue=''
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Fecha final *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="DD/MM/YYYY" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={formBitacora.control}
+                      name="typeDocument"
+                      defaultValue=''
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Tipo de documento</FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={(value) => {
+                                field.onChange(value)
+                              }}
+                              value={field.value}
+                              name={field.name}
+                              disabled={field.disabled}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger aria-label="Selecciona el género">
+                                  <SelectValue placeholder="Selecciona un tipo (PDF/Excel)" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value={TypeDocument.PDF}>Pdf</SelectItem>
+                                <SelectItem value={TypeDocument.EXCEL}>Excel</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card x-chunk="dashboard-07-chunk-0" className='w-full' >
+                <CardHeader className='flex flex-row justify-between'>
+                  <CardTitle>Reporte </CardTitle>
+                </CardHeader>
+                <CardContent className='grid gap-4 lg:gap-6'>
+                  {data && linkRefBita && (
+                    <>
+                      <Button type='submit' size="sm" className='h-8'>Descargar</Button>
+                      <a ref={linkRefBita} href={URL.createObjectURL(data.dataBlob)} download={data.fileName} className='hidden'>
                         <button>Descargar Reporte</button>
                       </a>
                     </>
