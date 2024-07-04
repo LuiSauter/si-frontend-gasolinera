@@ -23,6 +23,7 @@ import { GENDER } from '@/utils'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { cn } from '@/lib/utils'
+import { type Branch } from '@/modules/company/models/branch.model'
 
 const formSchema = z.object({
   ci: z.number({ required_error: 'El carnet de identidad es requerido' })
@@ -59,7 +60,7 @@ const UserFormPage = ({ buttonText, title }: IFormProps) => {
   const { createUser, isMutating } = useCreateUser()
   const { updateUser } = useUpdateUser()
   const { allRoles, error: errorRole } = useGetAllRole()
-  const { branches, error: errorBranches } = useGetAllBranches()
+  const { branches, error: errorBranches } = useGetAllBranches({ isGetAll: false })
   const { user, error: errorUser } = useGetUser(id)
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -364,7 +365,7 @@ const UserFormPage = ({ buttonText, title }: IFormProps) => {
                                     {field.value
                                       ? (<span className='text-ellipsis whitespace-nowrap overflow-hidden'>
                                         {branches?.find(
-                                          (branch) => branch.id === field.value
+                                          (branch: Branch) => branch.id === field.value
                                         )?.name}
                                       </span>)
                                       : <span className='text-light-text-secondary dark:text-dark-text-secondary text-ellipsis whitespace-nowrap overflow-hidden'>Seleccionar sucursal</span>}
@@ -378,7 +379,7 @@ const UserFormPage = ({ buttonText, title }: IFormProps) => {
                                   <CommandList>
                                     <CommandEmpty>Sucursal no encontrada</CommandEmpty>
                                     <CommandGroup>
-                                      {branches?.map((branch) => (
+                                      {branches?.map((branch: Branch) => (
                                         <CommandItem
                                           value={branch.name}
                                           key={branch.id}

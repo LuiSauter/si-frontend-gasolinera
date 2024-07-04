@@ -1,7 +1,7 @@
 import { toast } from 'sonner'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeftIcon, File, ListFilter, MoreHorizontal, PlusCircle, Trash } from 'lucide-react'
+import { ChevronLeftIcon, File, ListFilter, MoreHorizontal, PlusCircle, Search, Trash } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -15,6 +15,8 @@ import { type User } from '../../models/user.model'
 import { Badge } from '@/components/ui/badge'
 import { useHeader } from '@/hooks'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { Input } from '@/components/ui/input'
+import useDebounce from '@/hooks/useDebounce'
 
 const UserPage = (): JSX.Element => {
   useHeader([
@@ -22,10 +24,11 @@ const UserPage = (): JSX.Element => {
     { label: 'Usuarios' }
   ])
   const navigate = useNavigate()
-  const { allUsers, countData, isLoading, mutate, filterOptions, newPage, prevPage, setOffset } = useGetAllUser()
+  const { allUsers, countData, isLoading, mutate, filterOptions, newPage, prevPage, setOffset, search } = useGetAllUser()
   const { deleteUser } = useDeleteUser()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-
+  const [searchProduct, setSearchProduct] = useState('')
+  const debounceSearchProduct = useDebounce(searchProduct, 1000)
   const deletePermanentlyUser = (id: string) => {
     toast.promise(deleteUser(id), {
       loading: 'Cargando...',
@@ -43,6 +46,9 @@ const UserPage = (): JSX.Element => {
     setIsDialogOpen(false)
   }
 
+  useEffect(() => {
+    search('name', debounceSearchProduct)
+  }, [debounceSearchProduct])
   return (
     <section className='grid gap-4 overflow-hidden w-full relative'>
       <div className="inline-flex items-center flex-wrap gap-2">
@@ -56,6 +62,17 @@ const UserPage = (): JSX.Element => {
           <ChevronLeftIcon className="h-4 w-4" />
           <span className="sr-only">Volver</span>
         </Button>
+        <form className='py-1'>
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Buscar"
+                className="w-full appearance-none bg-background pl-8 shadow-none outline-none h-8 ring-0 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-offset-0 xl:min-w-80"
+                onChange={(e) => { setSearchProduct(e.target.value) }}
+              />
+            </div>
+          </form>
         <DropdownMenu>
           <DropdownMenuTrigger asChild className='ml-auto'>
             <Button variant="outline" size="sm" className="h-8 gap-1"><ListFilter className="h-3.5 w-3.5" /></Button>

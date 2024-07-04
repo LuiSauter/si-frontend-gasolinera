@@ -1,6 +1,6 @@
 import { useHeader } from '@/hooks'
 import { PrivateRoutes } from '@/models/routes.model'
-import { File, ListFilter, Users2Icon } from 'lucide-react'
+import { CheckIcon, ChevronsUpDownIcon, File, ListFilter, Users2Icon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -26,16 +26,28 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger
-} from '@/components/ui/tabs'
 import { useGetLogsByMothAndYear } from '../../hooks/useBinnacle'
 import { useEffect } from 'react'
-import { MONTH } from '../../models/binnacle.model'
+import { MONTH, YEAR } from '../../models/binnacle.model'
 import { toast } from 'sonner'
+import * as React from 'react'
+// import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
+
+import { cn } from '@/lib/utils'
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList
+} from '@/components/ui/command'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover'
 
 function BinnaclePage(): JSX.Element {
   useHeader([
@@ -45,19 +57,23 @@ function BinnaclePage(): JSX.Element {
   ])
 
   const { dataLogs, getLogByMothAndYear, error } = useGetLogsByMothAndYear()
-
+  const months = Object.values(MONTH)
+  const years = Object.values(YEAR)
+  const [open, setOpen] = React.useState(false)
+  const [value, setValue] = React.useState('')
+  const [openYear, setOpenYear] = React.useState(false)
+  const [valueYear, setValueYear] = React.useState('')
   useEffect(() => {
     void getLogByMothAndYear({
-      month: MONTH.JUNE,
-      year: '2024',
-      password: '12345678'
+      month: value,
+      year: valueYear
     })
-  }, [])
+  }, [value, valueYear])
 
   let subscribe = true
   useEffect(() => {
     if (subscribe && error) {
-      toast.error(error.errorMessages[0])
+      toast.error('No hay actividad en esta fecha')
     }
     return () => {
       subscribe = false
@@ -66,15 +82,105 @@ function BinnaclePage(): JSX.Element {
 
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-      <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-        <Tabs defaultValue="week">
+      <div className="grid auto-rows-max items-start gap-4 md:gap-1 lg:col-span-2">
+        {/* <Tabs defaultValue="week"> */}
           <div className="flex items-center">
-            <TabsList>
+            {/* <TabsList>
               <TabsTrigger value="week">Semana</TabsTrigger>
               <TabsTrigger value="month">Mes</TabsTrigger>
               <TabsTrigger value="year">Año</TabsTrigger>
-            </TabsList>
+            </TabsList> */}
+            <div className='flex auto-cols-auto items-start gap-4 md:gap-1 lg:col-span-2'>
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="primary"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[120px] h-7 justify-between"
+                  >
+                    {value
+                      ? months.find((month) => month === value)
+                      : 'Mes'}
+                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[150px] h-48 p-0">
+                  <Command>
+                    <CommandInput placeholder="Buscar Mes" className="h-9" />
+                    <CommandList>
+                      <CommandEmpty>No framework found.</CommandEmpty>
+                      <CommandGroup>
+                        {months.map((month) => (
+                          <CommandItem
+                            key={month}
+                            value={month}
+                            onSelect={(currentValue) => {
+                              setValue(currentValue === value ? '' : currentValue)
+                              setOpen(false)
+                            }}
+                          >
+                            {month}
+                            <CheckIcon
+                              className={cn(
+                                'ml-auto h-4 w-4',
+                                value === month ? 'opacity-100' : 'opacity-0'
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+
+              <Popover open={openYear} onOpenChange={setOpenYear}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="primary"
+                    role="combobox"
+                    aria-expanded={openYear}
+                    className="w-[120px] h-7 justify-between"
+                  >
+                    {valueYear
+                      ? years.find((year) => year === valueYear)
+                      : 'Año'}
+                    <ChevronsUpDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[150px] h-48 p-0">
+                  <Command>
+                    <CommandInput placeholder="Buscar Año" className="h-9" />
+                    <CommandList>
+                      <CommandEmpty>No framework found.</CommandEmpty>
+                      <CommandGroup>
+                        {years.map((year) => (
+                          <CommandItem
+                            key={year}
+                            value={year}
+                            onSelect={(currentValue) => {
+                              setValueYear(currentValue === valueYear ? '' : currentValue)
+                              setOpenYear(false)
+                            }}
+                          >
+                            {year}
+                            <CheckIcon
+                              className={cn(
+                                'ml-auto h-4 w-4',
+                                valueYear === year ? 'opacity-100' : 'opacity-0'
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
             <div className="ml-auto flex items-center gap-2">
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -83,7 +189,7 @@ function BinnaclePage(): JSX.Element {
                     className="h-7 gap-1 text-sm"
                   >
                     <ListFilter className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only">Filtrar</span>
+                    <span className="sr-only sm:not-sr-only ">Filtrar</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -110,7 +216,7 @@ function BinnaclePage(): JSX.Element {
               </Button>
             </div>
           </div>
-          <TabsContent value="week">
+          {/* <TabsContent value="week"> */}
             <Card x-chunk="dashboard-05-chunk-3">
               <CardHeader className="px-7">
                 <CardTitle>Bitácora</CardTitle>
@@ -303,8 +409,11 @@ function BinnaclePage(): JSX.Element {
                 </Table>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          {/* </TabsContent> */}
+          {/* <TabsContent value="month">
+            <div>hola</div>
+          </TabsContent> */}
+        {/* </Tabs> */}
       </div>
     </main>
   )
