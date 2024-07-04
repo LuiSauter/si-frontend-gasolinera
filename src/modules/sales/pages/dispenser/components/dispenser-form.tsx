@@ -15,6 +15,7 @@ import { useCreateDispenser, useGetDispenser, useUpdateDispenser } from '@/modul
 import { useGetAllBranches } from '@/modules/company/hooks/useBranch'
 import { type IFormProps } from '@/models'
 import { useHeader } from '@/hooks'
+import { type Branch } from '@/modules/company/models/branch.model'
 
 const formSchema = z.object({
   ubication: z.string().min(2, 'La ubicación debe tener al menos 3 caracteres')
@@ -32,7 +33,7 @@ const DispenserForm = ({ buttonText, title }: IFormProps) => {
     { label: title }
   ])
 
-  const { branches } = useGetAllBranches()
+  const { branches } = useGetAllBranches({ isGetAll: false })
   const { id } = useParams()
   const navigate = useNavigate()
   const { createDispenser, isMutating, error } = useCreateDispenser()
@@ -251,7 +252,7 @@ const DispenserForm = ({ buttonText, title }: IFormProps) => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {branches?.map((branch) => (
+                              {branches?.map((branch: Branch) => (
                                 <SelectItem key={branch.id} value={branch.id}>
                                   {branch.name}
                                 </SelectItem>

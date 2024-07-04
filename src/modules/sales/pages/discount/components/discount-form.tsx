@@ -36,6 +36,7 @@ import {
 import { useSelector } from 'react-redux'
 import { type RootState } from '@/redux/store'
 import { useGetAllRole } from '@/modules/auth/hooks/useRole'
+import { type Branch } from '@/modules/company/models/branch.model'
 
 const formSchema = z.object({
   name: z.string().min(2, 'La ubicación debe tener al menos 3 caracteres')
@@ -63,7 +64,7 @@ const DiscountForm = ({ buttonText, title }: IFormProps) => {
   const { allRoles } = useGetAllRole()
   const [initialDate, setInitialDate] = React.useState<Date>()
   const [finalDate, setFinalDate] = React.useState<Date>()
-  const { branches } = useGetAllBranches()
+  const { branches } = useGetAllBranches({ isGetAll: false })
   const { id } = useParams()
   const navigate = useNavigate()
   const { createDiscount, isMutating } = useCreateDiscount()
@@ -386,7 +387,7 @@ const DiscountForm = ({ buttonText, title }: IFormProps) => {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  {branches?.map((branch) => (
+                                  {branches?.map((branch: Branch) => (
                                     <SelectItem key={branch.id} value={branch.id}>
                                       {branch.name}
                                     </SelectItem>

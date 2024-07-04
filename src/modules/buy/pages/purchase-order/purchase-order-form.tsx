@@ -66,8 +66,8 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
   const { id } = useParams()
   // const { purchaseOrder, error: errorGetPurchase } = useGetPurchaseOrder(id)
   const { purchaseOrder, error: errorGetPurchase, getPurchaseOrder } = useGetMutationPurchaseOrder()
-  const { branches, error: errorBranchs } = useGetAllBranches()
-  const { providers, error: errorProvider } = useGetAllProvider({ isGetAll: true })
+  const { branches } = useGetAllBranches({ isGetAll: false })
+  const { providers } = useGetAllProvider({ isGetAll: true })
   const { createPurchaseOrder, isMutating: isMutatingCreate } = useCreatePurchaseOrder()
   const { updatePurchaseOrder, isMutating: isMutatingUpdate } = useUpdatePurchaseOrder()
 
@@ -186,14 +186,24 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
 
   let subscribe = true
   useEffect(() => {
-    if (subscribe && (errorGetPurchase ?? errorBranchs ?? errorProvider)) {
-      const error = errorGetPurchase ?? errorBranchs ?? errorProvider
-      toast.error(error?.errorMessages[0])
+    if (subscribe && (errorGetPurchase)) {
+      toast.error('Error en la orden')
     }
     return () => {
       subscribe = false
     }
-  }, [errorGetPurchase, errorBranchs, errorProvider])
+  }, [errorGetPurchase])
+
+  // let subscribe = true
+  // useEffect(() => {
+  //   if (subscribe && (errorBranches ?? errorRole ?? errorUser)) {
+  //     const error = errorBranches ?? errorRole ?? errorUser
+  //     toast.error(error?.errorMessages[0])
+  //   }
+  //   return () => {
+  //     subscribe = false
+  //   }
+  // }, [errorBranches, errorRole, errorUser])
 
   return (
     <section className="grid flex-1 items-start gap-4 lg:gap-6">
