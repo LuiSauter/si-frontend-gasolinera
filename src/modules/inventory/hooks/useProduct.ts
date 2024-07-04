@@ -46,7 +46,6 @@ const useGetAllProducts = ({ isGetAll }: UseGetAllProductsProps) => {
   }
 
   const { changeOrder, filterOptions, newPage, prevPage, queryParams, search, setFilterOptions, setOffset } = useFilterData(filterStateDefault)
-
   const query = isGetAll ? '' : queryParams
   const fetchURL = `${API_BASEURL + ENDPOINTS.PRODUCT}?${query}`
   const { data, isLoading, error, mutate } = useSWR<ApiResponse, ResponseError>(fetchURL, getAllProducts)

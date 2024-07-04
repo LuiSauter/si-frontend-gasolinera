@@ -15,12 +15,12 @@ export const userRoutes: Route[] = [
   {
     path: PrivateRoutes.PROFILE,
     element: createElement(ProfilePage),
-    permissions: [PERMISSION.USER, PERMISSION.USER_SHOW]
+    permissions: [] as PERMISSION[]
   },
   {
     path: PrivateRoutes.PROFILE_UPDATE,
     element: createElement(ProfileForm, { buttonText: 'Actualizar', title: 'Actualizar su Cuenta' }),
-    permissions: [PERMISSION.USER, PERMISSION.USER_SHOW]
+    permissions: [] as PERMISSION[]
   },
   {
     path: PrivateRoutes.USER,

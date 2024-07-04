@@ -8,14 +8,15 @@ export interface Product extends ApiBase {
   stock: number
   minimum_stock: number
   description: string
-  price_purchase: number
   price_sale: number
+  price_purchase: number
   image_url: string
   is_active: boolean
   branch?: Branch
   category?: Category
   groups?: ProductGroup[]
   fuel?: Fuel
+  product_discount: number
 }
 
 export interface CreateProduct extends Partial<Product> {

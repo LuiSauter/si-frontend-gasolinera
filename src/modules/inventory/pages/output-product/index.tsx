@@ -1,49 +1,30 @@
-import { PrivateRoutes } from '@/models/routes.model'
+import { useNavigate } from 'react-router-dom'
 import { File, ListFilterIcon, MoreHorizontal } from 'lucide-react'
-// import { Badge } from '@/components/ui/badge'
+
+import { PrivateRoutes } from '@/models/routes.model'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table'
-import {
-  Tabs,
-  TabsContent
-} from '@/components/ui/tabs'
-// import { useNavigate } from 'react-router-dom'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { useHeader } from '@/hooks'
-// import { useGetAllBranches } from '../../hooks/useBranch'
-// import Loading from '@/components/shared/loading'
-// import { useEffect } from 'react'
-// import { toast } from 'sonner'
+import Skeleton from '@/components/shared/skeleton'
+import Pagination from '@/components/shared/pagination'
+import { FormatDateMMMDYYYYHHMM } from '@/utils'
+// import { STATE } from '../../constants/state.constants'
+import { useSelector } from 'react-redux'
+import { type RootState } from '@/redux/store'
+import { useGetAllOutput } from '../../hooks/useOutput'
 
 const OuputProductsPage = () => {
   useHeader([
     { label: 'Dashboard', path: PrivateRoutes.DASHBOARD },
-    { label: 'Inventario', path: PrivateRoutes.COMPANY },
+    { label: 'Inventario', path: PrivateRoutes.PRODUCT },
     { label: 'Salida de productos' }
   ])
-  //   const navigate = useNavigate()
+  const { ouputs, filterOptions, isLoading, newPage, prevPage, setOffset, countData } = useGetAllOutput({ isGetAll: false })
+  const navigate = useNavigate()
+  const user = useSelector((state: RootState) => state.user)
   //   const { branches, isLoading, error } = useGetAllBranches()
 
   //   let subscribe = true
@@ -57,179 +38,121 @@ const OuputProductsPage = () => {
   //   }, [error])
 
   return (
-    <main className="grid flex-1 items-start gap-4 lg:gap-6">
-      <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-        <Tabs defaultValue="week">
-          <div className="flex items-center">
-            <div className="ml-auto flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 gap-1 text-sm"
-                  >
-                    <ListFilterIcon className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only">Filtrar</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>
-                    Todos
-                  </DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+    <Tabs defaultValue="week" className='grid gap-2 overflow-hidden w-full relative'>
+      <div className="flex items-center">
+        <div className="ml-auto flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <Button
-                size="sm"
                 variant="outline"
+                size="sm"
                 className="h-7 gap-1 text-sm"
               >
-                <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only">Exportar</span>
+                <ListFilterIcon className="h-3.5 w-3.5" />
+                <span className="sr-only sm:not-sr-only">Filtrar</span>
               </Button>
-              {/* <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.BRANCH_CREATE) }}>
-                <PlusCircleIcon className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                  Agregar Sucursal
-                </span>
-              </Button> */}
-            </div>
-          </div>
-          <TabsContent value="week">
-            <Card x-chunk="dashboard-05-chunk-3">
-              <CardHeader className="px-7">
-                <CardTitle>Salida de Productos</CardTitle>
-                <CardDescription>
-                  {/* Listado de todas las sucursales de la empresa */}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className='hidden sm:table-cell'>Fecha y hora</TableHead>
-                      <TableHead>Usuario</TableHead>
-                      <TableHead className='hidden md:table-cell'>Sucursal</TableHead>
-                      <TableHead className='hidden lg:table-cell'>Motivo</TableHead>
-                      <TableHead><div className='sr-only'></div></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {/* {branches?.length === 0 && <div>No hay sucursales</div>}
-                    {branches?.map((branch) => (
-                      <TableRow key={branch.id}>
-                        <TableCell>{branch.name}</TableCell>
-                        <TableCell className='hidden sm:table-cell'>{branch.address}</TableCell>
-                        <TableCell className='hidden md:table-cell'>{branch.email}</TableCell>
-                        <TableCell className='hidden lg:table-cell'>{branch.phone}</TableCell>
-                        <TableCell>{branch.is_suspended ? 'Suspendido' : 'Activo'}</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))} */}
-                    <TableRow >
-                        <TableCell className='hidden sm:table-cell'>03/06/2024</TableCell>
-                        <TableCell>Luis Gabriel</TableCell>
-                        <TableCell className='hidden md:table-cell'>sucursal 1</TableCell>
-                        <TableCell className='hidden lg:table-cell'>irregularidades</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow >
-                        <TableCell className='hidden sm:table-cell'>13/12/2024</TableCell>
-                        <TableCell>Arlin Nuñez</TableCell>
-                        <TableCell className='hidden md:table-cell'>sucursal 1</TableCell>
-                        <TableCell className='hidden lg:table-cell'>Motivo de salida 2</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow >
-                        <TableCell className='hidden sm:table-cell'>14/12/2024</TableCell>
-                        <TableCell>Andres Quispe</TableCell>
-                        <TableCell className='hidden md:table-cell'>sucursal 2</TableCell>
-                        <TableCell className='hidden lg:table-cell'>Motivo 12</TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                aria-haspopup="true"
-                                size="icon"
-                                variant="ghost"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">Toggle menu</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                              <DropdownMenuItem onClick={() => { }}>Editar</DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => { }}>Eliminar</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                  </TableBody>
-                </Table>
-                {/* {isLoading && <div className='grid place-content-center place-items-center w-full shrink-0 pt-6'><Loading /></div>} */}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem checked>
+                Todos
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 gap-1 text-sm"
+          >
+            <File className="h-3.5 w-3.5" />
+            <span className="sr-only sm:not-sr-only">Exportar</span>
+          </Button>
+          {/* <Button size="sm" className="h-8 gap-1" onClick={() => { navigate(PrivateRoutes.PURCHASE_ORDER_CREATE) }}>
+            <PlusCircleIcon className="h-3.5 w-3.5" />
+            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+              Agregar Orden
+            </span>
+          </Button> */}
+        </div>
       </div>
-    </main>
+      <TabsContent value="week" className='relative overflow-hidden'>
+        <Card x-chunk="dashboard-05-chunk-3">
+          <CardHeader className="px-7">
+            <CardTitle>Salida de productos</CardTitle>
+            <CardDescription>
+              Listado de todas las salida de productos.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className='overflow-hidden relative w-full'>
+            <div className='overflow-x-auto'>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Fecha y hora</TableHead>
+                    <TableHead>Usuario</TableHead>
+                    <TableHead>Motivo</TableHead>
+                    <TableHead>Sucursal</TableHead>
+                    <TableHead><div className='sr-only'></div></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {isLoading
+                    ? <Skeleton rows={filterOptions.limit} columns={6} />
+                    : ouputs?.map((ouput) => (
+                      <TableRow key={ouput.id}>
+                        <TableCell>{FormatDateMMMDYYYYHHMM(ouput.createdAt)}</TableCell>
+                        <TableCell>{ouput.user.name}</TableCell>
+                        <TableCell title={ouput.reason}>
+                          {ouput.reason
+                            ? (ouput.reason.length > 40 ? ouput.reason.substring(0, 40) + '...' : ouput.reason)
+                            : '-'
+                          }
+                        </TableCell>
+                        <TableCell>{ouput.branch.name}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                aria-haspopup="true"
+                                size="icon"
+                                variant="ghost"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.OUPUT_PRODUCT}/${ouput.id}/detalles`) }}>Ver detalle</DropdownMenuItem>
+                              {(user.id === ouput.user.id) && <DropdownMenuItem
+                                onClick={() => { navigate(`${PrivateRoutes.OUPUT_PRODUCT}/${ouput.id}`) }}
+                              >Editar</DropdownMenuItem>}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Pagination
+              allItems={countData ?? 0}
+              currentItems={ouputs?.length ?? 0}
+              limit={filterOptions.limit}
+              newPage={() => { newPage(countData ?? 0) }}
+              offset={filterOptions.offset}
+              prevPage={prevPage}
+              setOffset={setOffset}
+              setLimit={() => { }}
+              params={true}
+            />
+          </CardFooter>
+        </Card>
+      </TabsContent>
+    </Tabs >
   )
 }
 

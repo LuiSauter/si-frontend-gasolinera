@@ -8,6 +8,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage, BreadcrumbS
 import Navigation from './navigation'
 import { useAuth, useHeader } from '@/hooks'
 import { PrivateRoutes } from '@/models'
+import { Notificaciones } from './notificaciones'
 
 const Header = () => {
   const { breadcrumb } = useHeader()
@@ -53,6 +54,7 @@ const Header = () => {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
+      <Notificaciones></Notificaciones>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="secondary" size="icon" className="rounded-full">

@@ -1,5 +1,5 @@
 import { PrivateRoutes } from '@/models/routes.model'
-import { File, ListFilterIcon, MoreHorizontal, Pencil, PlusCircleIcon, Trash } from 'lucide-react'
+import { File, Info, ListFilterIcon, MoreHorizontal, Pencil, PlusCircleIcon, Trash } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -173,6 +173,10 @@ const DispenserPage = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                              <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.DiSPENSER}/${dispenser.id}/detalles`) }}>
+                              <Info className="mr-2 h-4 w-4" />
+                              Detalles
+                            </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => { navigate(`${PrivateRoutes.DiSPENSER}/${dispenser.id}`) }}>
                                 <Pencil className="mr-2 h-4 w-4" />
                                 Editar

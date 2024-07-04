@@ -8,7 +8,6 @@ const createUser = async (url: string, { arg }: { arg: CreateUser }): Promise<vo
     method: 'POST',
     body: JSON.stringify(arg)
   }
-
   const response = await fetchData(url, options)
   return response
 }

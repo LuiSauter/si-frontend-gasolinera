@@ -11,6 +11,7 @@ export interface FilterOptions {
   order: Order
   attr?: string
   value?: string
+  branch?: string
 }
 
 export interface GetAllProps {
