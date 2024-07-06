@@ -76,7 +76,7 @@ const ProductosPage = (): JSX.Element => {
             <TabsTrigger value="all">Todos</TabsTrigger>
             <TabsTrigger value="active">Activos</TabsTrigger>
           </TabsList>
-          <form className='ml-auto py-1'>
+          <form className='ml-auto py-1' onSubmit={(e) => { e.preventDefault() }}>
             <div className="relative">
               <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
               <Input

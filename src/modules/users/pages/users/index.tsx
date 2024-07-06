@@ -62,17 +62,17 @@ const UserPage = (): JSX.Element => {
           <ChevronLeftIcon className="h-4 w-4" />
           <span className="sr-only">Volver</span>
         </Button>
-        <form className='py-1'>
-            <div className="relative">
-              <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Buscar"
-                className="w-full appearance-none bg-background pl-8 shadow-none outline-none h-8 ring-0 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-offset-0 xl:min-w-80"
-                onChange={(e) => { setSearchProduct(e.target.value) }}
-              />
-            </div>
-          </form>
+        <form className='py-1' onSubmit={(e) => { e.preventDefault() }}>
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Buscar"
+              className="w-full appearance-none bg-background pl-8 shadow-none outline-none h-8 ring-0 focus:outline-none focus:ring-0 focus:ring-offset-0 ring-offset-0 xl:min-w-80"
+              onChange={(e) => { setSearchProduct(e.target.value) }}
+            />
+          </div>
+        </form>
         <DropdownMenu>
           <DropdownMenuTrigger asChild className='ml-auto'>
             <Button variant="outline" size="sm" className="h-8 gap-1"><ListFilter className="h-3.5 w-3.5" /></Button>
