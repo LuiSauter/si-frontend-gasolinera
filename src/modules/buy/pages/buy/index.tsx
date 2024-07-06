@@ -96,6 +96,9 @@ function BuyPage() {
     if (date?.from && date?.to) {
       form.setValue('start_date', format(date.from, 'dd/MM/yyyy'))
       form.setValue('end_date', format(date.to ?? date.from, 'dd/MM/yyyy'))
+    } else {
+      form.setValue('start_date', '')
+      form.setValue('end_date', '')
     }
   }, [date?.from, date?.to])
 

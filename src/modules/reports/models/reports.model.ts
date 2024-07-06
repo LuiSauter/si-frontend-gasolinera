@@ -1,5 +1,5 @@
 export enum TypeReport {
-  BITACORA = 'binnacle',
+  BITACORA = 'bitacora',
   SALES = 'sales',
   BUY = 'buy',
   PRODUCT_ENTRY = 'product-entry',
@@ -32,10 +32,14 @@ export interface ParameterOptions {
   groupId?: Option
   branchId?: string
 
-  startDate?: string
-  endDate?: string
+  start_date?: string
+  end_date?: string
   userId?: Option
   productId?: Option
+  nit?: string
+
+  month?: string
+  year?: string
 
   providerId?: Option
 }

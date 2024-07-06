@@ -29,11 +29,11 @@ export enum YEAR {
 }
 export interface Binnacle {
   ip: string
-  userId: string
-  branchId?: string
+  user: string
+  branch?: string
   path: string
   method: string
-  body: string
+  body: object
   date: string
   time: string
 }
