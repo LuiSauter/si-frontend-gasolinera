@@ -465,7 +465,7 @@ function PurchaseOrderFormPage({ buttonText, title }: IFormProps) {
                                     <FormItem className="flex flex-col space-y-1 pt-1 w-full relative">
                                       <FormLabel className='leading-normal w-fit'>Producto *</FormLabel>
                                       <Popover>
-                                        <PopoverTrigger asChild className='w-full bg-red-500 overflow-hidden relative max-w-full'>
+                                        <PopoverTrigger asChild className='w-full overflow-hidden relative max-w-full'>
                                           <FormControl className='overflow-hidden'>
                                             <Button
                                               variant="outline"

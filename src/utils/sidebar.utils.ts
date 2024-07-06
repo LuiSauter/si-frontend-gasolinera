@@ -61,12 +61,6 @@ export const MenuSideBar: MenuHeaderRoute[] = [
         label: 'Bitácora',
         icon: createElement(ScrollTextIcon, { width: 20, height: 20 }),
         permissions: [PERMISSION.BINNACLE]
-      },
-      {
-        path: PrivateRoutes.REPORTS,
-        label: 'Reportes',
-        icon: createElement(FileText, { width: 20, height: 20 }),
-        permissions: [PERMISSION.COMPANY]
       }
     ]
   },
