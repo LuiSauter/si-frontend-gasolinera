@@ -83,7 +83,7 @@ const ProviderPage = (): JSX.Element => {
             <ChevronLeftIcon className="h-4 w-4" />
             <span className="sr-only">Volver</span>
           </Button>
-          <form className='py-1'>
+          <form className='py-1' onSubmit={(e) => { e.preventDefault() }}>
             <div className="relative">
               <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
               <Input
