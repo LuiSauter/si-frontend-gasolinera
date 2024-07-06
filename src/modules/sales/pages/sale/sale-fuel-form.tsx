@@ -35,7 +35,7 @@ const formSchemaDetails = z.object({
 const formSchema = z.object({
   discount: z.number().optional(),
   amountPaid: z.number().min(1, 'El monto pagado es requerido'),
-  amountReceivable: z.number().min(1, 'El monto recivido es requerido'),
+  amountReceivable: z.number().min(1, 'El monto recibido es requerido'),
   amountReturned: z.number().min(0, 'El monto devuelto es requerido'),
   customerName: z.string().min(1, 'El nombre del cliente es requerido'),
   nit: z.string().min(1, 'El nit es requerido'),
@@ -92,14 +92,16 @@ function SaleFuelFormPage({ buttonText, title }: IFormProps) {
   const onSubmit = (data: z.infer<typeof formSchema>) => {
     const objectData: CreateSale = { ...data, details: data.details.map((detail) => ({ amount: detail.amount, price: detail.price })) }
     toast.promise(createSale(objectData), {
-      loading: 'Creando nota de compra...',
+      loading: 'Realizando venta de combustible...',
       success: () => {
         form.reset()
         formDetails.reset()
-        return 'Nota de compra creada exitosamente'
+        // reload browser
+        window.location.reload()
+        return 'Combustible vendido'
       },
       error(error) {
-        return error.errorMessages[0] ?? 'Error al crear la nota de compra'
+        return error.errorMessages[0] ?? 'Error al vender el combustible.'
       }
     })
   }
@@ -131,7 +133,7 @@ function SaleFuelFormPage({ buttonText, title }: IFormProps) {
   }, [hose])
 
   useEffect(() => {
-    if (debounceSearchNit !== '' && debounceSearchNit.length > 5) {
+    if (debounceSearchNit !== '' && debounceSearchNit.length > 3) {
       void getCustomerMutation(debounceSearchNit)
     }
   }, [debounceSearchNit])
@@ -153,6 +155,16 @@ function SaleFuelFormPage({ buttonText, title }: IFormProps) {
       form.clearErrors('amountPaid')
     }
   }, [form.watch('details.0.amount')])
+
+  useEffect(() => {
+    if (form.watch('amountReceivable') < form.watch('amountPaid')) {
+      form.setError('amountReceivable', { type: 'manual', message: 'El monto recibido no puede ser menor al monto pagado' })
+      form.setValue('amountReturned', 0)
+    } else {
+      form.clearErrors('amountReceivable')
+      form.setValue('amountReturned', parseFloat((form.watch('amountReceivable') - form.watch('amountPaid')).toFixed(2)))
+    }
+  }, [form.watch('amountReceivable')])
 
   let subscribe = true
   useEffect(() => {
@@ -342,41 +354,6 @@ function SaleFuelFormPage({ buttonText, title }: IFormProps) {
             <div className="grid gap-4 lg:gap-6 h-fit">
               <Card x-chunk="dashboard-07-chunk-0" className='flex flex-col overflow-hidden w-full relative'>
                 <CardHeader>
-                  <CardTitle className='w-full flex items-center'>
-                    Total de la venta Bs. {Number(form.watch('amountPaid') ?? 0).toFixed(2)}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-6 items-end">
-                    <FormField
-                      control={form.control}
-                      name="amountReceivable"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Monto recido</FormLabel>
-                          <FormControl>
-                            <Input {...field} type='number'
-                              onChange={e => {
-                                field.onChange(Number(e.target.value))
-                                const value = Number(e.target.value ?? 0) - Number(form.watch('amountPaid') ?? 0)
-                                form.setValue('amountReturned', parseFloat(value.toFixed(2)))
-                              }}
-                              step="0.5"
-                              placeholder="0.00"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <div className='w-full flex items-center text-xl font-medium pb-1'>
-                      Cambio Bs. {Number(form.watch('amountReturned') ?? 0).toFixed(2)}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              <Card x-chunk="dashboard-07-chunk-0" className='flex flex-col overflow-hidden w-full relative'>
-                <CardHeader>
                   <CardTitle className='w-full flex items-center gap-3'>
                     <img
                       width="40"
@@ -424,6 +401,43 @@ function SaleFuelFormPage({ buttonText, title }: IFormProps) {
                     {form.watch('details').length === 0 && (
                       <p className='pt-4 px-4 text-muted-foreground dark:text-dark-text-secondary'>No hay productos agregados</p>
                     )}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card x-chunk="dashboard-07-chunk-0" className='flex flex-col overflow-hidden w-full relative'>
+                <CardHeader>
+                  <CardTitle className='w-full flex items-center'>
+                    Total de la venta Bs. {Number(form.watch('amountPaid') ?? 0).toFixed(2)}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-6 items-end">
+                    <FormField
+                      control={form.control}
+                      name="amountReceivable"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Monto recibido</FormLabel>
+                          <FormControl>
+                            <Input {...field} type='number'
+                              onChange={e => {
+                                field.onChange(Number(e.target.value))
+                                const value = Number(e.target.value ?? 0) - Number(form.watch('amountPaid') ?? 0)
+                                if (value >= Number(form.watch('amountPaid'))) {
+                                  form.setValue('amountReturned', parseFloat(value.toFixed(2)))
+                                }
+                              }}
+                              step="0.5"
+                              placeholder="0.00"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className='w-full flex items-center text-xl font-medium pb-1'>
+                      Cambio Bs. {Number(form.watch('amountReturned') ?? 0).toFixed(2)}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
