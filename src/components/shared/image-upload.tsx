@@ -50,7 +50,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onUploadComplete, imageUrl })
     }
     reader.onprogress = (event) => {
       if (event.lengthComputable) {
-        const percentComplete = parseInt((event.loaded / event.total) * 100, 10)
+        const percentComplete = parseInt(String((event.loaded / event.total) * 100), 10)
         console.log(event.timeStamp)
         setProgress(percentComplete)
       }
