@@ -2,7 +2,7 @@ import { CheckCheckIcon, ChevronLeftIcon, ChevronsUpDownIcon, PlusCircleIcon } f
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -28,6 +28,8 @@ import CategoriesForm from '../group/components/categories-form'
 import { useGetAllCategorys } from '../../hooks/useCategory'
 import { type Category } from '../../models/category.model'
 import { type Branch } from '@/modules/company/models/branch.model'
+import ImageUpload from '@/components/shared/image-upload'
+import { type Product } from '../../models/product.model'
 
 const formSchema = z.object({
   code: z
@@ -45,7 +47,7 @@ const formSchema = z.object({
   price_sale: z.number({ required_error: 'El stock mínimo es requerido' })
     .positive('El precio de venta debe ser mayor a 0'),
   // optional
-  image_url: z.string().optional(),
+  image: z.instanceof(File).refine((file) => file.size < 8000000, { message: 'La imagen debe ser menor a 8MB' }).optional(),
   description: z
     .string()
     .min(3, 'La descripción debe tener al menos 3 caracteres')
@@ -65,6 +67,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
   const navigate = useNavigate()
   const { id } = useParams()
   const [openModal, setOpenModal] = useState(false)
+  const [imagePreview, setImagePreview] = useState('')
 
   const { createProduct, updateProduct, error, isCreating, isUpdating } = useCreateOrUpdateProduct()
   const { product } = useGetProduct(id)
@@ -81,7 +84,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
       code: product?.code ?? '',
       name: product?.name ?? '',
       minimum_stock: product?.minimum_stock ?? 0,
-      image_url: product?.image_url ?? '',
+      image: {} as File | undefined,
       branchId: product?.branch?.id ?? '',
       categoryId: product?.category?.id ?? '',
       price_sale: product?.price_sale ?? 0,
@@ -122,6 +125,32 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
     }
   }
 
+  const getBlobImage = useCallback(async ({ image_url: imageUrl, name }: Product) => {
+    try {
+      const response = await fetch(imageUrl!)
+      if (!response.ok) {
+        console.log('Error al obtener la imagen', response.statusText)
+      }
+      const blob = await response.blob()
+      const myImage = new File([blob], name ?? 'image', { type: blob.type })
+      console.log(myImage)
+      form.setValue('image', myImage)
+      setImagePreview(URL.createObjectURL(myImage))
+    } catch (error) {
+      console.log('Error al obtener la imagen', error)
+    }
+  }, [])
+
+  let mounted = true
+  useEffect(() => {
+    if (mounted && product?.image_url) {
+      void getBlobImage(product)
+    }
+    return () => {
+      mounted = false
+    }
+  }, [product])
+
   let subscribe = true
   useEffect(() => {
     if (subscribe && error) {
@@ -131,6 +160,10 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
       subscribe = false
     }
   }, [error])
+
+  const handleImage = (file: File | null) => {
+    form.setValue('image', file!)
+  }
 
   return (
     <section className="grid flex-1 items-start gap-4 lg:gap-6">
@@ -160,7 +193,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
               <Button type="submit" size="sm" disabled={isCreating || isUpdating}>{buttonText}</Button>
             </div>
           </div>
-          <div className="grid gap-4 lg:gap-6 lg:grid-cols-[1fr_250px] xl:grid-cols-[1fr_300px]">
+          <div className="grid gap-4 lg:gap-6 lg:grid-cols-[1fr_280px] xl:grid-cols-[1fr_340px]">
             <div className="flex flex-col gap-4 lg:gap-6">
               <Card x-chunk="dashboard-07-chunk-0" className="w-full">
                 <CardHeader className='px-4 lg:px-6'>
@@ -449,42 +482,18 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
                   />
                 </CardContent>
               </Card>
-              <Card
-                className="overflow-hidden" x-chunk="dashboard-07-chunk-4"
-              >
+              <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
                 <CardHeader className='pb-2'>
                   <CardTitle>Imagen</CardTitle>
                   <CardDescription>
                     Ingrese la url de la imagen del producto
                   </CardDescription>
-                  {(product?.image_url ?? form.watch('image_url')) && <div className='pt-2 relative max-w-[300px] lg:max-w-[250px]'>
-                    <img
-                      src={form.watch('image_url') ?? product?.image_url}
-                      className="rounded-md border mx-auto object-cover overflow-hidden"
-                    />
-                  </div>}
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-4">
-                    <FormField
-                      control={form.control}
-                      name="image_url"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Url de la imagen</FormLabel>
-                          <FormControl>
-                            <Input
-                              type='string'
-                              placeholder="https://example.com/image.jpg"
-                              {...field}
-                              onChange={field.onChange}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <ImageUpload
+                    onUploadComplete={handleImage}
+                    imageUrl={imagePreview}
+                  />
                 </CardContent>
               </Card>
               <Card className="overflow-hidden" x-chunk="dashboard-07-chunk-4">
@@ -526,7 +535,7 @@ function ProductFormPage({ buttonText, title }: IFormProps) {
           </div>
         </form>
       </Form>
-    </section>
+    </section >
   )
 }
 export default ProductFormPage
