@@ -1,7 +1,7 @@
 import { createContext, useEffect, useMemo, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { STORAGE_TOKEN, STORAGE_USER, authStatus, getStorage, removeStorage } from '../utils'
+import { STORAGE_BRANCH, STORAGE_TOKEN, STORAGE_USER, authStatus, getStorage, removeStorage } from '../utils'
 import { type AuthContextState } from '../models'
 import { createUser, resetUser } from '@/redux/slices/user.slice'
 import { type ChildrenProps } from '@/models/common.model'
@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
       } catch (error) {
         removeStorage(STORAGE_TOKEN)
         removeStorage(STORAGE_USER)
+        removeStorage(STORAGE_BRANCH)
         setStatus(authStatus.unauthenticated)
         dispatch(resetUser())
       }
@@ -59,6 +60,7 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
   const signOut = () => {
     removeStorage(STORAGE_TOKEN)
     removeStorage(STORAGE_USER)
+    removeStorage(STORAGE_BRANCH)
     dispatch(resetUser())
     setStatus(authStatus.unauthenticated)
   }

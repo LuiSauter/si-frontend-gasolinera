@@ -89,3 +89,9 @@ export function FormatDateMMMDYYYYHHMM(dateString: string): string {
   const date = new Date(dateString)
   return `${date.getDate()} ${date.toLocaleDateString('es-BO', { month: 'short' })} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
 }
+
+// date to 'febrero'
+export function FormatDateMMMM(dateString: string): string {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('es-BO', { month: 'long' })
+}

@@ -12,7 +12,7 @@ interface InputImgProps {
   imageUrl?: string
 }
 
-function InputImg({ label, name, required, error, onChange, placeholder, imageUrl }: InputImgProps) {
+function InputImg({ name, onChange, placeholder, imageUrl }: InputImgProps) {
   return (
     <div className='w-full relative'>
       <label htmlFor={name} className='cursor-pointer hover:opacity-90 flex gap-1 items-center text-light-text-primary dark:text-dark-text-primary w-fit mx-auto'>
