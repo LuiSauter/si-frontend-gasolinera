@@ -1,4 +1,4 @@
-import { fetchData } from '@/utils'
+import { convertObjectToFormData, fetchData } from '@/utils'
 import { type CreateProduct, type Group, type Product } from '../models/product.model'
 import { type ApiResponse } from '@/models'
 
@@ -10,17 +10,18 @@ const getAllProducts = async (url: string): Promise<ApiResponse> => {
 }
 
 const createProduct = async (url: string, { arg }: { arg: CreateProduct }): Promise<void> => {
-  const options: RequestInit = { method: 'POST', body: JSON.stringify(arg) }
+  const formData = convertObjectToFormData(arg)
+  const options: RequestInit = { method: 'POST', body: formData }
 
   await fetchData(url, options)
 }
 
 const updateProduct = async (url: string, { arg }: { arg: CreateProduct }): Promise<void> => {
   const { id, ...updateProduct } = arg
-
+  const formData = convertObjectToFormData(updateProduct)
   const options: RequestInit = {
     method: 'PATCH',
-    body: JSON.stringify(updateProduct)
+    body: formData
   }
   await fetchData(`${url}/${id}`, options)
 }

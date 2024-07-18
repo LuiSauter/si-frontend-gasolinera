@@ -62,3 +62,27 @@ export const generateQueryParamsGeneric = (queryOption: QueryOptions): string =>
 
   return queryParams.toString()
 }
+
+// Esto: 'extends Record<string, any>' indica que debe ser un objeto
+export interface FileObject extends Record<string, File | any> { }
+
+export const convertObjectToFormData = (obj: FileObject): FormData => {
+  const formData = new FormData()
+
+  for (const key in obj) {
+    if (key in obj) {
+      const value = obj[key]
+      if (value !== undefined && value !== null) {
+        if (value instanceof Array) {
+          value.forEach((element) => {
+            formData.append(`${key}[]`, element instanceof File ? element : String(element))
+          })
+        } else {
+          formData.append(key, value instanceof File ? value : String(value))
+        }
+      }
+    }
+  }
+
+  return formData
+}

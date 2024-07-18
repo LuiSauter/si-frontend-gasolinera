@@ -10,8 +10,9 @@ export interface Product extends ApiBase {
   description: string
   price_sale: number
   price_purchase: number
-  image_url: string
   is_active: boolean
+  image_url?: string
+  path_image?: string
   branch?: Branch
   category?: Category
   groups?: ProductGroup[]
@@ -23,11 +24,13 @@ export interface CreateProduct extends Partial<Product> {
   branchId: string
   categoryId: string
   groupsId?: string[]
+  image?: File
 }
 
 export interface Category extends ApiBase {
   name: string
-  image_url: string
+  image_url?: string
+  path_image?: string
   description: string
 }
 
